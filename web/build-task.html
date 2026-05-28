@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>创建构建任务</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page" data-source-id="source-local-upload-sales">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="index.html">数据源</a><span>/</span><a href="local-upload-detail.html">销售资料上传区</a><span>/</span><span>创建构建任务</span></nav>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">创建构建任务</h1>
+              <p class="page-subtitle">构建任务会读取范围内的文件资产，执行解析、归一化、切片、embedding 生成和向量库写入。</p>
+            </div>
+          </div>
+          <div class="content-stack">
+              <section class="card">
+                <div class="card-header"><div><h2 class="card-title">构建范围</h2><p class="card-subtitle">范围决定本次任务覆盖哪些资产，以及后续变更如何自动维护。</p></div></div>
+                <div class="card-body">
+                  <div class="scope-options">
+                    <label class="scope-card active" data-scope-card="partial">
+                      <input type="radio" name="buildScope" value="partial" checked>
+                      <span class="scope-title">部分资产</span>
+                      <span class="scope-copy">仅构建下方选中的资产。后续只维护这些资产的更新和删除；新增资产不会自动构建。</span>
+                    </label>
+                    <label class="scope-card" data-scope-card="all">
+                      <input type="radio" name="buildScope" value="all">
+                      <span class="scope-title">全部资产</span>
+                      <span class="scope-copy">构建当前数据源下全部可构建资产。后续新增资产自动构建，更新和删除也会自动维护。</span>
+                    </label>
+                  </div>
+                </div>
+              </section>
+              <section class="card">
+                <div class="card-body">
+                  <div class="strategy-row" role="radiogroup" aria-label="解析策略">
+                    <span class="strategy-label">解析策略：</span>
+                    <label class="strategy-option active" data-strategy-option="知识">
+                      <input type="radio" name="parseStrategy" value="知识" checked>
+                      <span>知识</span>
+                    </label>
+                    <label class="strategy-option" data-strategy-option="规则">
+                      <input type="radio" name="parseStrategy" value="规则">
+                      <span>规则</span>
+                    </label>
+                    <label class="strategy-option" data-strategy-option="问答">
+                      <input type="radio" name="parseStrategy" value="问答">
+                      <span>问答</span>
+                    </label>
+                  </div>
+                  <p class="hint fixed-config-hint">切片策略、embedding 模型和向量库写入目标使用系统配置，不在创建任务时选择。</p>
+                </div>
+              </section>
+              <section class="card" id="assetSelectionCard">
+                <div class="card-header"><div><h2 class="card-title">选择资产</h2><p class="card-subtitle" id="assetSelectionHint">资产可构建状态由后端预览接口返回。</p></div></div>
+                <div class="card-body">
+                  <div class="build-preview-summary" id="buildPreviewSummary"></div>
+                </div>
+                <div class="table-wrap">
+                  <table class="table">
+                    <thead><tr><th><input type="checkbox" data-check-all aria-label="全选"></th><th>文件名</th><th>类型</th><th>大小</th><th>本次处理</th><th>资产指纹</th><th>原因</th></tr></thead>
+                    <tbody id="selectedAssetRows"></tbody>
+                  </table>
+                </div>
+              </section>
+              <section class="card pipeline-card">
+                <div class="card-header">
+                  <div>
+                    <h2 class="card-title">执行步骤</h2>
+                    <p class="card-subtitle" id="pipelineContext">执行链路由后端预览接口返回，前端只负责展示。</p>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="pipeline-rail" id="pipelineSteps"></div>
+                </div>
+              </section>
+              <section id="taskResult"></section>
+              <div class="footer-actions">
+                <button class="button primary" id="createTask" type="button">创建任务</button>
+              </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/mock-data.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/build-task-api.js"></script>
+    <script src="js/build-task.js"></script>
+  </body>
+</html>

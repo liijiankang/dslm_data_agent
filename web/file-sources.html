@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>文件系统 · 接入方式</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="source-create.html">接入数据源</a><span>/</span><span>文件系统</span></nav>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">选择文件系统接入方式</h1>
+              <p class="page-subtitle">文件系统数据源接入后会登记文件资产元数据；解析、切片、embedding 和向量写入在构建任务中执行。</p>
+            </div>
+          </div>
+          <section class="grid-3 connector-grid">
+            <a class="card choice-card" href="local-upload-create.html">
+              <h2 class="choice-title">本地上传</h2>
+              <p class="choice-copy">从电脑上传文件，平台登记文件资产元数据，并在构建任务中按需读取内容。</p>
+              <div class="choice-meta"><span class="status green">可配置</span><span class="tag">无源端变更检测</span></div>
+            </a>
+            <a class="card choice-card" href="object-storage-create.html">
+              <h2 class="choice-title">S3 / MinIO / 对象存储</h2>
+              <p class="choice-copy">连接 Bucket 或 Prefix，基于对象元数据进行资产盘点和变更感知。</p>
+              <div class="choice-meta"><span class="status green">可配置</span><span class="tag">Bucket</span><span class="tag">Prefix</span><span class="tag">ETag</span></div>
+            </a>
+            <a class="card choice-card" href="ftp-sftp-create.html">
+              <h2 class="choice-title">FTP / SFTP</h2>
+              <p class="choice-copy">连接远程目录，基于路径、大小和修改时间登记文件资产。</p>
+              <div class="choice-meta"><span class="status green">可配置</span><span class="tag">root_path</span><span class="tag">mtime</span><span class="tag">size</span></div>
+            </a>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

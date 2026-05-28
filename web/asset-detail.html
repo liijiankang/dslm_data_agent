@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>文件资产详情</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="index.html">数据源</a><span>/</span><a href="local-upload-detail.html">销售资料上传区</a><span>/</span><span>文件资产</span></nav>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title" id="assetTitle">文件资产</h1>
+              <div class="source-meta" id="assetStatus"></div>
+            </div>
+            <div class="header-actions">
+              <a class="button primary" href="build-task.html">创建构建任务</a>
+              <button class="button danger" data-open-modal="deleteAssetModal">删除文件</button>
+            </div>
+          </div>
+          <div class="content-stack">
+            <section class="split">
+              <div class="card">
+                <div class="card-header"><h2 class="card-title">基础信息</h2></div>
+                <div class="card-body"><div class="config-list" id="assetInfo"></div></div>
+              </div>
+              <div class="card" id="parseInfoCard">
+                <div class="card-header"><h2 class="card-title">解析信息</h2></div>
+                <div class="card-body"><div class="config-list" id="parseInfo"></div></div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header"><h2 class="card-title" id="assetStructureTitle">资产结构</h2></div>
+              <div class="table-wrap">
+                <table class="table compact-table">
+                  <tbody id="assetStructureRows"></tbody>
+                </table>
+              </div>
+            </section>
+            <section class="card" id="vectorSection">
+              <div class="card-header"><h2 class="card-title">向量信息</h2></div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead><tr><th>切片类型</th><th>向量集合名称</th><th>向量模型</th><th>维度</th></tr></thead>
+                  <tbody id="vectorSummaryRows"></tbody>
+                </table>
+              </div>
+              <div class="card-body">
+                <div class="filter-bar">
+                  <label class="field"><span class="label">搜索向量</span><input class="input" id="vectorSearch" placeholder="向量 ID、chunk ID、预览内容"></label>
+                  <label class="field"><span class="label">切片类型</span><select class="select" id="vectorTypeFilter"><option value="all">全部类型</option></select></label>
+                  <button class="button" id="resetVectorFilters" type="button">重置</button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead><tr><th>向量 ID</th><th>切片类型</th><th>Collection</th><th>模型</th><th>维度</th><th>Chunk ID</th><th>页码</th><th>操作</th></tr></thead>
+                  <tbody id="vectorRows"></tbody>
+                </table>
+              </div>
+              <div class="pagination-bar">
+                <div class="hint" id="vectorListSummary"></div>
+                <div class="pagination-controls" id="vectorPaginationControls"></div>
+              </div>
+            </section>
+            <section class="card" id="chunkSection">
+              <div class="card-header"><h2 class="card-title">切片信息</h2></div>
+              <div class="card-body">
+                <div class="filter-bar">
+                  <label class="field"><span class="label">搜索切片</span><input class="input" id="chunkSearch" placeholder="Chunk ID、标题路径、内容"></label>
+                  <label class="field"><span class="label">切片类型</span><select class="select" id="chunkTypeFilter"><option value="all">全部类型</option></select></label>
+                  <button class="button" id="resetChunkFilters" type="button">重置</button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead><tr><th>Chunk ID</th><th>切片类型</th><th>标题路径</th><th>页码</th><th>Tokens</th><th>状态</th><th>操作</th></tr></thead>
+                  <tbody id="chunkRows"></tbody>
+                </table>
+              </div>
+              <div class="pagination-bar">
+                <div class="hint" id="chunkListSummary"></div>
+                <div class="pagination-controls" id="chunkPaginationControls"></div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header"><h2 class="card-title">操作记录</h2></div>
+              <div class="card-body"><div class="timeline" id="assetAudit"></div></div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div class="modal-backdrop" id="deleteAssetModal">
+      <div class="modal">
+        <div class="modal-header"><h2 class="modal-title" id="assetDeleteTitle">确认删除文件资产</h2><button class="button ghost" data-close-modal>关闭</button></div>
+        <div class="card-body">
+          <p class="card-subtitle" id="assetDeleteSummary"></p>
+          <ul class="impact-list" id="assetDeleteImpact"></ul>
+          <label class="confirm-check">
+            <input id="assetDeleteConfirmCheck" type="checkbox">
+            <span>我确认已了解删除风险，并确认删除该资产及关联构建产物。</span>
+          </label>
+          <p class="hint" id="assetDeleteHint">删除提交后会进入异步清理流程，页面保留操作记录。</p>
+        </div>
+        <div class="modal-footer"><button class="button" data-close-modal>取消</button><button class="button danger" id="assetDeleteConfirm" type="button" disabled>确认删除</button></div>
+      </div>
+    </div>
+    <div class="modal-backdrop" id="previewModal">
+      <div class="modal">
+        <div class="modal-header"><h2 class="modal-title" id="previewTitle">内容预览</h2><button class="button ghost" data-close-modal>关闭</button></div>
+        <div class="card-body"><pre class="preview-box" id="previewContent"></pre></div>
+      </div>
+    </div>
+    <script src="js/mock-data.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/asset-detail.js"></script>
+  </body>
+</html>

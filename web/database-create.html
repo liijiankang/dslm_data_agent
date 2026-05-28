@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>创建数据库数据源</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page page-narrow">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="source-create.html">接入数据源</a><span>/</span><span>数据库</span></nav>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">创建数据库数据源</h1>
+              <p class="page-subtitle">连接关系数据库，保存后系统自动盘点库、表、视图和字段等元数据。</p>
+            </div>
+          </div>
+
+          <div class="content-stack">
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">基础信息</h2>
+                  <p class="card-subtitle">用于识别和治理这个数据库接入。</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">数据源名称</span>
+                    <input class="input" id="sourceName" value="CRM 业务库">
+                  </label>
+                  <label class="field">
+                    <span class="label">负责人</span>
+                    <input class="input" id="owner" value="销售运营">
+                  </label>
+                  <label class="field">
+                    <span class="label">业务域</span>
+                    <input class="input" id="businessDomain" value="客户管理">
+                  </label>
+                  <label class="field">
+                    <span class="label">标签</span>
+                    <input class="input" id="tags" value="CRM, 销售, 结构化">
+                  </label>
+                  <label class="field full">
+                    <span class="label">描述</span>
+                    <textarea class="textarea" id="description">销售业务使用的客户、商机、合同和回款相关数据表。</textarea>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">连接信息</h2>
+                  <p class="card-subtitle">定位数据库实例或指定业务库。</p>
+                </div>
+                <span class="status blue" id="connectionStatus">未测试</span>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">数据库类型</span>
+                    <select class="select" id="databaseType">
+                      <option value="mysql">MySQL</option>
+                      <option value="postgresql">PostgreSQL</option>
+                      <option value="oracle">Oracle</option>
+                      <option value="sqlserver">SQL Server</option>
+                      <option value="mariadb">MariaDB</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="label">端口</span>
+                    <input class="input" id="port" inputmode="numeric" value="3306">
+                  </label>
+                  <label class="field full">
+                    <span class="label">主机地址</span>
+                    <input class="input" id="host" value="crm-db.example.com" placeholder="crm-db.example.com">
+                  </label>
+                  <label class="field">
+                    <span class="label" id="databaseNameLabel">数据库名称</span>
+                    <input class="input" id="databaseName" value="crm_prod">
+                  </label>
+                  <label class="field" data-db-types="postgresql oracle sqlserver" hidden>
+                    <span class="label">Schema</span>
+                    <input class="input" id="schemaName" placeholder="可选，留空则自动发现">
+                  </label>
+                  <label class="field">
+                    <span class="label">字符集</span>
+                    <select class="select" id="charset">
+                      <option>utf8mb4</option>
+                      <option>utf8</option>
+                      <option>latin1</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="label">连接超时</span>
+                    <input class="input" id="connectTimeout" inputmode="numeric" value="5">
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">访问凭证</h2>
+                  <p class="card-subtitle">凭证用于读取结构元数据和预览少量样例数据。</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">凭证方式</span>
+                    <select class="select" id="credentialMode">
+                      <option value="usernamePassword">用户名密码</option>
+                    </select>
+                  </label>
+                  <label class="field credential-field" data-credential-field="username">
+                    <span class="label">用户名</span>
+                    <input class="input" id="username" value="crm_reader">
+                  </label>
+                  <label class="field credential-field" data-credential-field="password">
+                    <span class="label">密码</span>
+                    <input class="input" id="password" type="password" value="crm-password">
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">接入范围</h2>
+                  <p class="card-subtitle">限定需要进入资产列表的库表范围。</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field full">
+                    <span class="label">包含对象规则</span>
+                    <textarea class="textarea" id="includeRules" placeholder="可选，例如 public.customer_*"></textarea>
+                  </label>
+                  <label class="field full">
+                    <span class="label">排除对象规则</span>
+                    <textarea class="textarea" id="excludeRules">tmp_*
+backup_*</textarea>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <div class="header-actions">
+              <a class="button" href="source-create.html">取消</a>
+              <button class="button" id="testConnection" type="button">测试连接</button>
+              <button class="button primary" id="saveDatabaseSource" type="button">保存</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/database-create.js"></script>
+  </body>
+</html>

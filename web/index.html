@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>数据源总览 · dslm-data</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">数据源总览</h1>
+              <p class="page-subtitle">查看已接入数据源的资产盘点、构建覆盖和变更状态。接入新数据源后，系统会自动登记资产元数据。</p>
+            </div>
+            <div class="header-actions">
+              <a class="button primary" href="source-create.html">接入数据源</a>
+            </div>
+          </div>
+          <div class="content-stack">
+            <section class="metric-grid compact" id="dashboardMetrics"></section>
+            <section class="dashboard-charts">
+              <div class="card">
+                <div class="card-header"><div><h2 class="card-title">数据源类型分布</h2><p class="card-subtitle">按当前阶段支持的三类数据源统计占比。</p></div></div>
+                <div class="card-body"><div class="chart-bars" id="sourceTypeBars"></div></div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div><h2 class="card-title">数据源状态</h2><p class="card-subtitle">包含可用、盘点中和待处理变更。</p></div></div>
+                <div class="card-body">
+                  <div class="donut-wrap">
+                    <div class="donut" data-center="18"></div>
+                    <div class="legend" id="sourceDonutLegend"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header">
+                <div><h2 class="card-title">数据源列表</h2><p class="card-subtitle">按数据源展示资产盘点、构建覆盖和变更感知状态。</p></div>
+              </div>
+              <div class="card-body">
+                <div class="filter-bar">
+                  <label class="field">
+                    <span class="label">搜索</span>
+                    <input class="input" id="sourceSearch" placeholder="数据源、负责人、变更状态">
+                  </label>
+                  <label class="field">
+                    <span class="label">分类</span>
+                    <select class="select" id="categoryFilter"><option value="all">全部分类</option></select>
+                  </label>
+                  <label class="field">
+                    <span class="label">类型</span>
+                    <select class="select" id="connectorFilter"><option value="all">全部类型</option></select>
+                  </label>
+                  <label class="field">
+                    <span class="label">状态</span>
+                    <select class="select" id="statusFilter"><option value="all">全部状态</option></select>
+                  </label>
+                  <button class="button" id="resetSourceFilters" type="button">重置</button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>数据源</th>
+                      <th>分类</th>
+                      <th>类型</th>
+                      <th>负责人</th>
+                      <th>状态</th>
+                      <th>维护范围</th>
+                      <th>资产</th>
+                      <th>可构建</th>
+                      <th>已构建</th>
+                      <th>待重建</th>
+                      <th>最近盘点</th>
+                      <th>变更感知</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dataSourceRows"></tbody>
+                </table>
+              </div>
+              <div class="pagination-bar">
+                <div class="hint" id="sourceListSummary"></div>
+                <div class="pagination-controls" id="paginationControls"></div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/mock-data.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>

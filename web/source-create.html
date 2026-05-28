@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>接入数据源 · dslm-data</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><span>接入数据源</span></nav>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">接入数据源</h1>
+              <p class="page-subtitle">选择企业数据所在的位置。数据源保存后，系统会自动进行资产盘点，后续可基于盘点结果创建构建任务。</p>
+            </div>
+          </div>
+          <section class="grid-3">
+            <a class="card choice-card" href="database-create.html">
+              <h2 class="choice-title">数据库</h2>
+              <p class="choice-copy">连接业务库、分析库或数据表，登记库、表、字段、视图等资产元数据。</p>
+              <div class="choice-meta"><span class="status green">可配置</span><span class="tag">MySQL</span><span class="tag">PostgreSQL</span><span class="tag">Oracle</span></div>
+            </a>
+            <a class="card choice-card" href="file-sources.html">
+              <h2 class="choice-title">文件系统</h2>
+              <p class="choice-copy">上传文件，或连接对象存储、FTP/SFTP 目录，登记文件和路径资产。</p>
+              <div class="choice-meta"><span class="tag">本地上传</span><span class="tag">对象存储</span><span class="tag">SFTP</span></div>
+            </a>
+            <a class="card choice-card" href="web-create.html">
+              <h2 class="choice-title">网页</h2>
+              <p class="choice-copy">接入官网、帮助中心、文档站或内部门户页面。</p>
+              <div class="choice-meta"><span class="status green">可配置</span><span class="tag">公开网站</span><span class="tag">内部门户</span><span class="tag">协作空间</span></div>
+            </a>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

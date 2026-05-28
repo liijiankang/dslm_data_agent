@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>模型关系图</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page graph-workspace-page" data-source-id="source-004">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="index.html">数据源</a><span>/</span><a id="sourceDetailLink" href="local-upload-detail.html?sourceId=source-004">CRM 业务库</a><span>/</span><span>模型关系图</span></nav>
+          <div class="page-header graph-page-header">
+            <div>
+              <h1 class="page-title" id="graphTitle">模型关系图</h1>
+              <div class="source-meta" id="graphMeta"></div>
+            </div>
+            <div class="header-actions">
+              <button class="button" data-open-modal="semanticSupplementModal" type="button">补充语义资料</button>
+              <button class="button" id="toggleLeftPanel" type="button">筛选</button>
+              <button class="button" id="toggleRightPanel" type="button">详情</button>
+              <a class="button primary" id="backToSource" href="local-upload-detail.html?sourceId=source-004">返回数据源</a>
+            </div>
+          </div>
+          <section class="graph-workspace" id="graphWorkspace">
+            <aside class="graph-workspace-sidebar" id="graphLeftPanel">
+              <div class="graph-panel-header">
+                <h2 class="card-title">筛选与图层</h2>
+                <button class="button small" id="resetGraphFilters" type="button">重置</button>
+              </div>
+              <div class="graph-control-group">
+                <label class="field">
+                  <span class="label">搜索对象</span>
+                  <input class="input" id="fullModelSearch" placeholder="表名、视图名、字段说明">
+                </label>
+                <label class="field">
+                  <span class="label">Schema</span>
+                  <select class="select" id="fullModelSchemaFilter"><option value="all">全部 Schema</option></select>
+                </label>
+                <label class="field">
+                  <span class="label">对象类型</span>
+                  <select class="select" id="fullModelTypeFilter"><option value="all">全部对象</option></select>
+                </label>
+                <label class="field">
+                  <span class="label">构建状态</span>
+                  <select class="select" id="fullModelBuildFilter"><option value="all">全部状态</option></select>
+                </label>
+                <label class="field">
+                  <span class="label">关系类型</span>
+                  <select class="select" id="fullRelationTypeFilter"><option value="all">全部关系</option></select>
+                </label>
+                <label class="field">
+                  <span class="label">显示范围</span>
+                  <select class="select" id="fullGraphScope">
+                    <option value="all">全库关系</option>
+                    <option value="one-hop">选中对象一跳</option>
+                  </select>
+                </label>
+              </div>
+              <div class="graph-legend">
+                <div><span class="legend-dot built"></span>已构建</div>
+                <div><span class="legend-dot pending"></span>未构建</div>
+                <div><span class="legend-dot stale"></span>待重建</div>
+                <div><span class="legend-line foreign-key"></span>外键</div>
+                <div><span class="legend-line dependency"></span>依赖</div>
+                <div><span class="legend-line inferred"></span>推断</div>
+              </div>
+            </aside>
+            <section class="graph-stage">
+              <div class="graph-toolbar">
+                <button class="button small" id="zoomOutGraph" type="button">缩小</button>
+                <button class="button small" id="zoomInGraph" type="button">放大</button>
+                <button class="button small" id="fitGraph" type="button">适配视图</button>
+                <span class="status blue" id="graphZoomLabel">100%</span>
+              </div>
+              <div class="full-graph-canvas" id="fullGraphCanvas">
+                <div class="full-graph-viewport" id="fullGraphViewport"></div>
+              </div>
+            </section>
+            <aside class="graph-workspace-inspector" id="graphRightPanel"></aside>
+            <section class="model-field-workbench" id="graphFieldWorkbench" hidden></section>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div class="modal-backdrop" id="semanticSupplementModal">
+      <div class="modal modal-large semantic-modal">
+        <div class="modal-header">
+          <div>
+            <h2 class="modal-title">补充语义资料</h2>
+            <p class="card-subtitle">上传数据字典、业务口径和系统说明，由 LLM 生成表字段语义补全建议。</p>
+          </div>
+          <button class="button ghost" data-close-modal>关闭</button>
+        </div>
+        <div class="card-body semantic-workbench">
+          <section class="semantic-upload-panel">
+            <div class="upload-zone semantic-upload-zone">
+              <div>
+                <strong>上传语义补充资料</strong>
+                <p class="hint">支持拖拽或选择文件、目录；资料类型包括 Excel、CSV、PDF、Word、Markdown、TXT。</p>
+                <div class="upload-actions">
+                  <button class="button primary" type="button">选择资料</button>
+                </div>
+              </div>
+            </div>
+            <div class="semantic-material-panel">
+              <div class="section-title-row">
+                <h3>已上传资料</h3>
+                <span class="hint">4 个资料</span>
+              </div>
+              <div class="semantic-material-list">
+                <div class="semantic-material-item">
+                  <div><strong>CRM字段字典.xlsx</strong><span>数据字典 · 8 表 / 64 字段</span></div>
+                  <span class="status green">解析完成</span>
+                  <button class="button small danger" type="button">删除</button>
+                </div>
+                <div class="semantic-material-item">
+                  <div><strong>销售流程说明.pdf</strong><span>业务说明 · 5 表 / 18 字段</span></div>
+                  <span class="status green">解析完成</span>
+                  <button class="button small danger" type="button">删除</button>
+                </div>
+                <div class="semantic-material-item">
+                  <div><strong>客户分层口径.md</strong><span>指标口径 · 3 表 / 11 字段</span></div>
+                  <span class="status blue">待审核</span>
+                  <button class="button small danger" type="button">删除</button>
+                </div>
+                <div class="semantic-material-item">
+                  <div><strong>商机阶段映射.csv</strong><span>枚举说明 · 2 表 / 9 字段</span></div>
+                  <span class="status amber">解析中</span>
+                  <button class="button small danger" type="button">删除</button>
+                </div>
+              </div>
+            </div>
+            <div class="semantic-task-card">
+              <div>
+                <h3>语义补全任务</h3>
+                <p class="card-subtitle">分析已上传资料，生成待审核的表、字段、主键和业务含义建议。</p>
+              </div>
+              <div class="semantic-threshold-panel">
+                <div class="section-title-row">
+                  <h3>审核阈值</h3>
+                  <span class="status blue">系统默认，可调整</span>
+                </div>
+                <div class="semantic-threshold-grid">
+                  <label class="field">
+                    <span class="label">高置信阈值</span>
+                    <div class="threshold-input"><input class="input" type="number" min="0" max="100" value="90"><span>%</span></div>
+                    <span class="hint">达到该阈值，建议标记为高置信。</span>
+                  </label>
+                  <label class="field">
+                    <span class="label">低置信阈值</span>
+                    <div class="threshold-input"><input class="input" type="number" min="0" max="100" value="70"><span>%</span></div>
+                    <span class="hint">低于该阈值，建议标记为低置信。</span>
+                  </label>
+                </div>
+                <p class="hint">介于两个阈值之间的建议标记为需确认；阈值只用于分类展示，不自动采纳或忽略。</p>
+              </div>
+              <div class="semantic-task-actions">
+                <button class="button primary" type="button">分析资料并生成建议</button>
+                <span class="hint">最近分析：2026-05-28 10:20</span>
+              </div>
+            </div>
+          </section>
+          <section class="semantic-review-panel">
+            <div class="semantic-stats">
+              <div><strong>4</strong><span>已上传资料</span></div>
+              <div><strong>12</strong><span>覆盖模型对象</span></div>
+              <div><strong>86</strong><span>覆盖字段</span></div>
+              <div><strong>23</strong><span>待审核建议</span></div>
+            </div>
+            <div class="semantic-batch-panel">
+              <div>
+                <h3>建议置信分布</h3>
+                <p class="card-subtitle">根据当前阈值对补全建议分类展示，系统不自动采纳或忽略。</p>
+              </div>
+              <div class="semantic-review-groups">
+                <div><strong>18</strong><span>高置信建议</span></div>
+                <div><strong>3</strong><span>需确认建议</span></div>
+                <div><strong>2</strong><span>低置信建议</span></div>
+              </div>
+            </div>
+            <div class="semantic-section">
+              <div class="section-title-row">
+                <h3>补全建议审核</h3>
+                <span class="hint">用户确认后才写入模型和字段语义信息。</span>
+              </div>
+              <div class="semantic-suggestion-list">
+                <article class="semantic-suggestion-card">
+                  <div class="semantic-suggestion-head">
+                    <div><strong>crm_customer.industry</strong><span>字段业务含义</span></div>
+                    <span class="status green">92% 高置信</span>
+                  </div>
+                  <div class="semantic-diff-grid">
+                    <div><span>当前值</span><p>描述客户相关业务属性。</p></div>
+                    <div><span>建议值</span><p>客户所属行业，用于客户分层、行业画像和销售策略分析。</p></div>
+                  </div>
+                  <div class="semantic-suggestion-foot">
+                    <span class="hint">依据：CRM字段字典.xlsx</span>
+                    <span class="row-actions"><button class="button small primary" type="button">采纳</button><button class="button small" type="button">忽略</button></span>
+                  </div>
+                </article>
+                <article class="semantic-suggestion-card warning">
+                  <div class="semantic-suggestion-head">
+                    <div><strong>crm_opportunity</strong><span>表中文名称</span></div>
+                    <span class="status amber">86% 需确认</span>
+                  </div>
+                  <div class="semantic-diff-grid">
+                    <div><span>当前值</span><p>销售机会</p></div>
+                    <div><span>建议值</span><p>商机主表</p></div>
+                  </div>
+                  <div class="semantic-suggestion-foot">
+                    <span class="hint">依据：销售流程说明.pdf，与现有命名存在差异</span>
+                    <span class="row-actions"><button class="button small primary" type="button">采纳</button><button class="button small" type="button">忽略</button></span>
+                  </div>
+                </article>
+                <article class="semantic-suggestion-card">
+                  <div class="semantic-suggestion-head">
+                    <div><strong>crm_contract.amount</strong><span>字段中文名称</span></div>
+                    <span class="status red">64% 低置信</span>
+                  </div>
+                  <div class="semantic-diff-grid">
+                    <div><span>当前值</span><p>金额</p></div>
+                    <div><span>建议值</span><p>合同金额</p></div>
+                  </div>
+                  <div class="semantic-suggestion-foot">
+                    <span class="hint">依据：CRM字段字典.xlsx</span>
+                    <span class="row-actions"><button class="button small primary" type="button">采纳</button><button class="button small" type="button">忽略</button></span>
+                  </div>
+                </article>
+              </div>
+              <div class="pagination-bar semantic-pagination">
+                <div class="hint">每页 10 条，显示 1-10 / 23 条建议</div>
+                <div class="pagination-controls">
+                  <button class="page-button" type="button" disabled>上一页</button>
+                  <button class="page-button active" type="button">1</button>
+                  <button class="page-button" type="button">2</button>
+                  <button class="page-button" type="button">3</button>
+                  <button class="page-button" type="button">下一页</button>
+                  <span class="pagination-jump">
+                    跳至
+                    <input class="pagination-input" type="number" min="1" max="3" value="1" aria-label="跳转页码">
+                    页
+                    <button class="page-button" type="button">确定</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button class="button" data-close-modal>稍后处理</button>
+          <button class="button primary" type="button">应用已采纳建议</button>
+        </div>
+      </div>
+    </div>
+    <script src="js/mock-data.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/database-model-graph.js"></script>
+  </body>
+</html>

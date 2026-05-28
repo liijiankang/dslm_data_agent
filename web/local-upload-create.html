@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>创建本地上传数据源</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page page-narrow">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="source-create.html">接入数据源</a><span>/</span><a href="file-sources.html">文件系统</a><span>/</span><span>本地上传</span></nav>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">创建本地上传数据源</h1>
+              <p class="page-subtitle">保存后系统会自动登记上传文件的资产元数据。同路径 + 同文件名用于识别同一个资产；内容 hash 变化时登记为资产更新。</p>
+            </div>
+          </div>
+          <div class="content-stack">
+            <section class="card">
+              <div class="card-header"><div><h2 class="card-title">基础信息</h2><p class="card-subtitle">用于识别和治理这个上传文件集合。</p></div></div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">数据源名称</span>
+                    <input class="input" value="销售资料上传区">
+                  </label>
+                  <label class="field">
+                    <span class="label">负责人</span>
+                    <input class="input" value="王敏">
+                  </label>
+                  <label class="field full">
+                    <span class="label">描述</span>
+                    <textarea class="textarea">销售团队维护的产品介绍、话术、客户案例和报价模板。</textarea>
+                  </label>
+                  <label class="field">
+                    <span class="label">所属团队</span>
+                    <input class="input" value="销售运营">
+                  </label>
+                  <label class="field">
+                    <span class="label">标签</span>
+                    <input class="input" value="销售, 产品资料, 可构建">
+                  </label>
+                </div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header"><div><h2 class="card-title">上传文件或文件夹</h2><p class="card-subtitle">系统会先完成上传前校验，再上传文件并登记资产元数据；目录结构作为资产相对路径保存。</p></div></div>
+              <div class="card-body content-stack">
+                <div class="upload-zone" id="uploadZone">
+                  <div>
+                    <strong>拖拽文件、文件夹或混合内容到这里</strong>
+                    <div class="hint">目录里的文件会展开登记为资产，目录本身只保留为路径信息。支持 PDF、Word、PPT、Excel、Markdown、TXT、图片；空文件、压缩包和不支持格式会在上传前拦截。</div>
+                    <div class="upload-actions">
+                      <button class="button" id="pickFiles" type="button">选择文件</button>
+                      <button class="button" id="pickDirectory" type="button">选择文件夹</button>
+                    </div>
+                    <input id="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.md,.markdown,.txt,.png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff" hidden>
+                    <input id="directoryInput" type="file" webkitdirectory directory multiple hidden>
+                  </div>
+                </div>
+                <div class="upload-batch-panel" id="uploadBatchPanel">
+                  <div>
+                    <div class="upload-batch-title"><span class="status blue" id="uploadBatchStatus">待上传</span><strong id="uploadBatchTitle">上传批次</strong></div>
+                    <p class="hint" id="uploadBatchSummary">选择文件或目录后，系统会展示扫描、上传和登记资产状态。</p>
+                  </div>
+                  <div class="upload-stage-list" id="uploadStageList"></div>
+                </div>
+                <div class="filter-bar">
+                  <label class="field"><span class="label">搜索文件</span><input class="input" id="uploadSearch" placeholder="文件名、路径、说明"></label>
+                  <label class="field"><span class="label">文件类型</span><select class="select" id="uploadTypeFilter"><option value="all">全部类型</option></select></label>
+                  <label class="field"><span class="label">处理阶段</span><select class="select" id="uploadStageFilter"><option value="all">全部阶段</option></select></label>
+                  <button class="button" id="resetUploadFilters" type="button">重置</button>
+                </div>
+                <div class="table-wrap">
+                  <table class="table">
+                    <thead><tr><th>文件 / 相对路径</th><th>类型</th><th>大小</th><th>阶段</th><th>进度</th><th>说明</th><th>操作</th></tr></thead>
+                    <tbody id="uploadRows"></tbody>
+                  </table>
+                </div>
+                <div class="pagination-bar">
+                  <div class="hint" id="uploadListSummary"></div>
+                  <div class="pagination-controls" id="uploadPaginationControls"></div>
+                </div>
+              </div>
+            </section>
+            <div class="header-actions">
+              <a class="button" href="file-sources.html">取消</a>
+              <button class="button primary" id="saveSource" type="button">保存</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/mock-data.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/upload-create.js"></script>
+  </body>
+</html>

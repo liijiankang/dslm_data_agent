@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>创建网页数据源</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page page-narrow">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="source-create.html">接入数据源</a><span>/</span><span>网页</span></nav>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">创建网页数据源</h1>
+              <p class="page-subtitle">接入公开网站、帮助中心、文档站或内部门户，保存后系统自动盘点页面和附件元数据。</p>
+            </div>
+          </div>
+
+          <div class="content-stack">
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">基础信息</h2>
+                  <p class="card-subtitle">用于识别和治理这个网页接入。</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">数据源名称</span>
+                    <input class="input" id="sourceName" value="产品帮助中心">
+                  </label>
+                  <label class="field">
+                    <span class="label">负责人</span>
+                    <input class="input" id="owner" value="产品团队">
+                  </label>
+                  <label class="field">
+                    <span class="label">业务域</span>
+                    <input class="input" id="businessDomain" value="产品支持">
+                  </label>
+                  <label class="field">
+                    <span class="label">标签</span>
+                    <input class="input" id="tags" value="帮助中心, 文档站, 网页">
+                  </label>
+                  <label class="field full">
+                    <span class="label">描述</span>
+                    <textarea class="textarea" id="description">产品团队维护的帮助文档、发布说明和常见问题页面。</textarea>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">页面入口</h2>
+                  <p class="card-subtitle">系统会根据入口地址识别公开网页、内部门户或协作空间。</p>
+                </div>
+                <span class="status blue" id="adapterStatus">通用网页</span>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field full">
+                    <span class="label">入口 URL</span>
+                    <input class="input" id="entryUrl" value="https://help.example.com/docs" placeholder="https://help.example.com/docs">
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">访问认证</h2>
+                  <p class="card-subtitle">公开网页可不填写认证；内部门户和协作空间按实际访问方式选择。</p>
+                </div>
+                <span class="status blue" id="connectionStatus">未测试</span>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">认证方式</span>
+                    <select class="select" id="authMode"></select>
+                  </label>
+                  <label class="field auth-field" data-auth-field="username" hidden>
+                    <span class="label">账号</span>
+                    <input class="input" id="username" value="portal_reader">
+                  </label>
+                  <label class="field auth-field" data-auth-field="password" hidden>
+                    <span class="label">密码</span>
+                    <input class="input" id="password" type="password" value="portal-password">
+                  </label>
+                  <label class="field auth-field" data-auth-field="token" hidden>
+                    <span class="label">Token</span>
+                    <input class="input" id="token" placeholder="访问 Token">
+                  </label>
+                  <label class="field full auth-field" data-auth-field="cookie" hidden>
+                    <span class="label">Cookie</span>
+                    <textarea class="textarea" id="cookieValue" placeholder="粘贴 Cookie 请求头内容"></textarea>
+                  </label>
+                  <label class="field auth-field" data-auth-field="appId" hidden>
+                    <span class="label">App ID</span>
+                    <input class="input" id="appId" placeholder="飞书 App ID">
+                  </label>
+                  <label class="field auth-field" data-auth-field="appSecret" hidden>
+                    <span class="label">App Secret</span>
+                    <input class="input" id="appSecret" type="password" placeholder="飞书 App Secret">
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">爬取控制</h2>
+                  <p class="card-subtitle">系统从入口 URL 开始发现页面，并按跨域策略、深度和数量限制控制边界。</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">爬取深度</span>
+                    <input class="input" id="depth" type="number" min="0" max="6" value="2">
+                  </label>
+                  <label class="field">
+                    <span class="label">最大页面数</span>
+                    <input class="input" id="maxPages" type="number" min="1" value="200">
+                  </label>
+                  <label class="field">
+                    <span class="label">是否跨域</span>
+                    <select class="select" id="crossDomainPolicy">
+                      <option>否</option>
+                      <option>是</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">附件处理</h2>
+                  <p class="card-subtitle">页面附件会作为附件资产登记，后续可进入知识构建任务。</p>
+                </div>
+              </div>
+              <div class="card-body content-stack">
+                <div class="field-grid">
+                  <label class="field">
+                    <span class="label">附件策略</span>
+                    <select class="select" id="attachmentMode">
+                      <option>页面和附件</option>
+                      <option>仅页面</option>
+                      <option>仅附件</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="strategy-row" id="attachmentTypes">
+                  <span class="strategy-label">附件类型</span>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="pdf">PDF</label>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="docx">Word</label>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="xlsx">Excel</label>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="pptx">PPT</label>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="md">Markdown</label>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="txt">TXT</label>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="csv">CSV</label>
+                  <label class="strategy-option"><input type="checkbox" data-attachment-type="image">图片</label>
+                </div>
+              </div>
+            </section>
+
+            <div class="header-actions">
+              <a class="button" href="source-create.html">取消</a>
+              <button class="button" id="testConnection" type="button">测试连接</button>
+              <button class="button primary" id="saveWebSource" type="button">保存</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/web-create.js"></script>
+  </body>
+</html>

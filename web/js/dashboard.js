@@ -24,11 +24,11 @@ function renderMetrics() {
   const node = qs("#dashboardMetrics");
   if (!node) return;
   node.innerHTML = `
-    <div class="metric"><div class="metric-label">数据源</div><div class="metric-value">${dashboardStats.sources}</div></div>
-    <div class="metric"><div class="metric-label">资产总数</div><div class="metric-value">${dashboardStats.assets}</div></div>
-    <div class="metric"><div class="metric-label">可构建资产</div><div class="metric-value">${dashboardStats.buildableAssets}</div></div>
-    <div class="metric"><div class="metric-label">已构建资产</div><div class="metric-value">${dashboardStats.builtAssets}</div></div>
-    <div class="metric"><div class="metric-label">待重建资产</div><div class="metric-value">${dashboardStats.staleAssets}</div></div>
+    <div class="metric console-metric"><div class="metric-label">数据源</div><div class="metric-value">${dashboardStats.sources}</div><div class="metric-trend">3 类接入通道</div></div>
+    <div class="metric console-metric"><div class="metric-label">资产总数</div><div class="metric-value">${dashboardStats.assets}</div><div class="metric-trend">元数据持续盘点</div></div>
+    <div class="metric console-metric"><div class="metric-label">可构建资产</div><div class="metric-value">${dashboardStats.buildableAssets}</div><div class="metric-trend">可进入加工链路</div></div>
+    <div class="metric console-metric"><div class="metric-label">已构建资产</div><div class="metric-value">${dashboardStats.builtAssets}</div><div class="metric-trend">切片与向量已生成</div></div>
+    <div class="metric console-metric alert"><div class="metric-label">待重建资产</div><div class="metric-value">${dashboardStats.staleAssets}</div><div class="metric-trend">源端变更待处理</div></div>
   `;
 }
 

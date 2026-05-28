@@ -38,7 +38,7 @@ a {
   width: 1280px;
   max-width: calc(100vw - 48px);
   margin: 0 auto;
-  padding: 18px 0 12px;
+  padding: 22px 0 18px;
   overflow-x: hidden;
 }
 
@@ -51,7 +51,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: var(--text-subtle);
   font-size: 13px;
 }
@@ -65,12 +65,17 @@ a {
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  box-shadow: none;
 }
 
 .page-title {
   margin: 0;
-  font-size: 26px;
+  font-size: 28px;
   line-height: 1.2;
   letter-spacing: 0;
 }
@@ -90,7 +95,7 @@ a {
 
 .content-stack {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 

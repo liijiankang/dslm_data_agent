@@ -14,15 +14,22 @@
       <div class="shell-body">
         <main class="page" data-source-id="source-local-upload-sales">
           <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="index.html">数据源</a><span>/</span><span id="sourceBreadcrumbName">销售资料上传区</span></nav>
-          <div class="page-header">
-            <div>
+          <div class="page-header source-profile-header">
+            <div class="source-profile-copy">
+              <span class="console-kicker">data source profile</span>
               <h1 class="page-title" id="sourceTitle">销售资料上传区</h1>
+              <p class="page-subtitle" id="sourceSubtitle">数据源画像、资产盘点、构建覆盖和变更维护状态。</p>
               <div class="source-meta" id="sourceMeta">
                 <span class="status green">可用</span>
                 <span class="tag">本地上传</span>
                 <span class="tag">负责人：王敏</span>
                 <span class="tag">最近上传：2026-05-27 14:33</span>
               </div>
+            </div>
+            <div class="source-profile-facts" id="sourceProfileFacts">
+              <div><span>接入方式</span><strong>本地上传</strong></div>
+              <div><span>资产规模</span><strong>12</strong></div>
+              <div><span>最近盘点</span><strong>2026-05-27 14:33</strong></div>
             </div>
             <div class="header-actions">
               <button class="button" data-open-modal="disableModal">禁用</button>
@@ -31,6 +38,13 @@
           </div>
           <div class="content-stack">
             <section class="metric-grid" id="metricGrid"></section>
+            <section class="source-processing-rail" id="sourceProcessingRail">
+              <div class="processing-step done"><span>01</span><strong>资产盘点</strong><em>已登记源端资产</em></div>
+              <div class="processing-step done"><span>02</span><strong>变更感知</strong><em>持续检测源端变化</em></div>
+              <div class="processing-step active"><span>03</span><strong>语义补充</strong><em>补全业务语义</em></div>
+              <div class="processing-step active"><span>04</span><strong>构建任务</strong><em>解析、切片、向量化</em></div>
+              <div class="processing-step"><span>05</span><strong>产物登记</strong><em>记录切片和向量信息</em></div>
+            </section>
             <section class="coverage-grid">
               <div class="card">
                 <div class="card-header">
@@ -119,7 +133,13 @@
               </div>
               <div class="model-field-workbench" id="modelFieldWorkbench" hidden></div>
             </section>
-            <section class="card">
+            <section class="card detail-workspace-card">
+              <div class="detail-workspace-header">
+                <div>
+                  <h2 class="card-title">数据源工作区</h2>
+                  <p class="card-subtitle">围绕当前数据源查看资产、构建、变更、产物和操作记录。</p>
+                </div>
+              </div>
               <div class="tabs">
                 <button class="tab active" data-tab-target="assets">资产</button>
                 <button class="tab" data-tab-target="tasks">构建任务</button>

@@ -13,10 +13,16 @@
     <div class="app-shell">
       <div class="shell-body">
         <main class="page">
-          <div class="page-header">
-            <div>
+          <div class="page-header dashboard-hero">
+            <div class="dashboard-hero-copy">
+              <span class="console-kicker">dslm-data control plane</span>
               <h1 class="page-title">数据源总览</h1>
-              <p class="page-subtitle">查看已接入数据源的资产盘点、构建覆盖和变更状态。接入新数据源后，系统会自动登记资产元数据。</p>
+              <p class="page-subtitle">面向 AI-ready 数据加工的数据源控制台，持续观察资产盘点、语义补充、构建覆盖和源端变更。</p>
+            </div>
+            <div class="dashboard-health-panel" aria-label="系统运行态">
+              <div><span>盘点服务</span><strong>运行中</strong></div>
+              <div><span>语义补全</span><strong>23 条待审</strong></div>
+              <div><span>变更感知</span><strong>5 分钟前</strong></div>
             </div>
             <div class="header-actions">
               <a class="button primary" href="source-create.html">接入数据源</a>
@@ -24,6 +30,24 @@
           </div>
           <div class="content-stack">
             <section class="metric-grid compact" id="dashboardMetrics"></section>
+            <section class="console-flow-grid">
+              <div class="console-flow-card">
+                <div class="console-flow-icon blue"></div>
+                <div><strong>资产盘点</strong><span>18 个数据源持续登记元数据</span></div>
+              </div>
+              <div class="console-flow-card">
+                <div class="console-flow-icon cyan"></div>
+                <div><strong>语义增强</strong><span>资料补充与字段语义审核中</span></div>
+              </div>
+              <div class="console-flow-card">
+                <div class="console-flow-icon green"></div>
+                <div><strong>构建覆盖</strong><span>2,638 个资产已完成加工</span></div>
+              </div>
+              <div class="console-flow-card">
+                <div class="console-flow-icon amber"></div>
+                <div><strong>变更感知</strong><span>119 个资产等待重建确认</span></div>
+              </div>
+            </section>
             <section class="dashboard-charts">
               <div class="card">
                 <div class="card-header"><div><h2 class="card-title">数据源类型分布</h2><p class="card-subtitle">按当前阶段支持的三类数据源统计占比。</p></div></div>

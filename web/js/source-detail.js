@@ -54,7 +54,9 @@ function renderSourceHeader() {
   document.title = `${selectedSource.name} · 数据源详情`;
   const breadcrumb = qs("#sourceBreadcrumbName");
   const title = qs("#sourceTitle");
+  const subtitle = qs("#sourceSubtitle");
   const meta = qs("#sourceMeta");
+  const profileFacts = qs("#sourceProfileFacts");
   const uploadLink = qs("#uploadFileLink");
   const buildTaskLink = qs("#buildTaskLink");
   const openFullGraphLink = qs("#openFullGraphLink");
@@ -68,6 +70,11 @@ function renderSourceHeader() {
   const deleteSourceArtifactCount = qs("#deleteSourceArtifactCount");
   if (breadcrumb) breadcrumb.textContent = selectedSource.name;
   if (title) title.textContent = selectedSource.name;
+  if (subtitle) {
+    subtitle.textContent = isDatabaseSource()
+      ? "结构化数据源画像，聚合模型关系、语义补充、构建覆盖和变更维护状态。"
+      : "文件系统数据源画像，聚合资产盘点、构建覆盖、变更维护和产物登记状态。";
+  }
   if (meta) {
     meta.innerHTML = `
       ${statusPill(selectedSource.status, selectedSource.statusTone)}
@@ -75,6 +82,13 @@ function renderSourceHeader() {
       <span class="tag">${selectedSource.connector}</span>
       <span class="tag">负责人：${selectedSource.owner}</span>
       <span class="tag">最近盘点：${selectedSource.lastInventory}</span>
+    `;
+  }
+  if (profileFacts) {
+    profileFacts.innerHTML = `
+      <div><span>接入方式</span><strong>${selectedSource.connector}</strong></div>
+      <div><span>${isDatabaseSource() ? "模型对象" : "资产规模"}</span><strong>${selectedSource.assets}</strong></div>
+      <div><span>最近盘点</span><strong>${selectedSource.lastInventory}</strong></div>
     `;
   }
   if (uploadLink) {
@@ -116,10 +130,10 @@ function renderMetrics() {
     ? ["模型对象", "可构建模型", "已构建模型", "待重建对象"]
     : ["资产总数", "可构建", "已构建", "待重建资产"];
   node.innerHTML = `
-    <div class="metric"><div class="metric-label">${labels[0]}</div><div class="metric-value">${stats.totalAssets}</div></div>
-    <div class="metric"><div class="metric-label">${labels[1]}</div><div class="metric-value">${stats.buildableAssets}</div></div>
-    <div class="metric"><div class="metric-label">${labels[2]}</div><div class="metric-value">${stats.builtAssets}</div></div>
-    <div class="metric"><div class="metric-label">${labels[3]}</div><div class="metric-value">${stats.staleAssets ?? sourceStats.failedAssets}</div></div>
+    <div class="metric"><div class="metric-label">${labels[0]}</div><div class="metric-value">${stats.totalAssets}</div><div class="metric-trend">源端元数据已登记</div></div>
+    <div class="metric"><div class="metric-label">${labels[1]}</div><div class="metric-value">${stats.buildableAssets}</div><div class="metric-trend">可进入数据加工链路</div></div>
+    <div class="metric"><div class="metric-label">${labels[2]}</div><div class="metric-value">${stats.builtAssets}</div><div class="metric-trend">已有构建结果</div></div>
+    <div class="metric"><div class="metric-label">${labels[3]}</div><div class="metric-value">${stats.staleAssets ?? sourceStats.failedAssets}</div><div class="metric-trend">等待处理或确认</div></div>
   `;
 }
 

@@ -1,10 +1,10 @@
 (function () {
-const { assets, auditEvents, databaseAssets = [], dataSources = [] } = window.MockData;
-const { bindModalTriggers, paginationButtons, qs, statusPill } = window.UI;
+const { assets, assetDetails = {}, auditEvents, databaseAssets = [], dataSources = [] } = window.DataAssetsApi.getAssetDetailData();
+const { bindModalTriggers, escapeHtml, paginationButtons, qs, statusPill } = window.UI;
 const params = new URLSearchParams(window.location.search);
 const allAssets = [...assets, ...databaseAssets];
 const asset = allAssets.find((item) => item.id === params.get("id")) || assets[0];
-const detail = window.MockData.assetDetails?.[asset.id] || createDefaultDetail(asset);
+const detail = assetDetails[asset.id] || createDefaultDetail(asset);
 const listState = {
   chunks: { keyword: "", page: 1, pageSize: 5, type: "all" },
   vectors: { keyword: "", page: 1, pageSize: 5, type: "all" },
@@ -137,7 +137,7 @@ function databaseColumnsFor(item) {
 }
 
 function pathValue(value) {
-  return `<code class="path-value">${value}</code>`;
+  return `<code class="path-value">${escapeHtml(value)}</code>`;
 }
 
 function renderAsset() {
@@ -174,32 +174,32 @@ function renderAsset() {
   qs("#assetStatus").innerHTML = `${statusPill(asset.buildability, asset.buildabilityTone)} ${statusPill(asset.buildStatus, asset.buildTone)}`;
   qs("#assetInfo").innerHTML = database
     ? `
-      <div class="config-row"><div class="config-label">数据源类型</div><div>${detail.sourceType}</div></div>
-      <div class="config-row"><div class="config-label">接入方式</div><div>${detail.connectorType}</div></div>
-      <div class="config-row"><div class="config-label">所属数据源</div><div>${source?.name || "-"}</div></div>
-      <div class="config-row"><div class="config-label">数据库 / Schema</div><div>${asset.database} / ${asset.schema}</div></div>
-      <div class="config-row"><div class="config-label">对象名称</div><div>${asset.name}</div></div>
-      <div class="config-row"><div class="config-label">对象类型</div><div>${asset.type}</div></div>
-      <div class="config-row"><div class="config-label">业务说明</div><div>${asset.comment}</div></div>
-      <div class="config-row"><div class="config-label">字段数</div><div>${asset.fieldCount}</div></div>
-      <div class="config-row"><div class="config-label">主键</div><div>${asset.primaryKey || "-"}</div></div>
-      <div class="config-row"><div class="config-label">关联关系</div><div>${asset.relationCount} 个</div></div>
-      <div class="config-row"><div class="config-label">结构指纹</div><div>${detail.structureFingerprint}</div></div>
+      <div class="config-row"><div class="config-label">数据源类型</div><div>${escapeHtml(detail.sourceType)}</div></div>
+      <div class="config-row"><div class="config-label">接入方式</div><div>${escapeHtml(detail.connectorType)}</div></div>
+      <div class="config-row"><div class="config-label">所属数据源</div><div>${escapeHtml(source?.name || "-")}</div></div>
+      <div class="config-row"><div class="config-label">数据库 / Schema</div><div>${escapeHtml(asset.database)} / ${escapeHtml(asset.schema)}</div></div>
+      <div class="config-row"><div class="config-label">对象名称</div><div>${escapeHtml(asset.name)}</div></div>
+      <div class="config-row"><div class="config-label">对象类型</div><div>${escapeHtml(asset.type)}</div></div>
+      <div class="config-row"><div class="config-label">业务说明</div><div>${escapeHtml(asset.comment)}</div></div>
+      <div class="config-row"><div class="config-label">字段数</div><div>${escapeHtml(asset.fieldCount)}</div></div>
+      <div class="config-row"><div class="config-label">主键</div><div>${escapeHtml(asset.primaryKey || "-")}</div></div>
+      <div class="config-row"><div class="config-label">关联关系</div><div>${escapeHtml(asset.relationCount)} 个</div></div>
+      <div class="config-row"><div class="config-label">结构指纹</div><div>${escapeHtml(detail.structureFingerprint)}</div></div>
       <div class="config-row"><div class="config-label">变更状态</div><div>${statusPill(asset.changeStatus, asset.changeTone)}</div></div>
       <div class="config-row"><div class="config-label">构建状态</div><div>${statusPill(asset.buildStatus, asset.buildTone)}</div></div>
-      <div class="config-row"><div class="config-label">最近盘点</div><div>${asset.lastInventoryAt}</div></div>
+      <div class="config-row"><div class="config-label">最近盘点</div><div>${escapeHtml(asset.lastInventoryAt)}</div></div>
     `
     : `
-      <div class="config-row"><div class="config-label">数据源类型</div><div>${detail.sourceType}</div></div>
-      <div class="config-row"><div class="config-label">接入方式</div><div>${detail.connectorType}</div></div>
-      <div class="config-row"><div class="config-label">文件名</div><div>${asset.name}</div></div>
+      <div class="config-row"><div class="config-label">数据源类型</div><div>${escapeHtml(detail.sourceType)}</div></div>
+      <div class="config-row"><div class="config-label">接入方式</div><div>${escapeHtml(detail.connectorType)}</div></div>
+      <div class="config-row"><div class="config-label">文件名</div><div>${escapeHtml(asset.name)}</div></div>
       <div class="config-row"><div class="config-label">相对路径</div><div>${pathValue(asset.relativePath || asset.name)}</div></div>
       <div class="config-row"><div class="config-label">资产身份</div><div>${pathValue(asset.identity || asset.relativePath || asset.name)}</div></div>
-      <div class="config-row"><div class="config-label">文件类型</div><div>${asset.type}</div></div>
-      <div class="config-row"><div class="config-label">文件大小</div><div>${asset.size}</div></div>
-      <div class="config-row"><div class="config-label">资产指纹</div><div>${asset.hash}</div></div>
-      <div class="config-row"><div class="config-label">上传时间</div><div>${asset.uploadedAt}</div></div>
-      <div class="config-row"><div class="config-label">上传人</div><div>${asset.uploadedBy}</div></div>
+      <div class="config-row"><div class="config-label">文件类型</div><div>${escapeHtml(asset.type)}</div></div>
+      <div class="config-row"><div class="config-label">文件大小</div><div>${escapeHtml(asset.size)}</div></div>
+      <div class="config-row"><div class="config-label">资产指纹</div><div>${escapeHtml(asset.hash)}</div></div>
+      <div class="config-row"><div class="config-label">上传时间</div><div>${escapeHtml(asset.uploadedAt)}</div></div>
+      <div class="config-row"><div class="config-label">上传人</div><div>${escapeHtml(asset.uploadedBy)}</div></div>
       <div class="config-row"><div class="config-label">MinIO 原始文件路径</div><div>${pathValue(detail.minioObjectPath)}</div></div>
     `;
   qs("#parseInfo").innerHTML = `
@@ -218,10 +218,10 @@ function renderDeleteModal() {
   qs("#assetDeleteTitle").textContent = `确认删除文件资产 · ${asset.name}`;
   qs("#assetDeleteSummary").textContent = "删除会标记资产元数据，并清理该资产当前关联的解析产物、切片、embedding 和向量映射。";
   qs("#assetDeleteImpact").innerHTML = `
-    <li><span>资产身份</span><strong>${asset.identity || asset.relativePath || asset.name}</strong></li>
-    <li><span>构建状态</span><strong>${asset.buildStatus}</strong></li>
-    <li><span>切片</span><strong>${asset.chunks || 0}</strong></li>
-    <li><span>向量记录</span><strong>${asset.vectors || 0}</strong></li>
+    <li><span>资产身份</span><strong>${escapeHtml(asset.identity || asset.relativePath || asset.name)}</strong></li>
+    <li><span>构建状态</span><strong>${escapeHtml(asset.buildStatus)}</strong></li>
+    <li><span>切片</span><strong>${escapeHtml(asset.chunks || 0)}</strong></li>
+    <li><span>向量记录</span><strong>${escapeHtml(asset.vectors || 0)}</strong></li>
     <li><span>审计日志</span><strong>保留</strong></li>
   `;
   document.querySelector("[data-open-modal='deleteAssetModal']")?.addEventListener("click", () => {

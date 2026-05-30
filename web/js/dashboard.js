@@ -1,6 +1,6 @@
 (function () {
-const { dashboardStats, dataSources, sourceTypeStats } = window.MockData;
-const { bindRowNavigation, paginationButtons, qs, statusPill } = window.UI;
+const { dashboardStats, dataSources, sourceTypeStats } = window.DataAssetsApi.getDashboardData();
+const { bindRowNavigation, escapeHtml, paginationButtons, qs, statusPill } = window.UI;
 const pageSize = 10;
 const state = {
   page: 1,
@@ -73,7 +73,7 @@ function fillFilterOptions() {
   configs.forEach(([selector, values, label]) => {
     const select = qs(selector);
     if (!select) return;
-    select.innerHTML = [`<option value="all">${label}</option>`, ...values.map((value) => `<option value="${value}">${value}</option>`)].join("");
+    select.innerHTML = [`<option value="all">${escapeHtml(label)}</option>`, ...values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)].join("");
   });
 }
 
@@ -104,19 +104,19 @@ function renderDataSources() {
     ? pagedRows
     .map(
       (source) => `
-        <tr data-href="${source.href}">
-          <td><a href="${source.href}"><strong>${source.name}</strong></a></td>
-          <td>${source.category}</td>
-          <td>${source.connector}</td>
-          <td>${source.owner}</td>
+        <tr data-href="${escapeHtml(source.href)}">
+          <td><a href="${escapeHtml(source.href)}"><strong>${escapeHtml(source.name)}</strong></a></td>
+          <td>${escapeHtml(source.category)}</td>
+          <td>${escapeHtml(source.connector)}</td>
+          <td>${escapeHtml(source.owner)}</td>
           <td>${statusPill(source.status, source.statusTone)}</td>
           <td>${statusPill(source.maintenanceScope || "未构建", source.maintenanceTone || "amber")}</td>
-          <td>${source.assets}</td>
-          <td>${source.buildable}</td>
-          <td>${source.built}</td>
-          <td>${source.stale}</td>
-          <td>${source.lastInventory}</td>
-          <td>${source.changeState}</td>
+          <td>${escapeHtml(source.assets)}</td>
+          <td>${escapeHtml(source.buildable)}</td>
+          <td>${escapeHtml(source.built)}</td>
+          <td>${escapeHtml(source.stale)}</td>
+          <td>${escapeHtml(source.lastInventory)}</td>
+          <td>${escapeHtml(source.changeState)}</td>
         </tr>
       `,
     )

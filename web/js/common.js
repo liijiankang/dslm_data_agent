@@ -1,6 +1,23 @@
 (function () {
+const ALLOWED_STATUS_TONES = new Set(["", "green", "blue", "amber", "red", "violet", "primary", "danger"]);
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;",
+  })[char]);
+}
+
+function safeTone(tone = "blue") {
+  return ALLOWED_STATUS_TONES.has(tone) ? tone : "blue";
+}
+
 function statusPill(label, tone = "blue") {
-  return `<span class="status ${tone}">${label}</span>`;
+  const className = safeTone(tone);
+  return `<span class="status ${className}">${escapeHtml(label)}</span>`;
 }
 
 function qs(selector, scope = document) {
@@ -19,10 +36,11 @@ function compactPaginationItems(currentPage, totalPages) {
 }
 
 function paginationButtons(currentPage, totalPages, dataAttribute, extraAttributes = "") {
+  const safeAttribute = /^[a-zA-Z0-9_-]+$/.test(dataAttribute) ? dataAttribute : "data-page";
   return compactPaginationItems(currentPage, totalPages)
     .map((item) => {
       if (item === "ellipsis") return `<span class="page-ellipsis" aria-hidden="true">…</span>`;
-      return `<button class="page-button ${item === currentPage ? "active" : ""}" ${dataAttribute}="${item}" ${extraAttributes} type="button">${item}</button>`;
+      return `<button class="page-button ${item === currentPage ? "active" : ""}" ${safeAttribute}="${item}" ${extraAttributes} type="button">${item}</button>`;
     })
     .join("");
 }
@@ -144,9 +162,11 @@ window.UI = {
   bindModalTriggers,
   bindRowNavigation,
   bindTabs,
+  escapeHtml,
   paginationButtons,
   qs,
   qsa,
+  safeTone,
   statusPill,
   syncCheckAll,
   taskRuntimeAction,

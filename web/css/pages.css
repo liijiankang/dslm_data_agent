@@ -2649,59 +2649,211 @@
   padding: 4px 16px 16px;
 }
 
-.metric-system-runtime {
+.analysis-direction-grid {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
   padding: 16px;
 }
 
-.metric-system-runtime div {
+.analysis-direction-filter {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.direction-empty-state {
+  margin: 0 16px 16px;
+}
+
+.analysis-direction-card {
   display: grid;
-  gap: 4px;
+  gap: 9px;
   min-width: 0;
-  padding: 11px 12px;
+  padding: 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: #fbfdff;
+  cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
 }
 
-.metric-system-runtime span {
+.analysis-direction-card:hover,
+.analysis-direction-card:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.1);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.analysis-direction-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.analysis-direction-card h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.analysis-direction-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.analysis-direction-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.analysis-direction-stats div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.analysis-direction-stats span,
+.metric-system-output-meta span {
   color: var(--text-subtle);
   font-size: 12px;
   font-weight: 800;
 }
 
-.metric-system-runtime strong {
+.analysis-direction-stats strong,
+.metric-system-output-meta strong {
   min-width: 0;
   overflow-wrap: anywhere;
   color: var(--text);
   font-size: 13px;
 }
 
-.metric-system-quality-list {
+.analysis-direction-card-action {
+  justify-self: start;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.output-asset-card-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   padding: 16px;
 }
 
-.metric-system-quality-list div {
+.output-asset-card {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
-  padding: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fbfdff;
+  cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.output-asset-card:hover,
+.output-asset-card:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.1);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.output-asset-card h3,
+.output-asset-card p {
+  margin: 0;
+}
+
+.output-asset-card h3 {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.output-asset-card p {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.output-asset-card-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.output-asset-card-meta div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.output-asset-card-meta span {
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.output-asset-card-meta strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.metric-direction-detail-page .publish-detail-list dd {
+  overflow-wrap: anywhere;
+}
+
+.metric-system-dag-block {
+  padding: 16px;
+}
+
+.metric-system-output-tabs {
+  border-bottom: 1px solid var(--border);
+}
+
+.metric-system-output-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 16px 0;
+}
+
+.metric-system-output-meta div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: #fbfdff;
 }
 
-.metric-system-quality-list span:not(.status) {
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.45;
+.metric-system-sql-block {
+  display: grid;
+  gap: 10px;
+  padding: 0 16px 16px;
 }
 
-.metric-system-dag-block {
+.metric-system-sql-block h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.metric-system-service-list {
   padding: 16px;
 }
 
@@ -3229,9 +3381,9 @@
 .problem-side-list div {
   display: grid;
   align-content: start;
-  gap: 5px;
+  gap: 7px;
   min-width: 0;
-  min-height: 108px;
+  min-height: 132px;
   padding: 13px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -3250,7 +3402,7 @@
 .problem-side-list span {
   color: var(--text-muted);
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .wizard-progress {
@@ -4061,6 +4213,11 @@
   line-height: 1.45;
 }
 
+.metric-dsl-check-grid .button {
+  justify-self: start;
+  margin-top: 10px;
+}
+
 .metric-dsl-validation-panel {
   margin: 14px 18px 0;
   overflow: hidden;
@@ -4087,13 +4244,97 @@
   overflow: hidden;
 }
 
+.output-asset-panel {
+  margin: 14px 18px 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
 .asset-mapping-panel .metric-panel-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.output-asset-panel .metric-panel-head {
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
 }
 
 .asset-mapping-table {
   min-width: 980px;
+}
+
+.output-asset-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px;
+}
+
+.output-asset-tab {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fbfdff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.output-asset-tab.active {
+  border-color: var(--primary);
+  background: #eef5ff;
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.output-asset-tab strong,
+.output-asset-tab em {
+  display: block;
+  min-width: 0;
+}
+
+.output-asset-tab strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.output-asset-tab em {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.output-asset-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.output-asset-meta div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.output-asset-meta span {
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.output-asset-meta strong {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .calculation-config-grid {
@@ -4735,29 +4976,6 @@
   font-weight: 750;
 }
 
-.publish-service-list {
-  display: grid;
-  gap: 10px;
-}
-
-.publish-service-list div {
-  display: grid;
-  gap: 4px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: #fbfdff;
-}
-
-.publish-service-list strong {
-  color: var(--text);
-}
-
-.publish-service-list span {
-  color: var(--text-muted);
-  font-size: 13px;
-}
-
 .publish-asset-table {
   min-width: 640px;
 }
@@ -4806,6 +5024,11 @@
   .business-theme-layout,
   .business-theme-form,
   .business-theme-scope,
+  .analysis-direction-grid,
+  .analysis-direction-stats,
+  .output-asset-card-grid,
+  .output-asset-card-meta,
+  .metric-system-output-meta,
   .intent-confirm-layout,
   .intent-definition-grid,
   .rationale-grid,
@@ -4819,6 +5042,8 @@
   .wizard-business-note,
   .metric-dsl-overview,
   .metric-dsl-check-grid,
+  .output-asset-tabs,
+  .output-asset-meta,
   .wizard-review-layout,
   .wizard-publish-layout,
   .wizard-set-columns,
@@ -4886,8 +5111,7 @@
   }
 
   .metric-system-detail-grid,
-  .metric-system-assets-grid,
-  .metric-system-quality-list {
+  .metric-system-assets-grid {
     grid-template-columns: 1fr;
   }
 

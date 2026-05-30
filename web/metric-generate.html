@@ -22,19 +22,19 @@
           <section class="wizard-hero">
             <div>
               <h1 class="page-title">指标生成向导</h1>
-              <p class="page-subtitle">以业务问题为入口，逐步确认意图、业务主题、分析方向、数据模型、维度指标与发布配置，后台自动沉淀主指标集、共享物理资产和血缘。</p>
+              <p class="page-subtitle">以业务问题为入口，逐步确认意图、业务主题、分析方向、数据模型、维度指标与计算资产，后台自动沉淀主指标集、共享物理资产和血缘。</p>
             </div>
           </section>
 
           <section class="wizard-progress" aria-label="指标生成步骤">
-            <button class="wizard-progress-item active" data-problem-step-nav="1" type="button" aria-current="step"><span>1</span><strong>提出问题</strong></button>
+            <button class="wizard-progress-item active" data-problem-step-nav="1" type="button" aria-current="step"><span>1</span><strong>描述业务问题</strong></button>
             <button class="wizard-progress-item locked" data-problem-step-nav="2" type="button" disabled><span>2</span><strong>确认意图口径</strong></button>
             <button class="wizard-progress-item locked" data-problem-step-nav="3" type="button" disabled><span>3</span><strong>确认业务主题</strong></button>
             <button class="wizard-progress-item locked" data-problem-step-nav="4" type="button" disabled><span>4</span><strong>确认分析方向</strong></button>
             <button class="wizard-progress-item locked" data-problem-step-nav="5" type="button" disabled><span>5</span><strong>推荐数据模型</strong></button>
             <button class="wizard-progress-item locked" data-problem-step-nav="6" type="button" disabled><span>6</span><strong>确认维度指标</strong></button>
             <button class="wizard-progress-item locked" data-problem-step-nav="7" type="button" disabled><span>7</span><strong>计算与资产</strong></button>
-            <button class="wizard-progress-item locked" data-problem-step-nav="8" type="button" disabled><span>8</span><strong>确认发布</strong></button>
+            <button class="wizard-progress-item locked" data-problem-step-nav="8" type="button" disabled><span>8</span><strong>生成结果</strong></button>
           </section>
 
           <section class="problem-generate-panel">
@@ -45,16 +45,16 @@
                     <section class="problem-side-panel">
                       <header class="wizard-panel-head">
                         <div>
-                          <h2>提问建议</h2>
-                          <p>先把业务目标、分析范围和关键口径说清楚，后续推荐会更准确。</p>
+                          <h2>示例问题</h2>
+                          <p>可以直接选择一个相近示例，再按自己的业务场景修改。</p>
                         </div>
                       </header>
                       <div class="problem-suggestion-body">
                         <div class="problem-side-list">
-                          <div><strong>说明业务目标</strong><span>比如分析下降原因、对比渠道差异、评估活动效果或监控经营异常。</span></div>
-                          <div><strong>补充范围条件</strong><span>带上时间范围、业务对象、渠道、地区、客户分层或商品类目。</span></div>
-                          <div><strong>明确口径偏好</strong><span>说明是否只看支付成功订单、成交金额是否扣退款、是否排除取消订单。</span></div>
-                          <div><strong>提问示例</strong><span>最近 30 天成交金额为什么下降？请按渠道、地区和商品类目拆解，只统计支付成功订单。</span></div>
+                          <div><strong>经营诊断</strong><span>最近 30 天成交金额为什么下降？请按渠道、地区和商品类目拆解，只统计支付成功订单。</span></div>
+                          <div><strong>支付转化</strong><span>我想建设支付转化分析指标，用来持续监控各渠道支付成功率、失败原因和异常波动。</span></div>
+                          <div><strong>客户复购</strong><span>希望沉淀客户复购分析指标，区分新客、老客、会员等级和来源渠道，按月持续跟踪。</span></div>
+                          <div><strong>库存周转</strong><span>需要建设库存周转分析指标，关注商品类目、仓库、缺货和补货效率，用于供应链经营看板。</span></div>
                         </div>
                       </div>
                     </section>
@@ -62,12 +62,12 @@
                     <section class="problem-question-panel">
                       <header class="wizard-panel-head">
                         <div>
-                          <h2>问题对话</h2>
-                          <p>可以先提出问题，再继续补充口径、范围和拆解维度；系统会根据对话推荐后续确认步骤。</p>
+                          <h2>描述业务问题</h2>
+                          <p>描述希望沉淀为指标资产的业务现象、分析目标和复用场景，再继续补充口径、范围和拆解维度。</p>
                         </div>
                       </header>
                       <div class="problem-question-body">
-                        <div class="problem-chat-list" id="problemChatList" aria-label="问题对话记录">
+                        <div class="problem-chat-list" id="problemChatList" aria-label="业务问题描述记录">
                           <div class="problem-chat-message user">
                             <span>业务问题</span>
                             <p>最近 30 天成交金额为什么下降了？</p>
@@ -83,7 +83,7 @@
                         </label>
                         <div class="problem-action-row">
                           <button class="button" id="sendProblemMessage" type="button">发送</button>
-                          <button class="button primary" id="analyzeProblem" type="button">生成指标方案</button>
+                          <button class="button primary" id="analyzeProblem" type="button">生成指标建设方案</button>
                         </div>
                       </div>
                     </section>
@@ -150,7 +150,7 @@
                       <header class="wizard-panel-head">
                         <div>
                           <h2>推荐数据模型</h2>
-                          <p>系统按已确认分析方向推荐可支撑的数据模型，并展示覆盖度、可信度、缺失字段和质量风险。</p>
+                          <p>系统按已确认分析方向推荐可支撑的数据模型，并展示覆盖度、可信度、缺失字段和数据状态。</p>
                         </div>
                         <div class="problem-model-section-meta">
                           <span class="status green">已纳入方案</span>
@@ -251,7 +251,7 @@
                   <header class="wizard-panel-head">
                     <div>
                       <h2>确认业务主题</h2>
-                      <p>确认本次方案的主业务主题、关联业务主题和场景标签；复杂治理层级由后台维护，不需要在生成流程中创建。</p>
+                      <p>确认本次方案的主业务主题、关联业务主题和场景标签；复杂层级由系统自动组织，不需要在生成流程中创建。</p>
                     </div>
                   </header>
 
@@ -285,9 +285,9 @@
                       </div>
                       <div class="business-theme-scope">
                         <div><strong>业务问题</strong><span>最近 30 天成交金额为什么下降了？</span></div>
-                        <div><strong>主业务主题</strong><span>用于资产归属、权限管理和治理入口。</span></div>
+                        <div><strong>主业务主题</strong><span>用于资产归属、权限管理和后续查看入口。</span></div>
                         <div><strong>关联主题</strong><span>用于复用营销增长、供应链履约等跨主题资产。</span></div>
-                        <div><strong>场景标签</strong><span>用于资产检索、消费分组和后续治理。</span></div>
+                        <div><strong>场景标签</strong><span>用于资产检索、分析归类和后续复用。</span></div>
                       </div>
                     </section>
 
@@ -559,8 +559,8 @@
                   <div class="asset-suggestion-card metric-set-suggestion" id="metricSetSuggestionCard">
                     <div>
                       <span class="status blue">扩展指标集建议</span>
-                      <strong>客单价变化分析中存在核心监控指标和归因指标两类消费场景</strong>
-                      <p>建议后台自动生成“客单价归因指标集”，复用主指标集口径，便于后续治理、看板消费和血缘追踪。</p>
+                      <strong>客单价变化分析中存在核心监控指标和归因指标两类建设重点</strong>
+                      <p>建议后台自动生成“客单价归因指标集”，复用主指标集口径，便于后续查看、复核和血缘追踪。</p>
                     </div>
                     <div class="asset-suggestion-actions">
                       <button class="button small primary" data-metric-set-suggestion="accept" type="button">接受建议</button>
@@ -582,7 +582,6 @@
                         <option value="composite">复合指标</option>
                         <option value="comparison">比较指标</option>
                         <option value="diagnostic">诊断指标</option>
-                        <option value="quality">质量指标</option>
                         <option value="threshold">运营阈值指标</option>
                       </select>
                     </label>
@@ -611,7 +610,6 @@
                             <th>指标名称</th>
                             <th>编码</th>
                             <th>类型</th>
-                            <th>可加性</th>
                             <th>计算公式</th>
                             <th>统计口径</th>
                             <th>提示</th>
@@ -624,7 +622,6 @@
                             <td><input type="checkbox" name="problemMetric" value="订单数" hidden><strong data-problem-metric-title>订单数</strong></td>
                             <td data-problem-metric-code>order_count</td>
                             <td data-problem-metric-type-label>原子指标</td>
-                            <td data-problem-metric-additivity><span class="status green">完全可加</span></td>
                             <td data-problem-metric-formula>COUNT(order_id)</td>
                             <td data-problem-metric-scope>排除取消订单</td>
                             <td data-problem-metric-tip><span class="status green">可复用</span></td>
@@ -635,7 +632,6 @@
                             <td><input type="checkbox" name="problemMetric" value="成交金额" hidden><strong data-problem-metric-title>成交金额</strong></td>
                             <td data-problem-metric-code>gmv</td>
                             <td data-problem-metric-type-label>原子指标</td>
-                            <td data-problem-metric-additivity><span class="status green">完全可加</span></td>
                             <td data-problem-metric-formula>SUM(pay_amount)</td>
                             <td data-problem-metric-scope>支付成功订单，不扣除退款</td>
                             <td data-problem-metric-tip><span class="status amber">口径需确认</span></td>
@@ -646,7 +642,6 @@
                             <td><input type="checkbox" name="problemMetric" value="支付成功率" hidden><strong data-problem-metric-title>支付成功率</strong></td>
                             <td data-problem-metric-code>pay_success_rate</td>
                             <td data-problem-metric-type-label>派生指标</td>
-                            <td data-problem-metric-additivity><span class="status red">不可加</span></td>
                             <td data-problem-metric-formula>支付成功订单数 / 提交订单数</td>
                             <td data-problem-metric-scope>按支付状态统计</td>
                             <td data-problem-metric-tip><span class="status blue">建议新建</span></td>
@@ -657,7 +652,6 @@
                             <td><input type="checkbox" name="problemMetric" value="渠道成交贡献率" hidden><strong data-problem-metric-title>渠道成交贡献率</strong></td>
                             <td data-problem-metric-code>channel_gmv_share</td>
                             <td data-problem-metric-type-label>派生指标</td>
-                            <td data-problem-metric-additivity><span class="status red">不可加</span></td>
                             <td data-problem-metric-formula>渠道成交金额 / 总成交金额</td>
                             <td data-problem-metric-scope>按渠道分组统计</td>
                             <td data-problem-metric-tip><span class="status blue">建议新建</span></td>
@@ -668,14 +662,13 @@
                             <td><input type="checkbox" name="problemMetric" value="退款影响金额" hidden><strong data-problem-metric-title>退款影响金额</strong></td>
                             <td data-problem-metric-code>refund_amount</td>
                             <td data-problem-metric-type-label>原子指标</td>
-                            <td data-problem-metric-additivity><span class="status green">完全可加</span></td>
                             <td data-problem-metric-formula>SUM(refund_amount)</td>
                             <td data-problem-metric-scope>退款成功记录</td>
                             <td data-problem-metric-tip><span class="status amber">相似指标</span></td>
                             <td data-problem-metric-status><span class="status blue">待确认</span></td>
                             <td><span class="row-actions"><button class="button small" data-problem-metric-action="detail" type="button">详情</button><button class="button small" data-problem-metric-action="remove" type="button">移除</button></span></td>
                           </tr>
-                          <tr id="problemMetricEmptyState" hidden><td colspan="9" class="empty-state">没有符合条件的推荐指标</td></tr>
+                          <tr id="problemMetricEmptyState" hidden><td colspan="8" class="empty-state">没有符合条件的推荐指标</td></tr>
                         </tbody>
                       </table>
                     </div>
@@ -694,7 +687,7 @@
                 <article class="wizard-panel" data-problem-step-panel="7" hidden>
                   <header class="wizard-panel-head">
                     <div>
-                      <h2>确认计算与发布配置</h2>
+                      <h2>确认计算与资产配置</h2>
                       <p>确认每个分析方向的逻辑输出资产、物理输出资产和计算任务；共享和合并由系统检测后以建议卡片呈现。</p>
                     </div>
                   </header>
@@ -714,13 +707,18 @@
                   <section class="metric-dsl-validation-panel">
                     <div class="metric-panel-head">
                       <h3>Metric DSL 编译与校验</h3>
-                      <span>发布前必须通过</span>
+                      <span>生成前必须通过</span>
                     </div>
                     <div class="metric-dsl-check-grid">
                       <div><span class="status green">通过</span><strong>字段与过滤条件</strong><em>5 个指标引用字段均已在订单交易库、支付明细库和退款明细库中匹配。</em></div>
                       <div><span class="status green">通过</span><strong>可加性与聚合规则</strong><em>支付成功率、渠道贡献率已按 ratio 规则保留分子分母，不直接平均。</em></div>
-                      <div><span class="status green">通过</span><strong>派生依赖</strong><em>客单价、支付成功率和渠道贡献率依赖链无循环，依赖指标已纳入本次发布。</em></div>
-                      <div><span class="status amber">需确认</span><strong>相似指标处理</strong><em>退款影响金额与存量退款金额相似度 78%，建议合并或新建版本。</em></div>
+                      <div><span class="status green">通过</span><strong>派生依赖</strong><em>客单价、支付成功率和渠道贡献率依赖链无循环，依赖指标已纳入本次生成。</em></div>
+                      <div id="problemMetricConflictCheck">
+                        <span class="status amber" id="problemMetricConflictStatus">待处理</span>
+                        <strong>相似指标处理</strong>
+                        <em id="problemMetricConflictDesc">退款影响金额与存量退款金额相似度 78%，请先选择复用、合并补充、基于已有新建版本或新建指标。</em>
+                        <button class="button small" id="resolveProblemMetricConflict" type="button">去处理</button>
+                      </div>
                     </div>
                   </section>
 
@@ -779,6 +777,14 @@
                         </tbody>
                       </table>
                     </div>
+                  </section>
+
+                  <section class="output-asset-panel">
+                    <div class="metric-panel-head">
+                      <h3>输出资产计算明细</h3>
+                      <span id="problemOutputAssetCount">当前 3 个物理输出资产</span>
+                    </div>
+                    <div class="output-asset-tabs" id="problemOutputAssetTabs"></div>
                   </section>
 
                   <div class="wizard-config-grid calculation-config-grid">
@@ -930,29 +936,35 @@
                     </section>
 
                     <section class="wizard-config-block">
-                      <h3>主物理输出资产</h3>
+                      <h3>当前输出资产</h3>
                       <label class="field">
-                        <span class="label" id="problemOutputAssetLabel">共享结果表</span>
-                        <input class="input" id="problemOutputTable" value="ads_metric_order_daily">
+                        <span class="label" id="problemOutputAssetLabel">共享物理资产</span>
+                        <input class="input" id="problemOutputTable" value="ads_metric_order_daily" readonly>
                       </label>
-                      <p class="hint compute-output-hint" id="problemOutputAssetHint">逻辑输出资产按分析方向独立治理，物理输出资产可共享，系统会保留独立血缘、权限和消费说明。</p>
+                      <div class="output-asset-meta">
+                        <div><span>覆盖分析方向</span><strong id="problemOutputAssetDirections">订单量变化分析、客单价变化分析、渠道结构变化分析</strong></div>
+                        <div><span>逻辑输出资产</span><strong id="problemOutputAssetLogical">订单量变化结果、客单价变化结果、渠道结构变化结果</strong></div>
+                        <div><span>主指标集</span><strong id="problemOutputAssetMetricSets">订单量变化指标集、客单价变化指标集、渠道结构指标集</strong></div>
+                        <div><span>计算任务</span><strong id="problemOutputAssetTask">task_metric_order_daily</strong></div>
+                      </div>
+                      <p class="hint compute-output-hint" id="problemOutputAssetHint">逻辑输出资产按分析方向独立保存，物理输出资产可共享，系统会保留独立血缘、权限和业务说明。</p>
                     </section>
 
                     <section class="wizard-config-block wizard-config-block-wide calculation-dag-block">
                       <h3>计算逻辑</h3>
                       <div class="calculation-dag">
-                        <div class="dag-column">
+                        <div class="dag-column" id="problemDagSources">
                           <div class="dag-node source"><span>输入表</span><strong>dwd_order_detail</strong><em>订单、渠道、商品</em></div>
                           <div class="dag-node source"><span>输入表</span><strong>dwd_payment_detail</strong><em>支付状态、支付金额</em></div>
                           <div class="dag-node source"><span>输入表</span><strong>dwd_refund_detail</strong><em>退款状态、退款金额</em></div>
                         </div>
                         <div class="dag-arrow" aria-hidden="true">→</div>
                         <div class="dag-column">
-                          <div class="dag-node process"><span>加工节点</span><strong>订单交易宽表</strong><em>订单、支付、渠道和退款关联</em></div>
+                          <div class="dag-node process"><span>加工节点</span><strong id="problemDagProcessName">订单交易宽表</strong><em id="problemDagProcessDesc">订单、支付、渠道和退款关联</em></div>
                         </div>
                         <div class="dag-arrow" aria-hidden="true">→</div>
                         <div class="dag-column">
-                          <div class="dag-node compute"><span>共享计算任务</span><strong id="problemDagComputeTask">task_metric_order_daily</strong><em>订单量、客单价、渠道结构</em></div>
+                          <div class="dag-node compute"><span id="problemDagComputeLabel">共享计算任务</span><strong id="problemDagComputeTask">task_metric_order_daily</strong><em id="problemDagComputeDesc">订单量、客单价、渠道结构</em></div>
                         </div>
                         <div class="dag-arrow" aria-hidden="true">→</div>
                         <div class="dag-column">
@@ -983,8 +995,8 @@ GROUP BY dt, channel, product_category;</textarea>
                 <article class="wizard-panel" data-problem-step-panel="8" hidden>
                   <header class="wizard-panel-head">
                     <div>
-                      <h2>确认发布方案</h2>
-                      <p>发布前确认本次新建、复用和共享的资产结构；主指标集、扩展指标集和血缘由后台自动沉淀。</p>
+                      <h2>确认生成结果</h2>
+                      <p>确认本次新建、复用和共享的资产结构；主指标集、扩展指标集和血缘由后台自动沉淀。</p>
                     </div>
                   </header>
 
@@ -994,7 +1006,7 @@ GROUP BY dt, channel, product_category;</textarea>
                       <input id="problemMetricSetName" type="hidden" value="成交下降诊断指标资产">
                       <input id="problemMetricSetDescription" type="hidden" value="围绕成交金额下降问题沉淀订单量、客单价、支付转化、渠道结构和退款影响分析资产。">
                       <div class="publish-asset-graph">
-                        <div class="publish-asset-graph-title">分析方向到资产的发布结构</div>
+                        <div class="publish-asset-graph-title">分析方向到资产的生成结构</div>
                         <div class="graph-column">
                           <strong>分析方向</strong>
                           <span>订单量变化分析</span>
@@ -1023,18 +1035,18 @@ GROUP BY dt, channel, product_category;</textarea>
                     </section>
 
                     <aside class="wizard-publish-preview">
-                      <h3>后台治理资产</h3>
+                      <h3>后台生成资产</h3>
                       <div><strong>主指标集</strong><span>5 个，随分析方向自动生成</span></div>
                       <div><strong>扩展指标集</strong><span id="publishExtensionSetPreview">1 个，客单价归因指标集</span></div>
                       <div><strong>Metric DSL</strong><span>5 个指标定义，字段、聚合、依赖和 SQL 编译校验通过</span></div>
-                      <div><strong>冲突处理</strong><span>1 个相似指标建议合并，发布前进入审核队列</span></div>
+                      <div><strong>冲突处理</strong><span>1 个相似指标建议合并，生成前进入待确认队列</span></div>
                       <div><strong>共享物理资产</strong><span id="publishSharedAssetPreview">ads_metric_order_daily</span></div>
                       <div><strong>计算配置</strong><span id="problemPublishComputePreview">离线周期计算，每天 02:00，按日分区</span></div>
                     </aside>
                   </div>
 
                   <div class="wizard-publish-summary">
-                    <strong>本次将发布</strong>
+                    <strong>本次将生成</strong>
                     <span id="problemPublishSummaryDimensions">维度 3 个</span>
                     <span id="problemPublishSummaryMetrics">指标 4 个</span>
                     <span>DSL 定义 5 个</span>
@@ -1042,7 +1054,7 @@ GROUP BY dt, channel, product_category;</textarea>
                     <span id="problemPublishSummaryExtendedSets">扩展指标集 1 个</span>
                     <span>逻辑输出资产 5 个</span>
                     <span id="problemPublishSummaryPhysicalAssets">物理输出资产 3 个</span>
-                    <em>发布后可用于指标目录、智能问数、API 服务、血缘治理和共享计算链路。</em>
+                    <em>确认后形成指标定义、输出资产、计算任务、血缘查看和共享计算链路。</em>
                   </div>
 
                   <div class="wizard-result" id="problemPublishResult" hidden></div>
@@ -1053,7 +1065,7 @@ GROUP BY dt, channel, product_category;</textarea>
                   <button class="button primary" id="nextProblemStep" type="button">下一步</button>
                   <div class="wizard-final-actions" id="problemPublishActions" hidden>
                     <button class="button" id="saveProblemDraft" type="button">暂存草稿</button>
-                    <button class="button primary" data-open-modal="publishModal" type="button">发布指标资产</button>
+                    <button class="button primary" data-open-modal="publishModal" type="button">生成指标资产</button>
                   </div>
                 </div>
               </section>
@@ -1067,15 +1079,15 @@ GROUP BY dt, channel, product_category;</textarea>
     <div class="modal-backdrop" id="publishModal" role="dialog" aria-modal="true" aria-labelledby="publishModalTitle">
       <div class="modal">
         <div class="modal-header">
-          <h2 class="modal-title" id="publishModalTitle">确认发布指标资产</h2>
+          <h2 class="modal-title" id="publishModalTitle">确认生成指标资产</h2>
           <button class="button ghost" data-close-modal type="button">关闭</button>
         </div>
         <div class="card-body">
-          <p class="card-subtitle" id="publishModalSummary">本次将发布已确认候选资产。发布后可用于指标目录、智能问数、API 服务和后续调度计算。</p>
+          <p class="card-subtitle" id="publishModalSummary">本次将生成已确认候选资产。确认后形成指标定义、输出资产和后续调度计算。</p>
         </div>
         <div class="modal-footer">
           <button class="button" data-close-modal type="button">取消</button>
-          <button class="button primary" id="confirmPublish" type="button">确认发布</button>
+          <button class="button primary" id="confirmPublish" type="button">确认生成</button>
         </div>
       </div>
     </div>
@@ -1146,9 +1158,12 @@ GROUP BY dt, channel, product_category;</textarea>
             <div class="field readonly-field"><span class="label">时间聚合</span><div class="readonly-value" id="problemMetricModalTimeAggText"></div></div>
             <div class="field readonly-field"><span class="label">统计粒度</span><div class="readonly-value" id="problemMetricModalGrainText"></div></div>
             <div class="field readonly-field"><span class="label">相似度评分</span><div class="readonly-value" id="problemMetricModalSimilarityText"></div></div>
-            <div class="field readonly-field"><span class="label">质量提示</span><div class="readonly-value" id="problemMetricModalTipText"></div></div>
+            <div class="field readonly-field"><span class="label">处理提示</span><div class="readonly-value" id="problemMetricModalTipText"></div></div>
+            <label class="field"><span class="label">存量处理方式</span><select class="select" id="problemMetricReuseAction"></select></label>
+            <label class="field"><span class="label">选择存量指标</span><select class="select" id="problemMetricReuseSelect"></select></label>
             <div class="field readonly-field full"><span class="label">可用维度</span><div class="readonly-value" id="problemMetricModalDimensionText"></div></div>
             <div class="field readonly-field full"><span class="label">处理建议</span><div class="readonly-value" id="problemMetricModalSuggestionText"></div></div>
+            <div class="field readonly-field full"><span class="label">处理说明</span><div class="readonly-value" id="problemMetricReuseHint"></div></div>
             <label class="field full"><span class="label">Metric DSL 预览</span><textarea class="textarea code-textarea metric-dsl-preview" id="problemMetricModalDslPreview" readonly></textarea></label>
           </div>
         </div>
@@ -1168,13 +1183,13 @@ GROUP BY dt, channel, product_category;</textarea>
         <div class="card-body problem-metric-modal-body">
           <div class="wizard-custom-candidate-grid">
             <label class="field"><span class="label">指标名称</span><input class="input" id="problemAddMetricName" placeholder="例如：门店成交占比"></label>
-            <label class="field"><span class="label">指标类型</span><select class="select" id="problemAddMetricType"><option value="atomic">原子指标</option><option value="derived">派生指标</option><option value="composite">复合指标</option><option value="comparison">比较指标</option><option value="diagnostic">诊断指标</option><option value="quality">质量指标</option><option value="threshold">运营阈值指标</option></select></label>
+            <label class="field"><span class="label">指标类型</span><select class="select" id="problemAddMetricType"><option value="atomic">原子指标</option><option value="derived">派生指标</option><option value="composite">复合指标</option><option value="comparison">比较指标</option><option value="diagnostic">诊断指标</option><option value="threshold">运营阈值指标</option></select></label>
             <label class="field full"><span class="label">业务定义</span><textarea class="textarea" id="problemAddMetricDefinition" placeholder="说明这个指标衡量什么业务问题"></textarea></label>
             <label class="field full"><span class="label">统计口径</span><textarea class="textarea" id="problemAddMetricScope" placeholder="说明过滤条件、时间口径和排除规则"></textarea></label>
             <label class="field"><span class="label">计算公式</span><input class="input" id="problemAddMetricFormula" placeholder="例如：门店成交金额 / 总成交金额"></label>
             <label class="field"><span class="label">过滤条件</span><input class="input" id="problemAddMetricFilter" placeholder="例如：payment.status = 'success'"></label>
             <label class="field"><span class="label">时间口径</span><input class="input" id="problemAddMetricTime" placeholder="例如：按 payment.pay_time 统计"></label>
-            <label class="field"><span class="label">质量提示</span><input class="input" id="problemAddMetricTip" value="用户补充"></label>
+            <label class="field"><span class="label">处理提示</span><input class="input" id="problemAddMetricTip" value="用户补充"></label>
             <label class="field full"><span class="label">可用维度</span><input class="input" id="problemAddMetricDimension" placeholder="例如：时间维度、渠道维度"></label>
           </div>
         </div>
@@ -1186,6 +1201,8 @@ GROUP BY dt, channel, product_category;</textarea>
     </div>
 
     <script src="js/common.js"></script>
+    <script src="js/mock-data-metrics.js"></script>
+    <script src="js/data-metrics-api.js"></script>
     <script src="js/metric-generate.js"></script>
   </body>
 </html>

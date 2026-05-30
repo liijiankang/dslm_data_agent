@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>分析方向详情 · Data Metrics</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page metric-system-detail-page metric-direction-detail-page" id="directionDetailPage">
+          <nav class="breadcrumb">
+            <a href="index.html">首页</a><span>/</span>
+            <a href="metrics.html">Data Metrics</a><span>/</span>
+            <a id="directionThemeCrumb" href="metric-system-detail.html?theme=trade">业务主题详情</a><span>/</span>
+            <span>分析方向详情</span>
+          </nav>
+
+          <section class="publish-result-hero metric-system-detail-hero">
+            <div>
+              <span class="status amber" id="directionStatus">待确认</span>
+              <h1 class="page-title" id="directionTitle">订单量变化分析</h1>
+              <p class="page-subtitle" id="directionSubtitle">围绕当前分析方向查看建设目标、口径边界和输出资产，点击资产进入计算与指标明细。</p>
+            </div>
+          </section>
+
+          <div class="content-stack">
+            <section class="metric-grid six metric-system-detail-kpis" aria-label="分析方向概览">
+              <div class="metric"><div class="metric-label">指标集</div><div class="metric-value" id="directionMetricSetCount">1</div></div>
+              <div class="metric"><div class="metric-label">输出资产</div><div class="metric-value" id="directionOutputCount">1</div></div>
+              <div class="metric"><div class="metric-label">指标</div><div class="metric-value" id="directionMetricCount">4</div></div>
+              <div class="metric"><div class="metric-label">维度</div><div class="metric-value" id="directionDimensionCount">5</div></div>
+              <div class="metric"><div class="metric-label">计算任务</div><div class="metric-value" id="directionTaskCount">1</div></div>
+              <div class="metric"><div class="metric-label">资产关系</div><div class="metric-value small" id="directionAssetRelation">共享</div></div>
+            </section>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>分析方向概览</h2>
+                <span id="directionPriority">核心方向</span>
+              </div>
+              <dl class="publish-detail-list metric-system-detail-list">
+                <div><dt>所属业务主题</dt><dd id="directionThemeName">交易经营</dd></div>
+                <div><dt>建设目标</dt><dd id="directionGoal">识别成交金额下降中由订单量变化带来的影响。</dd></div>
+                <div><dt>口径边界</dt><dd id="directionBoundary">支付成功订单，按日期、渠道和商品类目拆解。</dd></div>
+                <div><dt>关联数据模型</dt><dd id="directionModels">订单交易库、支付明细库、退款明细库</dd></div>
+                <div><dt>逻辑输出资产</dt><dd id="directionLogicalAssets">订单量变化结果</dd></div>
+                <div><dt>共享说明</dt><dd id="directionSharedDesc">与客单价变化分析、渠道结构变化分析共享物理输出资产。</dd></div>
+              </dl>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>输出资产</h2>
+                <span id="directionAssetMapSummary">当前方向关联 1 个输出资产</span>
+              </div>
+              <div class="output-asset-card-grid" id="directionOutputAssetCards"></div>
+            </article>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/mock-data-metrics.js"></script>
+    <script src="js/data-metrics-api.js"></script>
+    <script src="js/metric-system-detail.js"></script>
+  </body>
+</html>

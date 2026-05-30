@@ -1,5 +1,5 @@
 (function () {
-const { artifactSummary, assets, auditEvents, buildArtifacts, buildTaskDetails, buildTasks, changeEvents, databaseAssets = [], databaseRelations = [], dataSources, sourceStats } = window.MockData;
+const { artifactSummary, assets, auditEvents, buildArtifacts, buildTaskDetails, buildTasks, changeEvents, createdBuildTask, databaseAssets = [], databaseRelations = [], dataSources, sourceStats } = window.DataAssetsApi.getSourceDetailData();
 const { bindModalTriggers, bindRowNavigation, bindTabs, paginationButtons, qs, statusPill, taskRuntimeAction } = window.UI;
 const params = new URLSearchParams(window.location.search);
 const selectedSource =
@@ -78,17 +78,17 @@ function renderSourceHeader() {
   if (meta) {
     meta.innerHTML = `
       ${statusPill(selectedSource.status, selectedSource.statusTone)}
-      <span class="tag">${selectedSource.category}</span>
-      <span class="tag">${selectedSource.connector}</span>
-      <span class="tag">负责人：${selectedSource.owner}</span>
-      <span class="tag">最近盘点：${selectedSource.lastInventory}</span>
+      <span class="tag">${escapeHtml(selectedSource.category)}</span>
+      <span class="tag">${escapeHtml(selectedSource.connector)}</span>
+      <span class="tag">负责人：${escapeHtml(selectedSource.owner)}</span>
+      <span class="tag">最近盘点：${escapeHtml(selectedSource.lastInventory)}</span>
     `;
   }
   if (profileFacts) {
     profileFacts.innerHTML = `
-      <div><span>接入方式</span><strong>${selectedSource.connector}</strong></div>
-      <div><span>${isDatabaseSource() ? "资产对象" : "资产规模"}</span><strong>${selectedSource.assets}</strong></div>
-      <div><span>最近盘点</span><strong>${selectedSource.lastInventory}</strong></div>
+      <div><span>接入方式</span><strong>${escapeHtml(selectedSource.connector)}</strong></div>
+      <div><span>${isDatabaseSource() ? "资产对象" : "资产规模"}</span><strong>${escapeHtml(selectedSource.assets)}</strong></div>
+      <div><span>最近盘点</span><strong>${escapeHtml(selectedSource.lastInventory)}</strong></div>
     `;
   }
   if (uploadLink) {
@@ -661,19 +661,19 @@ function renderFileAssetRow(asset) {
       : statusPill(asset.buildability, asset.buildabilityTone);
   const href = `asset-detail.html?id=${asset.id}`;
   return `
-    <tr data-href="${href}">
-      <td><a href="${href}"><strong>${asset.name}</strong></a></td>
-      <td>${asset.type}</td>
-      <td>${asset.size}</td>
-      <td>${asset.uploadedAt}</td>
-      <td>${asset.uploadedBy}</td>
+    <tr data-href="${escapeHtml(href)}">
+      <td><a href="${escapeHtml(href)}"><strong>${escapeHtml(asset.name)}</strong></a></td>
+      <td>${escapeHtml(asset.type)}</td>
+      <td>${escapeHtml(asset.size)}</td>
+      <td>${escapeHtml(asset.uploadedAt)}</td>
+      <td>${escapeHtml(asset.uploadedBy)}</td>
       <td>${buildState}</td>
-      <td>${asset.lastBuiltAt}</td>
+      <td>${escapeHtml(asset.lastBuiltAt)}</td>
       <td>
         <span class="row-actions">
-          <a class="button small" href="${href}">详情</a>
-          <a class="button small" href="build-task.html?sourceId=${selectedSource.id}">构建</a>
-          <button class="button small danger" data-delete-asset="${asset.id}" type="button">删除</button>
+          <a class="button small" href="${escapeHtml(href)}">详情</a>
+          <a class="button small" href="build-task.html?sourceId=${escapeHtml(selectedSource.id)}">构建</a>
+          <button class="button small danger" data-delete-asset="${escapeHtml(asset.id)}" type="button">删除</button>
         </span>
       </td>
     </tr>
@@ -683,21 +683,21 @@ function renderFileAssetRow(asset) {
 function renderDatabaseAssetRow(asset) {
   const href = `asset-detail.html?id=${asset.id}`;
   return `
-    <tr data-href="${href}">
-      <td><a href="${href}"><strong>${asset.name}</strong></a></td>
-      <td>${asset.type}</td>
-      <td>${asset.database} / ${asset.schema}</td>
-      <td><span class="hint">${asset.comment}</span></td>
-      <td>${asset.fieldCount}</td>
-      <td>${asset.primaryKey || "-"}</td>
-      <td>${asset.relationCount} 个</td>
+    <tr data-href="${escapeHtml(href)}">
+      <td><a href="${escapeHtml(href)}"><strong>${escapeHtml(asset.name)}</strong></a></td>
+      <td>${escapeHtml(asset.type)}</td>
+      <td>${escapeHtml(asset.database)} / ${escapeHtml(asset.schema)}</td>
+      <td><span class="hint">${escapeHtml(asset.comment)}</span></td>
+      <td>${escapeHtml(asset.fieldCount)}</td>
+      <td>${escapeHtml(asset.primaryKey || "-")}</td>
+      <td>${escapeHtml(asset.relationCount)} 个</td>
       <td>${statusPill(asset.changeStatus, asset.changeTone)}</td>
       <td>${statusPill(asset.buildStatus, asset.buildTone)}</td>
-      <td>${asset.lastInventoryAt}</td>
+      <td>${escapeHtml(asset.lastInventoryAt)}</td>
       <td>
         <span class="row-actions">
-          <a class="button small" href="${href}">查看结构</a>
-          <a class="button small" href="build-task.html?sourceId=${selectedSource.id}">构建</a>
+          <a class="button small" href="${escapeHtml(href)}">查看结构</a>
+          <a class="button small" href="build-task.html?sourceId=${escapeHtml(selectedSource.id)}">构建</a>
         </span>
       </td>
     </tr>
@@ -772,7 +772,7 @@ function renderBuildTasks() {
   const body = qs("#taskRows");
   if (!body) return;
   const params = new URLSearchParams(window.location.search);
-  const rows = params.get("createdTask") === "1" ? [window.MockData.createdBuildTask, ...buildTasks] : buildTasks;
+  const rows = params.get("createdTask") === "1" ? [createdBuildTask, ...buildTasks] : buildTasks;
   body.innerHTML = rows
     .map(
       (task) => {

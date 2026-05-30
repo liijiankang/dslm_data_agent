@@ -1,6 +1,6 @@
 (function () {
-const { buildTaskDetails, buildTasks, createdBuildTask } = window.MockData;
-const { bindModalTriggers, paginationButtons, qs, statusPill, taskRuntimeAction } = window.UI;
+const { buildTaskDetails, buildTasks, createdBuildTask } = window.DataAssetsApi.getBuildTaskData();
+const { bindModalTriggers, escapeHtml, paginationButtons, qs, statusPill, taskRuntimeAction } = window.UI;
 const params = new URLSearchParams(window.location.search);
 const fallbackTask = createdBuildTask || buildTasks[0];
 const taskId = params.get("id") || fallbackTask.id;
@@ -31,9 +31,9 @@ function renderHeader() {
   qs("#taskMeta").innerHTML = `
     ${statusPill(listTask.status, listTask.tone)}
     ${statusPill(listTask.scope, listTask.scopeTone)}
-    <span class="tag">${detail.parseStrategy}</span>
-    <span class="tag">${listTask.source}</span>
-    <span class="tag">创建：${listTask.createdAt}</span>
+    <span class="tag">${escapeHtml(detail.parseStrategy)}</span>
+    <span class="tag">${escapeHtml(listTask.source)}</span>
+    <span class="tag">创建：${escapeHtml(listTask.createdAt)}</span>
   `;
   renderTaskActions();
 }
@@ -61,8 +61,8 @@ function openTaskRuntimeModal() {
   qs("#taskRuntimeTitle").textContent = `${action.title} · ${listTask.name}`;
   qs("#taskRuntimeSummary").textContent = action.summary;
   qs("#taskRuntimeImpact").innerHTML = `
-    <li><span>当前状态</span><strong>${listTask.status}</strong></li>
-    <li><span>构建范围</span><strong>${listTask.scope}</strong></li>
+    <li><span>当前状态</span><strong>${escapeHtml(listTask.status)}</strong></li>
+    <li><span>构建范围</span><strong>${escapeHtml(listTask.scope)}</strong></li>
     <li><span>已完成资产</span><strong>${completedAssets}</strong></li>
     <li><span>运行中资产</span><strong>${runningAssets}</strong></li>
     <li><span>待处理资产</span><strong>${pendingAssets}</strong></li>
@@ -143,7 +143,7 @@ function uniqueValues(rows, key) {
 function fillFilter(selector, values, label) {
   const select = qs(selector);
   if (!select) return;
-  select.innerHTML = [`<option value="all">${label}</option>`, ...values.map((value) => `<option value="${value}">${value}</option>`)].join("");
+  select.innerHTML = [`<option value="all">${escapeHtml(label)}</option>`, ...values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)].join("");
 }
 
 function filteredAssets() {
@@ -226,16 +226,16 @@ function renderAssets() {
       .map(
         (asset) => `
           <tr>
-            <td><strong>${asset.name}</strong></td>
-            <td>${asset.type}</td>
+            <td><strong>${escapeHtml(asset.name)}</strong></td>
+            <td>${escapeHtml(asset.type)}</td>
             <td>${statusPill(asset.status, asset.tone)}</td>
-            <td>${asset.stage}</td>
+            <td>${escapeHtml(asset.stage)}</td>
             <td>${progressCell(asset)}</td>
-            <td>${asset.chunks}</td>
-            <td>${asset.vectors}</td>
-            <td>${asset.duration}</td>
-            <td>${asset.updatedAt}</td>
-            <td><a class="button small" href="asset-detail.html?id=${asset.assetId}">资产详情</a></td>
+            <td>${escapeHtml(asset.chunks)}</td>
+            <td>${escapeHtml(asset.vectors)}</td>
+            <td>${escapeHtml(asset.duration)}</td>
+            <td>${escapeHtml(asset.updatedAt)}</td>
+            <td><a class="button small" href="asset-detail.html?id=${escapeHtml(asset.assetId)}">资产详情</a></td>
           </tr>
         `,
       )

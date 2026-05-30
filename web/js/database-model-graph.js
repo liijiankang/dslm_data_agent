@@ -1,5 +1,5 @@
 (function () {
-const { dataSources, databaseAssets = [], databaseRelations = [] } = window.MockData;
+const { dataSources, databaseAssets = [], databaseRelations = [] } = window.DataAssetsApi.getModelGraphData();
 const { bindModalTriggers, qs, statusPill } = window.UI;
 const params = new URLSearchParams(window.location.search);
 const selectedSource =
@@ -56,7 +56,7 @@ function uniqueValues(rows, key) {
 function fillSelect(selector, allLabel, values) {
   const select = qs(selector);
   if (!select) return;
-  select.innerHTML = [`<option value="all">${allLabel}</option>`, ...values.map((value) => `<option value="${value}">${value}</option>`)].join("");
+  select.innerHTML = [`<option value="all">${escapeHtml(allLabel)}</option>`, ...values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)].join("");
 }
 
 function renderHeader() {
@@ -65,9 +65,9 @@ function renderHeader() {
   qs("#graphTitle").textContent = `${selectedSource.name} · 资产关系图`;
   qs("#graphMeta").innerHTML = `
     ${statusPill(selectedSource.status, selectedSource.statusTone)}
-    <span class="tag">${selectedSource.connector}</span>
-    <span class="tag">负责人：${selectedSource.owner}</span>
-    <span class="tag">最近盘点：${selectedSource.lastInventory}</span>
+    <span class="tag">${escapeHtml(selectedSource.connector)}</span>
+    <span class="tag">负责人：${escapeHtml(selectedSource.owner)}</span>
+    <span class="tag">最近盘点：${escapeHtml(selectedSource.lastInventory)}</span>
   `;
   qs("#sourceDetailLink").textContent = selectedSource.name;
   qs("#sourceDetailLink").href = `local-upload-detail.html?sourceId=${selectedSource.id}`;

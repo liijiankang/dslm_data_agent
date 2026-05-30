@@ -1,4 +1,6 @@
-window.MockData = {};
+// Data Assets mock data. window.MockData is kept as a compatibility alias for existing pages.
+window.MockDataAssets = {};
+window.MockData = window.MockDataAssets;
 
 window.MockData.sourceStats = {
   totalAssets: 12,

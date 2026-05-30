@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>输出资产详情 · Data Metrics</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page metric-system-detail-page metric-output-asset-detail-page" id="outputAssetDetailPage">
+          <nav class="breadcrumb">
+            <a href="index.html">首页</a><span>/</span>
+            <a href="metrics.html">Data Metrics</a><span>/</span>
+            <a id="outputThemeCrumb" href="metric-system-detail.html?theme=trade">业务主题详情</a><span>/</span>
+            <a id="outputDirectionCrumb" href="metric-direction-detail.html?theme=trade">分析方向详情</a><span>/</span>
+            <span>输出资产详情</span>
+          </nav>
+
+          <section class="publish-result-hero metric-system-detail-hero">
+            <div>
+              <span class="status green" id="outputAssetRelationStatus">共享物理资产</span>
+              <h1 class="page-title" id="outputAssetTitle">ads_metric_order_daily</h1>
+              <p class="page-subtitle" id="outputAssetSubtitle">查看当前输出资产的计算任务、Metric DSL、计算逻辑、指标集、指标和维度。</p>
+            </div>
+          </section>
+
+          <div class="content-stack">
+            <section class="metric-grid six metric-system-detail-kpis" aria-label="输出资产概览">
+              <div class="metric"><div class="metric-label">逻辑资产</div><div class="metric-value" id="outputLogicalAssetCount">1</div></div>
+              <div class="metric"><div class="metric-label">承载方向</div><div class="metric-value" id="outputDirectionCount">3</div></div>
+              <div class="metric"><div class="metric-label">指标</div><div class="metric-value" id="outputMetricCount">4</div></div>
+              <div class="metric"><div class="metric-label">维度</div><div class="metric-value" id="outputDimensionCount">5</div></div>
+              <div class="metric"><div class="metric-label">计算任务</div><div class="metric-value small" id="outputTaskCount">1</div></div>
+              <div class="metric"><div class="metric-label">计算方式</div><div class="metric-value small" id="outputComputeMode">离线</div></div>
+            </section>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>输出资产概览</h2>
+                <span id="outputAssetScope">当前分析方向</span>
+              </div>
+              <dl class="publish-detail-list metric-system-detail-list">
+                <div><dt>所属业务主题</dt><dd id="outputThemeName">交易经营</dd></div>
+                <div><dt>关联分析方向</dt><dd id="outputDirectionName">订单量变化分析</dd></div>
+                <div><dt>物理输出资产</dt><dd id="outputPhysicalAsset">ads_metric_order_daily</dd></div>
+                <div><dt>当前逻辑资产</dt><dd id="outputLogicalAssets">订单量变化结果</dd></div>
+                <div><dt>计算任务</dt><dd id="outputComputeTask">task_metric_order_daily</dd></div>
+                <div><dt>同时承载方向</dt><dd id="outputAllDirections">订单量变化分析、客单价变化分析、渠道结构变化分析</dd></div>
+              </dl>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>输出资产与计算任务</h2>
+                <span id="directionAssetMapSummary">当前资产</span>
+              </div>
+              <div class="table-wrap">
+                <table class="table metric-system-detail-table">
+                  <thead>
+                    <tr>
+                      <th>物理输出资产</th>
+                      <th>逻辑输出资产</th>
+                      <th>计算任务</th>
+                      <th>计算方式</th>
+                      <th>关系</th>
+                      <th>同时承载方向</th>
+                    </tr>
+                  </thead>
+                  <tbody id="directionAssetMapRows"></tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>指标语义层</h2>
+                <span id="directionDslSummary">Metric DSL 已生成</span>
+              </div>
+              <div class="metric-dsl-check-grid metric-system-dsl-grid" id="directionDslRows"></div>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>输出资产计算明细</h2>
+                <span id="directionDagSummary">当前输出资产</span>
+              </div>
+              <div class="metric-system-output-meta">
+                <div><span>当前资产</span><strong id="directionSelectedOutputAsset">ads_metric_order_daily</strong></div>
+                <div><span>覆盖方向</span><strong id="directionSelectedOutputDirections">订单量变化分析、客单价变化分析、渠道结构变化分析</strong></div>
+                <div><span>当前逻辑资产</span><strong id="directionSelectedLogicalAssets">订单量变化结果</strong></div>
+                <div><span>计算任务</span><strong id="directionSelectedComputeTask">task_metric_order_daily</strong></div>
+              </div>
+              <div class="calculation-dag-block metric-system-dag-block">
+                <div class="calculation-dag metric-system-dag">
+                  <div class="dag-column" id="directionDagSources"></div>
+                  <div class="dag-arrow">→</div>
+                  <div class="dag-node process">
+                    <span>加工节点</span>
+                    <strong id="directionDagJoin">订单交易宽表</strong>
+                    <em id="directionDagJoinDesc">订单、支付、渠道和退款关联</em>
+                  </div>
+                  <div class="dag-arrow">→</div>
+                  <div class="dag-node compute">
+                    <span>指标计算</span>
+                    <strong id="directionDagCompute">共享经营指标计算</strong>
+                    <em id="directionDagComputeDesc">订单量、客单价、渠道结构</em>
+                  </div>
+                  <div class="dag-arrow">→</div>
+                  <div class="dag-node output">
+                    <span>物理输出资产</span>
+                    <strong id="directionDagOutput">ads_metric_order_daily</strong>
+                    <em id="directionDagOutputDesc">3 个逻辑资产共享，独立血缘和运行状态</em>
+                  </div>
+                </div>
+              </div>
+              <div class="metric-system-sql-block">
+                <h3>Metric DSL 编译 SQL</h3>
+                <textarea class="textarea code-textarea" id="directionGeneratedSql" readonly></textarea>
+              </div>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>指标集</h2>
+                <span id="directionSetSummary">按当前方向沉淀</span>
+              </div>
+              <div class="table-wrap">
+                <table class="table metric-system-detail-table">
+                  <thead>
+                    <tr>
+                      <th>指标集</th>
+                      <th>类型</th>
+                      <th>包含指标</th>
+                      <th>输出资产</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody id="directionSetRows"></tbody>
+                </table>
+              </div>
+            </article>
+
+            <section class="metric-system-assets-grid">
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>指标资产</h2>
+                  <span id="directionMetricSummary">当前资产指标</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="table metric-system-detail-table">
+                    <thead>
+                      <tr>
+                        <th>指标</th>
+                        <th>编码</th>
+                        <th>类型</th>
+                        <th>存量处理</th>
+                        <th>口径</th>
+                        <th>DSL 状态</th>
+                      </tr>
+                    </thead>
+                    <tbody id="directionMetricRows"></tbody>
+                  </table>
+                </div>
+              </article>
+
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>维度资产</h2>
+                  <span id="directionDimensionSummary">当前资产维度</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="table metric-system-detail-table">
+                    <thead>
+                      <tr>
+                        <th>维度</th>
+                        <th>来源字段</th>
+                        <th>维度类型</th>
+                        <th>适用范围</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody id="directionDimensionRows"></tbody>
+                  </table>
+                </div>
+              </article>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/mock-data-metrics.js"></script>
+    <script src="js/data-metrics-api.js"></script>
+    <script src="js/metric-system-detail.js"></script>
+  </body>
+</html>

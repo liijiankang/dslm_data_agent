@@ -18,7 +18,7 @@
             <div class="metric-hero-copy">
               <div class="metric-hero-text">
                 <h1 class="page-title">Data Metrics</h1>
-                <p class="page-subtitle">以业务问题为入口，结合已接入的数据模型和 Metric DSL，沉淀业务主题、分析方向、指标语义定义、逻辑输出资产与共享计算配置，让指标从生成、编译、校验到复用形成闭环。</p>
+                <p class="page-subtitle">以业务问题为入口，结合已接入的数据模型和 Metric DSL，沉淀业务主题、分析方向、指标语义定义、逻辑输出资产与共享计算配置，让指标从生成、编译到复用形成闭环。</p>
               </div>
               <div class="metric-hero-actions">
                 <a class="button primary" href="metric-generate.html">新建指标资产</a>
@@ -30,7 +30,7 @@
             <section class="metric-kpi-deck" aria-label="Data Metrics 统计">
               <div class="metric-kpi-card"><span>业务主题</span><strong>7</strong><em>覆盖核心经营分析场景</em></div>
               <div class="metric-kpi-card"><span>场景标签</span><strong>12</strong><em>按业务主题组织沉淀</em></div>
-              <div class="metric-kpi-card"><span>主指标集</span><strong>24</strong><em>6 个进入发布流程</em></div>
+              <div class="metric-kpi-card"><span>主指标集</span><strong>24</strong><em>6 个待确认生成结果</em></div>
               <div class="metric-kpi-card"><span>指标</span><strong>326</strong><em>本周新增 42 个候选指标</em></div>
               <div class="metric-kpi-card"><span>维度</span><strong>89</strong><em>支持多层级分析拆解</em></div>
             </section>
@@ -108,8 +108,8 @@
                   <span class="label">状态</span>
                   <select class="select" id="metricSystemStatusFilter">
                     <option value="all">全部状态</option>
-                    <option value="review">待审核</option>
-                    <option value="published">已发布</option>
+                    <option value="review">待确认</option>
+                    <option value="published">已生成</option>
                     <option value="draft">草稿</option>
                   </select>
                 </label>
@@ -120,7 +120,7 @@
                 <article class="metric-system-list-item" data-metric-system-card data-system-id="trade" data-system-domain="trade" data-system-status="review" data-system-keywords="交易经营 订单经营 支付转化 成交下降 订单 成交金额 客单价 支付成功率" role="link" tabindex="0">
                   <div class="metric-system-item-head">
                     <h3>交易经营</h3>
-                    <span class="status amber">2 个待审核</span>
+                    <span class="status amber">2 个待确认</span>
                   </div>
                   <div class="metric-system-stats">
                     <div><span>场景标签</span><strong>2</strong></div>
@@ -154,7 +154,7 @@
                 <article class="metric-system-list-item" data-metric-system-card data-system-id="finance" data-system-domain="finance" data-system-status="review" data-system-keywords="财务经营 回款 应收 逾期 合同 发票 毛利 收入" role="link" tabindex="0">
                   <div class="metric-system-item-head">
                     <h3>财务经营</h3>
-                    <span class="status amber">1 个待审核</span>
+                    <span class="status amber">1 个待确认</span>
                   </div>
                   <div class="metric-system-stats">
                     <div><span>场景标签</span><strong>2</strong></div>
@@ -188,7 +188,7 @@
                 <article class="metric-system-list-item" data-metric-system-card data-system-id="marketing" data-system-domain="marketing" data-system-status="published" data-system-keywords="营销增长 营销 活动 ROI 触达 转化 获客成本 渠道归因" role="link" tabindex="0">
                   <div class="metric-system-item-head">
                     <h3>营销增长</h3>
-                    <span class="status green">已发布</span>
+                    <span class="status green">已生成</span>
                   </div>
                   <div class="metric-system-stats">
                     <div><span>场景标签</span><strong>2</strong></div>

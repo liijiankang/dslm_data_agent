@@ -1,5 +1,5 @@
 (function () {
-const { uploadRows } = window.MockData;
+const { uploadRows } = window.DataAssetsApi.getUploadData();
 const { paginationButtons, statusPill, qs } = window.UI;
 
 const archiveExtensions = new Set(["zip", "rar", "7z", "tar", "gz", "bz2"]);

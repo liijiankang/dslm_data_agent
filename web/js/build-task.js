@@ -1,9 +1,9 @@
 (function () {
-const { qs, statusPill } = window.UI;
+const { escapeHtml, qs, statusPill } = window.UI;
 const page = qs("main.page");
 const params = new URLSearchParams(window.location.search);
 const sourceId = params.get("sourceId") || page?.dataset.sourceId || "source-local-upload-sales";
-const source = window.MockData.dataSources.find((item) => item.id === sourceId);
+const source = window.DataAssetsApi.getSource(sourceId);
 let scope = "partial";
 let latestPreview = null;
 let selectedIds = null;
@@ -34,13 +34,13 @@ function renderSelectedAssets(response) {
     .map(
       (asset) => `
         <tr class="${asset.canBuild ? "" : "asset-row-disabled"}">
-          <td><input type="checkbox" data-asset-checkbox="${asset.id}" ${asset.selected ? "checked" : ""} ${asset.selectable ? "" : "disabled"} aria-label="选择 ${asset.name}"></td>
-          <td>${asset.name}</td>
-          <td>${asset.type}</td>
-          <td>${asset.size}</td>
+          <td><input type="checkbox" data-asset-checkbox="${escapeHtml(asset.id)}" ${asset.selected ? "checked" : ""} ${asset.selectable ? "" : "disabled"} aria-label="选择 ${escapeHtml(asset.name)}"></td>
+          <td>${escapeHtml(asset.name)}</td>
+          <td>${escapeHtml(asset.type)}</td>
+          <td>${escapeHtml(asset.size)}</td>
           <td>${statusPill(asset.state, asset.tone)}</td>
-          <td><span class="asset-fingerprint">${asset.fingerprint}</span></td>
-          <td>${asset.reason}</td>
+          <td><span class="asset-fingerprint">${escapeHtml(asset.fingerprint)}</span></td>
+          <td>${escapeHtml(asset.reason)}</td>
         </tr>
       `,
     )
@@ -111,9 +111,9 @@ function renderPipelineResponse(response) {
               ${step.order < response.steps.length ? '<div class="pipeline-arrow" aria-hidden="true"></div>' : ""}
             </div>
             <div class="pipeline-content">
-              <div class="pipeline-title">${step.title}</div>
-              <p>${step.description}</p>
-              <div class="pipeline-output">产物：${step.outputs.join("、")}</div>
+              <div class="pipeline-title">${escapeHtml(step.title)}</div>
+              <p>${escapeHtml(step.description)}</p>
+              <div class="pipeline-output">产物：${escapeHtml(step.outputs.join("、"))}</div>
             </div>
           </div>
         `,
@@ -126,7 +126,7 @@ function renderPipelineResponse(response) {
 }
 
 async function renderPipeline() {
-  const response = await window.BackendApi.previewBuildTask(previewPayload());
+  const response = await window.DataAssetsApi.previewBuildTask(previewPayload());
   renderPipelineResponse(response);
 }
 
@@ -148,7 +148,7 @@ function bindCreateTask() {
   qs("#createTask")?.addEventListener("click", async () => {
     const button = qs("#createTask");
     if (button) button.disabled = true;
-    const response = await window.BackendApi.createBuildTask({
+    const response = await window.DataAssetsApi.createBuildTask({
       ...previewPayload(),
       previewId: latestPreview?.previewId,
     });

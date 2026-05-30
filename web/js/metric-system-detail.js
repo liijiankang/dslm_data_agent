@@ -1,371 +1,21 @@
 (function () {
-const { qs, statusPill } = window.UI;
+const { paginationButtons, qs, statusPill } = window.UI;
 
-const THEMES = {
-  trade: {
-    name: "交易经营",
-    status: { label: "2 个待审核", tone: "amber" },
-    subtitle: "围绕订单成交、支付转化、退款影响、渠道贡献和商品结构沉淀交易经营指标资产。",
-    systems: 2,
-    sets: 8,
-    metrics: 60,
-    dimensions: 14,
-    qualityScore: "86%",
-    calls: "7,336",
-    version: "主题 v1.4",
-    boundary: "订单、支付、退款、渠道、商品和成交趋势",
-    mainModel: "订单交易库",
-    relatedModels: "支付明细库、退款明细库、商品库存库、CRM 业务库",
-    owner: "经营分析组",
-    createdAt: "2026-05-21 09:30",
-    updatedAt: "2026-05-29 13:18",
-    runStatus: "治理中",
-    computeMode: "离线周期计算为主",
-    schedule: "每日 02:00 + 每小时补充",
-    outputTable: "ads_metric_trade_*",
-    lastRun: "2026-05-29 13:52 成功",
-    qualitySummary: "4 项待处理",
-    dagJoin: "交易经营宽表",
-    dagJoinDesc: "订单、支付、退款、商品和渠道关联",
-    dagCompute: "交易指标计算",
-    dagComputeDesc: "成交金额、订单数、支付成功率、渠道贡献率",
-    dagOutput: "交易经营指标资产",
-    dagOutputDesc: "场景标签、主指标集、问数、API",
-    dagSources: [
-      ["dwd_order_detail", "订单、渠道、商品"],
-      ["dwd_payment_detail", "支付状态、支付金额"],
-      ["dwd_refund_detail", "退款状态、退款金额"],
-    ],
-    quality: [
-      ["口径校验通过", "成交金额、订单数、客单价口径与历史资产一致。", "green"],
-      ["血缘待确认", "支付明细库字段 pay_status 变更后需要确认影响范围。", "amber"],
-      ["相似指标提示", "支付成功率与支付转化率存在相似命名。", "amber"],
-    ],
-    systemRows: [
-      ["订单经营分析场景标签", "5 个", "成交趋势、客单价、订单结构", "待审核"],
-      ["支付转化分析场景标签", "3 个", "支付漏斗、渠道质量、异常监控", "待审核"],
-    ],
-    setRows: [
-      ["订单经营日报主指标集", "成交金额、订单数、客单价", "经营日报", "待审核"],
-      ["支付转化分析主指标集", "支付成功率、支付金额、失败订单数", "转化诊断", "待审核"],
-      ["退款影响分析主指标集", "退款金额、退款率、净成交金额", "售后分析", "已确认"],
-    ],
-    metricRows: [
-      ["成交金额", "原子指标", "支付成功订单金额汇总，不扣除退款", "已确认"],
-      ["订单数", "原子指标", "去重统计有效订单数", "已确认"],
-      ["客单价", "派生指标", "成交金额 / 订单数", "已确认"],
-      ["支付成功率", "派生指标", "支付成功订单数 / 提交订单数", "待复核"],
-    ],
-    dimensionRows: [
-      ["渠道", "dwd_order_detail.channel", "一级维度", "已确认"],
-      ["地区", "dwd_order_detail.region", "一级维度", "已确认"],
-      ["商品类目", "dim_product.category_name", "二级维度", "已确认"],
-      ["支付方式", "dwd_payment_detail.pay_method", "一级维度", "待复核"],
-    ],
-  },
-  customer: {
-    name: "客户经营",
-    status: { label: "运行正常", tone: "green" },
-    subtitle: "围绕客户分层、生命周期、复购、会员经营和客户贡献沉淀客户经营指标资产。",
-    systems: 2,
-    sets: 7,
-    metrics: 43,
-    dimensions: 11,
-    qualityScore: "92%",
-    calls: "5,126",
-    version: "主题 v2.1",
-    boundary: "客户分层、复购、生命周期、会员权益和客户贡献",
-    mainModel: "CRM 业务库",
-    relatedModels: "订单交易库、会员权益库、营销活动库",
-    owner: "客户运营组",
-    createdAt: "2026-05-18 10:16",
-    updatedAt: "2026-05-28 18:02",
-    runStatus: "运行正常",
-    computeMode: "离线周期计算",
-    schedule: "每日 01:30",
-    outputTable: "ads_metric_customer_*",
-    lastRun: "2026-05-29 01:32 成功",
-    qualitySummary: "全部通过",
-    dagJoin: "客户行为宽表",
-    dagJoinDesc: "客户、会员、订单和权益行为关联",
-    dagCompute: "客户指标计算",
-    dagComputeDesc: "新增客户、活跃客户、复购率、会员转化率",
-    dagOutput: "客户经营指标资产",
-    dagOutputDesc: "指标目录、问数、看板",
-    dagSources: [
-      ["dim_customer", "客户等级、注册时间"],
-      ["dwd_member_benefit", "会员等级、权益状态"],
-      ["dwd_order_detail", "购买行为、复购周期"],
-    ],
-    quality: [
-      ["服务已发布", "问数和 API 服务均已开通。", "green"],
-      ["口径校验通过", "复购率、新增客户数与历史资产口径一致。", "green"],
-      ["运行正常", "近 7 次调度均成功。", "green"],
-    ],
-    systemRows: [
-      ["客户生命周期场景标签", "4 个", "新增、活跃、留存、复购", "已发布"],
-      ["会员经营场景标签", "3 个", "会员转化、权益核销、会员贡献", "已发布"],
-    ],
-    setRows: [
-      ["客户增长主指标集", "新增客户数、注册转化率", "增长分析", "已发布"],
-      ["客户留存主指标集", "复购率、活跃客户数", "留存诊断", "已发布"],
-      ["会员经营主指标集", "会员转化率、会员贡献率", "会员经营", "已发布"],
-    ],
-    metricRows: [
-      ["新增客户数", "原子指标", "统计期内首次注册客户数", "已发布"],
-      ["活跃客户数", "原子指标", "统计期内有访问或购买行为的客户数", "已发布"],
-      ["复购率", "派生指标", "复购客户数 / 购买客户数", "已发布"],
-      ["会员转化率", "派生指标", "新增会员数 / 新增客户数", "已发布"],
-    ],
-    dimensionRows: [
-      ["客户等级", "dim_customer.level_name", "一级维度", "已发布"],
-      ["生命周期阶段", "dim_customer.lifecycle_stage", "一级维度", "已发布"],
-      ["注册渠道", "dim_customer.register_channel", "一级维度", "已发布"],
-      ["会员类型", "dwd_member_benefit.member_type", "二级维度", "已发布"],
-    ],
-  },
-  finance: {
-    name: "财务经营",
-    status: { label: "1 个待审核", tone: "amber" },
-    subtitle: "围绕收入、回款、应收、发票、毛利和退款影响沉淀财务经营指标资产。",
-    systems: 2,
-    sets: 6,
-    metrics: 42,
-    dimensions: 10,
-    qualityScore: "81%",
-    calls: "3,142",
-    version: "主题 v0.9",
-    boundary: "收入、回款、应收、发票、毛利和成本费用",
-    mainModel: "财务应收库",
-    relatedModels: "合同库、发票库、客户库、订单交易库",
-    owner: "财务分析组",
-    createdAt: "2026-05-20 14:05",
-    updatedAt: "2026-05-29 10:24",
-    runStatus: "待审核",
-    computeMode: "离线周期计算",
-    schedule: "每日 03:00",
-    outputTable: "ads_metric_finance_*",
-    lastRun: "尚未发布运行",
-    qualitySummary: "2 项待处理",
-    dagJoin: "财务经营宽表",
-    dagJoinDesc: "合同、发票、应收、回款和客户关联",
-    dagCompute: "财务指标计算",
-    dagComputeDesc: "回款金额、应收余额、逾期应收、毛利率",
-    dagOutput: "财务经营指标资产",
-    dagOutputDesc: "指标目录、风险看板",
-    dagSources: [
-      ["dwd_contract_detail", "合同金额、签约日期"],
-      ["dwd_invoice_detail", "发票金额、开票状态"],
-      ["dwd_receivable_detail", "应收、回款、逾期天数"],
-    ],
-    quality: [
-      ["口径待复核", "逾期天数是否按自然日或工作日统计需要确认。", "amber"],
-      ["调度已配置", "离线计算任务已配置，等待发布后生效。", "green"],
-      ["API 待发布", "问数服务待审核通过后开通。", "amber"],
-    ],
-    systemRows: [
-      ["回款与应收场景标签", "3 个", "回款效率、账龄结构、逾期风险", "待审核"],
-      ["经营利润场景标签", "3 个", "收入、成本、毛利和利润率", "已确认"],
-    ],
-    setRows: [
-      ["回款日报主指标集", "回款金额、回款率", "财务日报", "待审核"],
-      ["应收风险主指标集", "逾期应收金额、账龄结构", "风险监控", "待审核"],
-      ["合同履约主指标集", "合同金额、开票金额、回款金额", "履约分析", "已确认"],
-    ],
-    metricRows: [
-      ["回款金额", "原子指标", "统计期内已确认到账金额", "已确认"],
-      ["应收余额", "原子指标", "未结清应收金额余额", "已确认"],
-      ["逾期应收金额", "原子指标", "超过约定账期的应收余额", "待复核"],
-      ["回款率", "派生指标", "回款金额 / 应收金额", "已确认"],
-    ],
-    dimensionRows: [
-      ["客户类型", "dim_customer.customer_type", "一级维度", "已确认"],
-      ["合同类型", "dwd_contract_detail.contract_type", "一级维度", "已确认"],
-      ["账龄区间", "dwd_receivable_detail.age_bucket", "一级维度", "待复核"],
-      ["区域", "dim_customer.region", "一级维度", "已确认"],
-    ],
-  },
-  service: {
-    name: "售后服务",
-    status: { label: "草稿", tone: "blue" },
-    subtitle: "围绕退款、退货、工单、SLA、满意度和服务质量沉淀售后服务指标资产。",
-    systems: 1,
-    sets: 3,
-    metrics: 19,
-    dimensions: 5,
-    qualityScore: "74%",
-    calls: "648",
-    version: "主题 v0.4",
-    boundary: "退款、退货、工单、SLA、满意度和服务质量",
-    mainModel: "客服工单库",
-    relatedModels: "售后服务库、客户库、订单交易库",
-    owner: "服务运营组",
-    createdAt: "2026-05-28 15:20",
-    updatedAt: "2026-05-29 09:10",
-    runStatus: "草稿",
-    computeMode: "查询时计算",
-    schedule: "无需调度",
-    outputTable: "query_metric_service_*",
-    lastRun: "尚未发布",
-    qualitySummary: "3 项待补充",
-    dagJoin: "工单服务宽表",
-    dagJoinDesc: "工单、客户、售后记录关联",
-    dagCompute: "服务质量指标计算",
-    dagComputeDesc: "SLA 达成率、响应时长、满意度",
-    dagOutput: "售后服务指标资产",
-    dagOutputDesc: "问数、看板建议",
-    dagSources: [
-      ["dwd_ticket_detail", "工单状态、响应时间"],
-      ["dwd_after_sales_detail", "售后类型、处理结果"],
-      ["dim_customer", "客户等级、所属区域"],
-    ],
-    quality: [
-      ["字段语义待补充", "SLA 截止时间字段含义需要业务确认。", "amber"],
-      ["口径待定", "满意度是否只统计已完结工单需要确认。", "amber"],
-      ["草稿暂存", "尚未进入发布审核流程。", "blue"],
-    ],
-    systemRows: [
-      ["服务质量场景标签", "3 个", "SLA、响应效率、满意度", "草稿"],
-    ],
-    setRows: [
-      ["客服履约主指标集", "SLA 达成率、平均响应时长", "履约监控", "草稿"],
-      ["售后效率主指标集", "工单解决率、处理时长", "效率分析", "草稿"],
-      ["满意度分析主指标集", "满意度得分、差评率", "体验分析", "草稿"],
-    ],
-    metricRows: [
-      ["SLA 达成率", "派生指标", "按时完成工单数 / 应完成工单数", "待确认"],
-      ["平均响应时长", "原子指标", "首次响应耗时平均值", "已确认"],
-      ["工单解决率", "派生指标", "已解决工单数 / 完结工单数", "待确认"],
-      ["满意度得分", "原子指标", "已回收评价分数平均值", "待确认"],
-    ],
-    dimensionRows: [
-      ["工单类型", "dwd_ticket_detail.ticket_type", "一级维度", "已确认"],
-      ["服务渠道", "dwd_ticket_detail.service_channel", "一级维度", "已确认"],
-      ["客户等级", "dim_customer.level_name", "一级维度", "待补充"],
-      ["售后类型", "dwd_after_sales_detail.after_sales_type", "二级维度", "待补充"],
-    ],
-  },
-  marketing: {
-    name: "营销增长",
-    status: { label: "已发布", tone: "green" },
-    subtitle: "围绕活动触达、渠道转化、ROI、线索质量和获客成本沉淀营销增长指标资产。",
-    systems: 2,
-    sets: 5,
-    metrics: 38,
-    dimensions: 12,
-    qualityScore: "90%",
-    calls: "3,852",
-    version: "主题 v1.6",
-    boundary: "活动、渠道、触达、转化、ROI 和线索质量",
-    mainModel: "营销活动库",
-    relatedModels: "订单交易库、客户行为库、CRM 业务库",
-    owner: "营销分析组",
-    createdAt: "2026-05-18 11:25",
-    updatedAt: "2026-05-28 20:11",
-    runStatus: "运行正常",
-    computeMode: "查询时计算",
-    schedule: "无需调度",
-    outputTable: "query_metric_marketing_*",
-    lastRun: "2026-05-29 13:52 查询成功",
-    qualitySummary: "全部通过",
-    dagJoin: "营销归因宽表",
-    dagJoinDesc: "活动、触达、渠道、订单和客户行为关联",
-    dagCompute: "营销指标计算",
-    dagComputeDesc: "触达率、转化率、ROI、获客成本",
-    dagOutput: "营销增长指标资产",
-    dagOutputDesc: "问数、看板、活动复盘",
-    dagSources: [
-      ["dwd_campaign_touch", "活动、触达、渠道"],
-      ["dwd_user_behavior", "访问、点击、加购"],
-      ["dwd_order_detail", "订单金额、成交状态"],
-    ],
-    quality: [
-      ["看板已生成", "活动转化看板已同步到 BI 工作区。", "green"],
-      ["归因口径确认", "默认使用末次点击归因。", "green"],
-      ["查询时计算", "高频看板查询已启用缓存。", "green"],
-    ],
-    systemRows: [
-      ["营销活动转化场景标签", "4 个", "活动触达、转化效果、ROI", "已发布"],
-      ["渠道归因场景标签", "1 个", "渠道贡献、归因质量", "已发布"],
-    ],
-    setRows: [
-      ["活动复盘主指标集", "转化率、ROI、获客成本", "活动复盘", "已发布"],
-      ["渠道归因主指标集", "渠道贡献率、渠道成交金额", "渠道分析", "已发布"],
-      ["触达效果主指标集", "触达率、点击率、转化率", "投放优化", "已发布"],
-    ],
-    metricRows: [
-      ["活动转化率", "派生指标", "活动成交客户数 / 活动触达客户数", "已发布"],
-      ["渠道贡献率", "派生指标", "渠道成交金额 / 总成交金额", "已发布"],
-      ["ROI", "派生指标", "活动成交金额 / 活动成本", "已发布"],
-      ["获客成本", "派生指标", "活动成本 / 新增客户数", "已发布"],
-    ],
-    dimensionRows: [
-      ["活动", "dwd_campaign_touch.campaign_name", "一级维度", "已发布"],
-      ["渠道", "dwd_campaign_touch.channel", "一级维度", "已发布"],
-      ["触达方式", "dwd_campaign_touch.touch_type", "二级维度", "已发布"],
-      ["商品类目", "dim_product.category_name", "二级维度", "已发布"],
-    ],
-  },
-  supply: {
-    name: "供应链履约",
-    status: { label: "建设中", tone: "blue" },
-    subtitle: "围绕库存、采购、入库、出库、履约、缺货和补货沉淀供应链履约指标资产。",
-    systems: 1,
-    sets: 2,
-    metrics: 17,
-    dimensions: 6,
-    qualityScore: "78%",
-    calls: "934",
-    version: "主题 v0.3",
-    boundary: "库存、采购、入库、出库、履约、缺货和补货",
-    mainModel: "商品库存库",
-    relatedModels: "采购履约库、订单交易库、供应商库",
-    owner: "供应链分析组",
-    createdAt: "2026-05-27 16:40",
-    updatedAt: "2026-05-29 11:18",
-    runStatus: "建设中",
-    computeMode: "离线周期计算",
-    schedule: "每日 04:00",
-    outputTable: "ads_metric_supply_*",
-    lastRun: "尚未发布运行",
-    qualitySummary: "2 项待补充",
-    dagJoin: "库存履约宽表",
-    dagJoinDesc: "商品、库存、采购和订单履约关联",
-    dagCompute: "供应链指标计算",
-    dagComputeDesc: "库存周转、缺货率、履约及时率",
-    dagOutput: "供应链履约指标资产",
-    dagOutputDesc: "指标目录、补货建议",
-    dagSources: [
-      ["dwd_inventory_detail", "SKU、仓库、库存数量"],
-      ["dwd_purchase_order", "采购订单、到货时间"],
-      ["dwd_order_fulfillment", "发货、签收、履约状态"],
-    ],
-    quality: [
-      ["成本口径待确认", "库存成本字段是否含税需要业务确认。", "amber"],
-      ["血缘已识别", "库存与采购链路血缘已完成识别。", "green"],
-      ["建设中", "缺货影响指标仍在补充口径。", "blue"],
-    ],
-    systemRows: [
-      ["库存效率场景标签", "2 个", "库存周转、缺货影响、补货效率", "建设中"],
-    ],
-    setRows: [
-      ["库存效率主指标集", "库存周转天数、库存金额", "库存运营", "建设中"],
-      ["缺货影响主指标集", "缺货率、缺货影响订单数", "履约诊断", "建设中"],
-    ],
-    metricRows: [
-      ["库存周转天数", "派生指标", "平均库存 / 日均出库成本", "待确认"],
-      ["缺货率", "派生指标", "缺货 SKU 数 / 有效 SKU 数", "待确认"],
-      ["履约及时率", "派生指标", "按时履约订单数 / 应履约订单数", "已确认"],
-      ["补货满足率", "派生指标", "满足补货数量 / 计划补货数量", "待确认"],
-    ],
-    dimensionRows: [
-      ["商品类目", "dim_product.category_name", "二级维度", "已确认"],
-      ["仓库", "dim_warehouse.warehouse_name", "一级维度", "已确认"],
-      ["供应商", "dim_supplier.supplier_name", "一级维度", "待补充"],
-      ["履约方式", "dwd_order_fulfillment.fulfillment_type", "一级维度", "待补充"],
-    ],
-  },
+const DIRECTION_PAGE_SIZE = 4;
+
+const state = {
+  activeOutputAssetKey: "",
+  directionKeyword: "",
+  directionPriority: "all",
+  directionStatus: "all",
+  directionPage: 1,
 };
+
+const metricMockData = window.DataMetricsApi.getThemeDetailData();
+const THEMES = metricMockData.themes || {};
+const TRADE_DIRECTION_META = metricMockData.tradeDirectionMeta || {};
+const TRADE_DIRECTION_METRICS = metricMockData.tradeDirectionMetrics || {};
+const TRADE_DIRECTION_DIMENSIONS = metricMockData.tradeDirectionDimensions || {};
 
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>"']/g, (char) => ({
@@ -382,6 +32,32 @@ function setText(id, value) {
   if (node) node.textContent = value;
 }
 
+function setHref(id, value) {
+  const node = qs(`#${id}`);
+  if (node) node.setAttribute("href", value);
+}
+
+function currentThemeKey(params = new URLSearchParams(window.location.search)) {
+  const key = params.get("theme") || params.get("system") || "trade";
+  return THEMES[key] ? key : "trade";
+}
+
+function directionHref(themeKey, directionName) {
+  return `metric-direction-detail.html?theme=${encodeURIComponent(themeKey)}&direction=${encodeURIComponent(directionName)}`;
+}
+
+function outputAssetHref(themeKey, directionName, assetKey) {
+  return `metric-output-asset-detail.html?theme=${encodeURIComponent(themeKey)}&direction=${encodeURIComponent(directionName)}&asset=${encodeURIComponent(assetKey)}`;
+}
+
+function themeHref(themeKey) {
+  return `metric-system-detail.html?theme=${encodeURIComponent(themeKey)}`;
+}
+
+function directionLogicalAssetName(direction) {
+  return direction.name.replace("分析", "结果");
+}
+
 function renderRows(id, rows) {
   const node = qs(`#${id}`);
   if (!node) return;
@@ -392,13 +68,21 @@ function renderRows(id, rows) {
   `).join("");
 }
 
+function statusTone(value) {
+  if (/通过|成功|正常|已生成|已确认|可复用/.test(value)) return "green";
+  if (/待|需|风险|冲突|复核|确认/.test(value)) return "amber";
+  return "blue";
+}
+
 function metricCode(name) {
   return {
     成交金额: "gmv",
     订单数: "order_count",
     客单价: "avg_order_value",
     支付成功率: "pay_success_rate",
+    渠道贡献率: "channel_gmv_share",
     退款金额: "refund_amount",
+    退款影响金额: "refund_amount",
     退款率: "refund_rate",
     回款金额: "payment_received_amount",
     应收余额: "ar_balance",
@@ -410,26 +94,371 @@ function metricCode(name) {
   }[name] || name.toLowerCase().replace(/\s+/g, "_");
 }
 
-function metricAdditivity(type, name) {
-  if (/率|客单价|占比|贡献/.test(name) || type === "派生指标") return "不可加";
-  if (/余额|库存/.test(name)) return "半可加";
-  return "完全可加";
+function metricDirection(name, index = 0) {
+  if (/支付/.test(name)) return "支付转化分析";
+  if (/退款/.test(name)) return "退款影响分析";
+  if (/渠道/.test(name)) return "渠道结构变化分析";
+  if (/客单价|毛利|余额|回款|复购|会员/.test(name)) return "客单价变化分析";
+  return ["订单量变化分析", "经营核心分析", "结构变化分析"][index % 3];
+}
+
+function metricReuseState(name, status) {
+  if (/已生成|已确认/.test(status)) return "可复用";
+  if (/待复核|待确认/.test(status)) return "需人工确认";
+  if (/退款|支付/.test(name)) return "相似指标待处理";
+  return "新建版本";
 }
 
 function renderMetricRows(rows) {
   const node = qs("#detailMetricRows");
   if (!node) return;
-  node.innerHTML = rows.map(([name, type, desc, status]) => {
-    const additivity = metricAdditivity(type, name);
-    const tone = status === "待复核" ? "amber" : "green";
+  node.innerHTML = rows.map(([name, type, desc, status], index) => {
+    const reuse = metricReuseState(name, status);
+    const dslStatus = /待|复核|确认/.test(status) ? "DSL 待复核" : "DSL 通过";
     return `
       <tr>
         <td><strong>${escapeHtml(name)}</strong></td>
         <td>${escapeHtml(metricCode(name))}</td>
         <td>${escapeHtml(type)}</td>
-        <td>${statusPill(additivity, additivity === "不可加" ? "red" : additivity === "半可加" ? "amber" : "green")}</td>
+        <td>${escapeHtml(metricDirection(name, index))}</td>
+        <td>${statusPill(escapeHtml(reuse), statusTone(reuse))}</td>
         <td>${escapeHtml(desc)}</td>
-        <td>${statusPill(status === "待复核" ? "需复核" : "DSL 通过", tone)}</td>
+        <td>${statusPill(escapeHtml(dslStatus), statusTone(dslStatus))}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function themeDirections(theme) {
+  if (theme.name === "交易经营") {
+    return [
+      { name: "订单量变化分析", priority: "核心", status: "待确认", metricSet: "订单量变化指标集", metrics: 8, dimensions: 5, output: "ads_metric_order_daily", task: "task_metric_order_daily" },
+      { name: "客单价变化分析", priority: "核心", status: "待确认", metricSet: "客单价变化指标集", metrics: 9, dimensions: 5, output: "ads_metric_order_daily", task: "task_metric_order_daily" },
+      { name: "支付转化分析", priority: "核心", status: "待确认", metricSet: "支付转化指标集", metrics: 7, dimensions: 4, output: "ads_metric_payment_daily", task: "task_metric_payment_daily" },
+      { name: "渠道结构变化分析", priority: "扩展", status: "已确认", metricSet: "渠道结构指标集", metrics: 6, dimensions: 4, output: "ads_metric_order_daily", task: "task_metric_order_daily" },
+      { name: "退款影响分析", priority: "扩展", status: "待处理", metricSet: "退款影响指标集", metrics: 5, dimensions: 3, output: "ads_metric_refund_daily", task: "task_metric_refund_daily" },
+    ];
+  }
+  return theme.setRows.map(([setName, metrics, scene, status], index) => ({
+    name: setName.replace("主指标集", "分析").replace("场景标签", "分析"),
+    priority: index < 2 ? "核心" : "扩展",
+    status,
+    metricSet: setName,
+    metrics: Number(String(metrics).match(/\d+/)?.[0] || 4),
+    dimensions: Math.max(3, Math.min(8, theme.dimensions - index)),
+    output: index === 0 ? `${theme.outputTable}`.replace("*", "core_daily") : `${theme.outputTable}`.replace("*", `asset_${index}_daily`),
+    task: `task_${theme.name}_${index + 1}`.replace(/\s+/g, "_"),
+    scene,
+  }));
+}
+
+function themeOutputAssets(theme) {
+  if (theme.name === "交易经营") {
+    return [
+      {
+        key: "trade_order",
+        name: "ads_metric_order_daily",
+        relation: "共享物理资产",
+        computeMode: "离线周期计算",
+        task: "task_metric_order_daily",
+        directions: ["订单量变化分析", "客单价变化分析", "渠道结构变化分析"],
+        logicalAssets: ["订单量变化结果", "客单价变化结果", "渠道结构变化结果"],
+        sources: [["dwd_order_detail", "订单、渠道、商品"], ["dwd_payment_detail", "支付状态、支付金额"], ["dwd_refund_detail", "退款状态、退款金额"]],
+        join: "订单交易宽表",
+        joinDesc: "订单、支付、渠道和退款关联",
+        compute: "共享经营指标计算",
+        computeDesc: "订单量、客单价、渠道结构",
+        outputDesc: "3 个逻辑资产共享，独立血缘和运行状态",
+        sql: `-- compiled from Metric DSL: order_count, gmv, avg_order_value, channel_gmv_share
+SELECT
+  dt,
+  channel,
+  product_category,
+  COUNT(DISTINCT order_id) AS order_count,
+  SUM(pay_amount) AS gmv,
+  SUM(pay_amount) / NULLIF(COUNT(DISTINCT order_id), 0) AS avg_order_value,
+  SUM(pay_amount) / SUM(SUM(pay_amount)) OVER (PARTITION BY dt) AS channel_gmv_share
+FROM dwd_order_payment_detail
+WHERE pay_status = 'success'
+GROUP BY dt, channel, product_category;`,
+      },
+      {
+        key: "trade_payment",
+        name: "ads_metric_payment_daily",
+        relation: "独立产出",
+        computeMode: "离线周期计算",
+        task: "task_metric_payment_daily",
+        directions: ["支付转化分析"],
+        logicalAssets: ["支付转化结果"],
+        sources: [["dwd_order_detail", "订单提交"], ["dwd_payment_detail", "支付状态、失败原因"]],
+        join: "支付转化明细",
+        joinDesc: "订单提交与支付流水关联",
+        compute: "支付转化指标计算",
+        computeDesc: "支付成功率、失败订单数",
+        outputDesc: "支付转化分析独立产出",
+        sql: `-- compiled from Metric DSL: pay_success_rate
+SELECT
+  dt,
+  channel,
+  COUNT(DISTINCT order_id) AS submitted_orders,
+  COUNT(DISTINCT CASE WHEN pay_status = 'success' THEN order_id END) AS paid_orders,
+  COUNT(DISTINCT CASE WHEN pay_status = 'success' THEN order_id END) / NULLIF(COUNT(DISTINCT order_id), 0) AS pay_success_rate
+FROM dwd_order_payment_detail
+GROUP BY dt, channel;`,
+      },
+      {
+        key: "trade_refund",
+        name: "ads_metric_refund_daily",
+        relation: "独立产出",
+        computeMode: "离线周期计算",
+        task: "task_metric_refund_daily",
+        directions: ["退款影响分析"],
+        logicalAssets: ["退款影响结果"],
+        sources: [["dwd_refund_detail", "退款状态、退款金额"]],
+        join: "退款明细聚合",
+        joinDesc: "按退款成功记录统计退款金额",
+        compute: "退款影响指标计算",
+        computeDesc: "退款影响金额、退款订单数",
+        outputDesc: "退款影响分析独立产出",
+        sql: `-- compiled from Metric DSL: refund_amount
+SELECT
+  dt,
+  channel,
+  product_category,
+  COUNT(DISTINCT order_id) AS refund_order_count,
+  SUM(refund_amount) AS refund_amount
+FROM dwd_refund_detail
+WHERE refund_status = 'success'
+GROUP BY dt, channel, product_category;`,
+      },
+    ];
+  }
+  const directions = themeDirections(theme);
+  return directions.slice(0, Math.min(3, directions.length)).map((direction, index) => ({
+    key: `asset_${index}`,
+    name: direction.output,
+    relation: index === 0 && directions.length > 1 ? "共享物理资产" : "独立产出",
+    computeMode: theme.computeMode,
+    task: direction.task,
+    directions: index === 0 && directions.length > 1 ? directions.slice(0, 2).map((item) => item.name) : [direction.name],
+    logicalAssets: index === 0 && directions.length > 1 ? directions.slice(0, 2).map((item) => item.name.replace("分析", "结果")) : [direction.name.replace("分析", "结果")],
+    sources: theme.dagSources,
+    join: theme.dagJoin,
+    joinDesc: theme.dagJoinDesc,
+    compute: theme.dagCompute,
+    computeDesc: theme.dagComputeDesc,
+    outputDesc: theme.dagOutputDesc,
+    sql: `-- compiled from Metric DSL: ${theme.name}
+SELECT
+  dt,
+  business_key,
+  COUNT(1) AS event_count,
+  SUM(metric_value) AS metric_value
+FROM semantic_${theme.name}_wide
+GROUP BY dt, business_key;`,
+  }));
+}
+
+function currentOutputAsset(theme) {
+  const assets = themeOutputAssets(theme);
+  let asset = assets.find((item) => item.key === state.activeOutputAssetKey);
+  if (!asset) {
+    state.activeOutputAssetKey = assets[0]?.key || "";
+    asset = assets[0];
+  }
+  return asset || {};
+}
+
+function filteredDirections(theme) {
+  const keyword = state.directionKeyword.trim().toLowerCase();
+  return themeDirections(theme).filter((item) => {
+    const text = `${item.name} ${item.priority} ${item.status} ${item.metricSet} ${item.output} ${item.task}`.toLowerCase();
+    const matchesKeyword = !keyword || text.includes(keyword);
+    const matchesPriority = state.directionPriority === "all" || item.priority === state.directionPriority;
+    const matchesStatus = state.directionStatus === "all" || item.status === state.directionStatus;
+    return matchesKeyword && matchesPriority && matchesStatus;
+  });
+}
+
+function bindDirectionFilters(theme, themeKey) {
+  const search = qs("#directionSearch");
+  const priority = qs("#directionPriorityFilter");
+  const status = qs("#directionStatusFilter");
+  const reset = qs("#resetDirectionFilters");
+  if (!search || search.dataset.directionFilterBound === "true") return;
+  search.dataset.directionFilterBound = "true";
+
+  const apply = () => {
+    state.directionKeyword = search.value || "";
+    state.directionPriority = priority?.value || "all";
+    state.directionStatus = status?.value || "all";
+    state.directionPage = 1;
+    renderDirectionCards(theme, themeKey);
+  };
+
+  search.addEventListener("input", apply);
+  priority?.addEventListener("change", apply);
+  status?.addEventListener("change", apply);
+  reset?.addEventListener("click", () => {
+    search.value = "";
+    if (priority) priority.value = "all";
+    if (status) status.value = "all";
+    apply();
+  });
+}
+
+function renderDirectionCards(theme, themeKey = "trade") {
+  const allDirections = themeDirections(theme);
+  const directions = filteredDirections(theme);
+  const node = qs("#detailDirectionCards");
+  if (!node) return;
+  const totalPages = Math.max(1, Math.ceil(directions.length / DIRECTION_PAGE_SIZE));
+  if (state.directionPage > totalPages) state.directionPage = totalPages;
+  const start = (state.directionPage - 1) * DIRECTION_PAGE_SIZE;
+  const pagedDirections = directions.slice(start, start + DIRECTION_PAGE_SIZE);
+
+  node.innerHTML = pagedDirections.map((item) => {
+    const href = directionHref(themeKey, item.name);
+    return `
+    <article class="analysis-direction-card" data-direction-card data-href="${escapeHtml(href)}" role="link" tabindex="0">
+      <div class="analysis-direction-head">
+        ${statusPill(escapeHtml(item.priority), item.priority === "核心" ? "green" : "blue")}
+        ${statusPill(escapeHtml(item.status), statusTone(item.status))}
+      </div>
+      <h3>${escapeHtml(item.name)}</h3>
+      <p>${escapeHtml(item.metricSet)}，输出到 ${escapeHtml(item.output)}。</p>
+      <div class="analysis-direction-stats">
+        <div><span>指标</span><strong>${escapeHtml(item.metrics)}</strong></div>
+        <div><span>维度</span><strong>${escapeHtml(item.dimensions)}</strong></div>
+        <div><span>计算任务</span><strong>${escapeHtml(item.task)}</strong></div>
+      </div>
+      <span class="analysis-direction-card-action">查看详情</span>
+    </article>
+  `;
+  }).join("");
+  const empty = qs("#directionEmptyState");
+  if (empty) empty.hidden = directions.length > 0;
+  node.querySelectorAll("[data-direction-card]").forEach((card) => {
+    const openDetail = () => {
+      window.location.href = card.dataset.href;
+    };
+    card.addEventListener("click", openDetail);
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openDetail();
+    });
+  });
+  const from = directions.length === 0 ? 0 : start + 1;
+  const to = start + pagedDirections.length;
+  const summary = `共 ${directions.length} 个，当前 ${from}-${to}`;
+  setText("detailDirectionSummary", `${allDirections.length} 个分析方向，核心 ${allDirections.filter((item) => item.priority === "核心").length} 个`);
+  setText("directionPaginationSummary", summary);
+
+  const controls = qs("#directionPaginationControls");
+  if (!controls) return;
+  controls.innerHTML = directions.length
+    ? `
+      <button class="page-button" data-direction-page="prev" type="button" ${state.directionPage === 1 ? "disabled" : ""}>上一页</button>
+      ${paginationButtons(state.directionPage, totalPages, "data-direction-page")}
+      <button class="page-button" data-direction-page="next" type="button" ${state.directionPage === totalPages ? "disabled" : ""}>下一页</button>
+    `
+    : "";
+  controls.querySelectorAll("[data-direction-page]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = button.dataset.directionPage;
+      if (target === "prev") state.directionPage = Math.max(1, state.directionPage - 1);
+      else if (target === "next") state.directionPage = Math.min(totalPages, state.directionPage + 1);
+      else state.directionPage = Number(target);
+      renderDirectionCards(theme, themeKey);
+    });
+  });
+}
+
+function renderAssetMap(theme) {
+  const rows = themeOutputAssets(theme);
+  const node = qs("#detailAssetMapRows");
+  if (!node) return;
+  node.innerHTML = rows.map((asset) => `
+    <tr>
+      <td><strong>${escapeHtml(asset.name)}</strong></td>
+      <td>${escapeHtml(asset.directions.join("、"))}</td>
+      <td>${escapeHtml(asset.logicalAssets.join("、"))}</td>
+      <td>${escapeHtml(asset.task)}</td>
+      <td>${escapeHtml(asset.computeMode)}</td>
+      <td>${statusPill(escapeHtml(asset.relation), asset.relation === "共享物理资产" ? "green" : "blue")}</td>
+    </tr>
+  `).join("");
+  const sharedCount = rows.filter((row) => row.relation === "共享物理资产").length;
+  setText("detailAssetMapSummary", sharedCount ? `${rows.length} 个物理资产，${sharedCount} 个共享` : `${rows.length} 个物理资产，方向独立`);
+}
+
+function renderOutputAssetTabs(theme) {
+  const assets = themeOutputAssets(theme);
+  const active = currentOutputAsset(theme);
+  const node = qs("#detailOutputAssetTabs");
+  if (!node) return;
+  node.innerHTML = assets.map((asset) => `
+    <button class="output-asset-tab ${asset.key === active.key ? "active" : ""}" data-detail-output-asset="${escapeHtml(asset.key)}" type="button">
+      ${statusPill(escapeHtml(asset.relation), asset.relation === "共享物理资产" ? "green" : "blue")}
+      <strong>${escapeHtml(asset.name)}</strong>
+      <em>${escapeHtml(asset.directions.join("、"))}</em>
+    </button>
+  `).join("");
+  node.querySelectorAll("[data-detail-output-asset]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.activeOutputAssetKey = button.dataset.detailOutputAsset;
+      renderOutputAssetTabs(theme);
+      renderSelectedOutputAsset(theme);
+    });
+  });
+}
+
+function renderSelectedOutputAsset(theme) {
+  const asset = currentOutputAsset(theme);
+  setText("detailSelectedOutputAsset", asset.name);
+  setText("detailSelectedOutputDirections", asset.directions?.join("、") || "-");
+  setText("detailSelectedLogicalAssets", asset.logicalAssets?.join("、") || "-");
+  setText("detailSelectedComputeTask", asset.task || "-");
+  setText("detailDagJoin", asset.join || theme.dagJoin);
+  setText("detailDagJoinDesc", asset.joinDesc || theme.dagJoinDesc);
+  setText("detailDagCompute", asset.compute || theme.dagCompute);
+  setText("detailDagComputeDesc", asset.computeDesc || theme.dagComputeDesc);
+  setText("detailDagOutput", asset.name || theme.outputTable);
+  setText("detailDagOutputDesc", asset.outputDesc || "逻辑资产独立，物理资产可共享计算");
+  const sql = qs("#detailGeneratedSql");
+  if (sql) sql.value = asset.sql || "";
+  renderDagSources(asset.sources || theme.dagSources);
+}
+
+function renderMetricSetRows(theme) {
+  const directions = themeDirections(theme);
+  const node = qs("#detailSetRows");
+  if (!node) return;
+  node.innerHTML = directions.map((item) => `
+    <tr>
+      <td><strong>${escapeHtml(item.metricSet)}</strong></td>
+      <td>${escapeHtml(item.name)}</td>
+      <td>${escapeHtml(`${item.metrics} 个`)}</td>
+      <td>${escapeHtml(item.output)}</td>
+      <td>${statusPill(escapeHtml(item.status), statusTone(item.status))}</td>
+    </tr>
+  `).join("");
+}
+
+function renderDimensionRows(rows) {
+  const node = qs("#detailDimensionRows");
+  if (!node) return;
+  node.innerHTML = rows.map(([name, field, level, status], index) => {
+    const type = /时间|日期/.test(name) ? "公共维度" : index < 2 ? "公共维度" : "方向特有维度";
+    const scope = type === "公共维度" ? "全部分析方向" : metricDirection(name, index);
+    return `
+      <tr>
+        <td><strong>${escapeHtml(name)}</strong></td>
+        <td>${escapeHtml(field)}</td>
+        <td>${statusPill(escapeHtml(type), type === "公共维度" ? "green" : "blue")}</td>
+        <td>${escapeHtml(scope)} · ${escapeHtml(level)}</td>
+        <td>${statusPill(escapeHtml(status), statusTone(status))}</td>
       </tr>
     `;
   }).join("");
@@ -439,55 +468,21 @@ function renderDslRows(theme) {
   const node = qs("#detailDslRows");
   if (!node) return;
   const derivedCount = theme.metricRows.filter(([name, type]) => type === "派生指标" || /率|客单价|占比/.test(name)).length;
+  const assets = themeOutputAssets(theme);
   const rows = [
-    ["Metric DSL", `${theme.metrics} 个指标定义`, "编码、表达式、过滤条件、时间字段和粒度已沉淀为机器协议。", "green"],
-    ["聚合治理", `${derivedCount} 个不可加指标`, "比率和客单价类指标按分子分母重算，不允许跨维度简单平均。", "green"],
-    ["SQL 编译", `${theme.outputTable} 已生成`, "计算 SQL 由 DSL 编译，DAG 和字段血缘同步生成。", "green"],
-    ["冲突检测", theme.status.tone === "amber" ? "存在待处理项" : "无阻断冲突", "基于名称、业务定义、表达式、来源字段和过滤条件评分。", theme.status.tone === "amber" ? "amber" : "green"],
+    ["Metric DSL", `${theme.metrics} 个指标定义`, "编码、业务口径、表达式、过滤条件、时间字段、粒度和测试规则已沉淀为机器协议。", "green"],
+    ["聚合规则", `${derivedCount} 个比率/不可加指标`, "比率、客单价和余额类指标按可加性规则重算，不允许跨维度简单平均。", "green"],
+    ["SQL 编译", `${assets.length} 个输出资产可编译`, "每个物理输出资产均可由 DSL 编译生成 SQL、DAG、字段血缘和质量测试。", "green"],
+    ["冲突检测", theme.status.tone === "amber" ? "存在待处理项" : "无阻断冲突", "基于名称、业务定义、表达式、来源字段和过滤条件综合评分。", theme.status.tone === "amber" ? "amber" : "green"],
   ];
   node.innerHTML = rows.map(([label, value, desc, tone]) => `
     <div><span class="status ${tone}">${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><em>${escapeHtml(desc)}</em></div>
   `).join("");
-  setText("detailDslSummary", `${theme.metrics} 个 DSL 定义，${derivedCount} 个不可加指标`);
+  setText("detailDslSummary", `${theme.metrics} 个 DSL 定义，${assets.length} 个输出资产可编译`);
 }
 
-function themeAssetMapRows(theme) {
-  if (theme.name === "交易经营") {
-    return [
-      ["订单量变化分析", "订单量变化结果", "ads_metric_order_daily", "共享物理资产"],
-      ["客单价变化分析", "客单价变化结果", "ads_metric_order_daily", "共享物理资产"],
-      ["渠道结构变化分析", "渠道结构变化结果", "ads_metric_order_daily", "共享物理资产"],
-      ["支付转化分析", "支付转化结果", "ads_metric_payment_daily", "独立产出"],
-      ["退款影响分析", "退款影响结果", "ads_metric_refund_daily", "独立产出"],
-    ];
-  }
-  const safeName = theme.name || "业务主题";
-  return [
-    [`${safeName}核心分析`, `${safeName}核心结果`, theme.outputTable || "ads_metric_theme_daily", "独立产出"],
-    [`${safeName}扩展分析`, `${safeName}扩展结果`, theme.outputTable || "ads_metric_theme_daily", "共享物理资产"],
-  ];
-}
-
-function renderAssetMap(theme) {
-  const rows = themeAssetMapRows(theme);
-  renderRows("detailAssetMapRows", rows);
-  const sharedCount = rows.filter((row) => row[3] === "共享物理资产").length;
-  setText("detailAssetMapSummary", sharedCount ? `${sharedCount} 个方向共享物理资产` : "方向独立产出");
-}
-
-function renderQuality(items) {
-  const node = qs("#detailQualityList");
-  if (!node) return;
-  node.innerHTML = items.map(([label, desc, tone]) => `
-    <div>
-      ${statusPill(escapeHtml(label), tone)}
-      <span>${escapeHtml(desc)}</span>
-    </div>
-  `).join("");
-}
-
-function renderDagSources(items) {
-  const node = qs("#detailDagSources");
+function renderDagSourcesTo(id, items) {
+  const node = qs(`#${id}`);
   if (!node) return;
   node.innerHTML = items.map(([name, desc]) => `
     <div class="dag-node source">
@@ -498,10 +493,358 @@ function renderDagSources(items) {
   `).join("");
 }
 
+function renderDagSources(items) {
+  renderDagSourcesTo("detailDagSources", items);
+}
+
+function findDirection(theme, directionName) {
+  const directions = themeDirections(theme);
+  return directions.find((item) => item.name === directionName) || directions[0];
+}
+
+function outputAssetsForDirection(theme, direction) {
+  const assets = themeOutputAssets(theme).filter((asset) => asset.directions.includes(direction.name) || asset.name === direction.output);
+  if (assets.length) return assets;
+  return [{
+    key: "direction_asset",
+    name: direction.output,
+    relation: "独立产出",
+    computeMode: theme.computeMode,
+    task: direction.task,
+    directions: [direction.name],
+    logicalAssets: [directionLogicalAssetName(direction)],
+    sources: theme.dagSources,
+    join: theme.dagJoin,
+    joinDesc: theme.dagJoinDesc,
+    compute: theme.dagCompute,
+    computeDesc: theme.dagComputeDesc,
+    outputDesc: `${direction.name}独立产出`,
+    sql: `-- compiled from Metric DSL: ${direction.name}
+SELECT
+  dt,
+  business_key,
+  COUNT(1) AS event_count,
+  SUM(metric_value) AS metric_value
+FROM semantic_${theme.name}_wide
+GROUP BY dt, business_key;`,
+  }];
+}
+
+function directionGoal(theme, direction) {
+  return TRADE_DIRECTION_META[direction.name]?.goal || `围绕${direction.name}沉淀可复用指标、维度和输出资产。`;
+}
+
+function directionBoundary(theme, direction) {
+  return TRADE_DIRECTION_META[direction.name]?.boundary || `${theme.boundary}，按当前方向确认口径、时间字段和可分析维度。`;
+}
+
+function directionMetricRows(theme, direction) {
+  if (theme.name === "交易经营" && TRADE_DIRECTION_METRICS[direction.name]) return TRADE_DIRECTION_METRICS[direction.name];
+  const matched = theme.metricRows.filter(([name], index) => metricDirection(name, index) === direction.name);
+  return matched.length ? matched : theme.metricRows.slice(0, Math.max(3, Math.min(5, direction.metrics)));
+}
+
+function directionDimensionRows(theme, direction) {
+  if (theme.name === "交易经营" && TRADE_DIRECTION_DIMENSIONS[direction.name]) return TRADE_DIRECTION_DIMENSIONS[direction.name];
+  return theme.dimensionRows.slice(0, Math.max(3, Math.min(5, direction.dimensions))).map(([name, field, level, status], index) => {
+    const type = /时间|日期/.test(name) || index < 2 ? "公共维度" : "方向特有维度";
+    return [name, field, type, status || "已确认"];
+  });
+}
+
+function directionMetricSets(direction, metrics) {
+  const rows = [[direction.metricSet, "主指标集", `${metrics.length} 个`, direction.output, direction.status]];
+  if (direction.name === "客单价变化分析") {
+    rows.push(["客单价归因指标集", "扩展指标集", "4 个", direction.output, "已确认"]);
+  }
+  return rows;
+}
+
+function currentDirectionAsset(assets) {
+  let asset = assets.find((item) => item.key === state.activeOutputAssetKey);
+  if (!asset) {
+    state.activeOutputAssetKey = assets[0]?.key || "";
+    asset = assets[0];
+  }
+  return asset || {};
+}
+
+function renderDirectionAssetRows(direction, assets) {
+  const node = qs("#directionAssetMapRows");
+  if (!node) return;
+  node.innerHTML = assets.map((asset) => {
+    const logical = asset.logicalAssets.includes(directionLogicalAssetName(direction))
+      ? directionLogicalAssetName(direction)
+      : asset.logicalAssets.join("、");
+    return `
+      <tr>
+        <td><strong>${escapeHtml(asset.name)}</strong></td>
+        <td>${escapeHtml(logical)}</td>
+        <td>${escapeHtml(asset.task)}</td>
+        <td>${escapeHtml(asset.computeMode)}</td>
+        <td>${statusPill(escapeHtml(asset.relation), asset.relation === "共享物理资产" ? "green" : "blue")}</td>
+        <td>${escapeHtml(asset.directions.join("、"))}</td>
+      </tr>
+    `;
+  }).join("");
+  const sharedCount = assets.filter((asset) => asset.relation === "共享物理资产").length;
+  setText("directionAssetMapSummary", sharedCount ? `当前方向关联 ${assets.length} 个输出资产，含共享资产` : `当前方向关联 ${assets.length} 个输出资产`);
+}
+
+function renderDirectionOutputAssetCards(themeKey, direction, assets) {
+  const node = qs("#directionOutputAssetCards");
+  if (!node) return;
+  node.innerHTML = assets.map((asset) => {
+    const logical = asset.logicalAssets.includes(directionLogicalAssetName(direction))
+      ? directionLogicalAssetName(direction)
+      : asset.logicalAssets.join("、");
+    const href = outputAssetHref(themeKey, direction.name, asset.key);
+    return `
+      <article class="output-asset-card" data-output-asset-card data-href="${escapeHtml(href)}" role="link" tabindex="0">
+        <div class="analysis-direction-head">
+          ${statusPill(escapeHtml(asset.relation), asset.relation === "共享物理资产" ? "green" : "blue")}
+          ${statusPill(escapeHtml(asset.computeMode), "blue")}
+        </div>
+        <h3>${escapeHtml(asset.name)}</h3>
+        <p>${escapeHtml(asset.outputDesc || `${direction.name}输出资产`)}</p>
+        <div class="output-asset-card-meta">
+          <div><span>逻辑资产</span><strong>${escapeHtml(logical)}</strong></div>
+          <div><span>计算任务</span><strong>${escapeHtml(asset.task)}</strong></div>
+          <div><span>同时承载方向</span><strong>${escapeHtml(asset.directions.join("、"))}</strong></div>
+        </div>
+        <span class="analysis-direction-card-action">查看资产详情</span>
+      </article>
+    `;
+  }).join("");
+  node.querySelectorAll("[data-output-asset-card]").forEach((card) => {
+    const openDetail = () => {
+      window.location.href = card.dataset.href;
+    };
+    card.addEventListener("click", openDetail);
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openDetail();
+    });
+  });
+  const sharedCount = assets.filter((asset) => asset.relation === "共享物理资产").length;
+  setText("directionAssetMapSummary", sharedCount ? `${assets.length} 个输出资产，含共享资产` : `${assets.length} 个输出资产`);
+}
+
+function renderDirectionOutputAssetTabs(theme, direction, assets) {
+  const active = currentDirectionAsset(assets);
+  const node = qs("#directionOutputAssetTabs");
+  if (!node) return;
+  node.innerHTML = assets.map((asset) => `
+    <button class="output-asset-tab ${asset.key === active.key ? "active" : ""}" data-direction-output-asset="${escapeHtml(asset.key)}" type="button">
+      ${statusPill(escapeHtml(asset.relation), asset.relation === "共享物理资产" ? "green" : "blue")}
+      <strong>${escapeHtml(asset.name)}</strong>
+      <em>${escapeHtml(asset.directions.join("、"))}</em>
+    </button>
+  `).join("");
+  node.querySelectorAll("[data-direction-output-asset]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.activeOutputAssetKey = button.dataset.directionOutputAsset;
+      renderDirectionOutputAssetTabs(theme, direction, assets);
+      renderDirectionSelectedOutputAsset(theme, direction, assets);
+    });
+  });
+}
+
+function renderDirectionSelectedOutputAsset(theme, direction, assets) {
+  const asset = currentDirectionAsset(assets);
+  const logical = asset.logicalAssets?.includes(directionLogicalAssetName(direction))
+    ? directionLogicalAssetName(direction)
+    : asset.logicalAssets?.join("、") || "-";
+  setText("directionSelectedOutputAsset", asset.name);
+  setText("directionSelectedOutputDirections", asset.directions?.join("、") || "-");
+  setText("directionSelectedLogicalAssets", logical);
+  setText("directionSelectedComputeTask", asset.task || "-");
+  setText("directionDagJoin", asset.join || theme.dagJoin);
+  setText("directionDagJoinDesc", asset.joinDesc || theme.dagJoinDesc);
+  setText("directionDagCompute", asset.compute || theme.dagCompute);
+  setText("directionDagComputeDesc", asset.computeDesc || theme.dagComputeDesc);
+  setText("directionDagOutput", asset.name || direction.output);
+  setText("directionDagOutputDesc", asset.outputDesc || "逻辑资产独立，物理资产可共享计算");
+  const sql = qs("#directionGeneratedSql");
+  if (sql) sql.value = asset.sql || "";
+  renderDagSourcesTo("directionDagSources", asset.sources || theme.dagSources);
+}
+
+function renderDirectionMetricSetRows(rows) {
+  const node = qs("#directionSetRows");
+  if (!node) return;
+  node.innerHTML = rows.map(([name, type, metricCount, output, status]) => `
+    <tr>
+      <td><strong>${escapeHtml(name)}</strong></td>
+      <td>${statusPill(escapeHtml(type), type === "主指标集" ? "green" : "blue")}</td>
+      <td>${escapeHtml(metricCount)}</td>
+      <td>${escapeHtml(output)}</td>
+      <td>${statusPill(escapeHtml(status), statusTone(status))}</td>
+    </tr>
+  `).join("");
+}
+
+function renderDirectionMetricRows(rows) {
+  const node = qs("#directionMetricRows");
+  if (!node) return;
+  node.innerHTML = rows.map(([name, type, desc, status]) => {
+    const reuse = metricReuseState(name, status);
+    const dslStatus = /待|复核|确认|处理/.test(status) ? "DSL 待确认" : "DSL 通过";
+    return `
+      <tr>
+        <td><strong>${escapeHtml(name)}</strong></td>
+        <td>${escapeHtml(metricCode(name))}</td>
+        <td>${escapeHtml(type)}</td>
+        <td>${statusPill(escapeHtml(reuse), statusTone(reuse))}</td>
+        <td>${escapeHtml(desc)}</td>
+        <td>${statusPill(escapeHtml(dslStatus), statusTone(dslStatus))}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function renderDirectionDimensionRows(rows, direction) {
+  const node = qs("#directionDimensionRows");
+  if (!node) return;
+  node.innerHTML = rows.map(([name, field, type, status]) => {
+    const scope = type === "公共维度" ? "当前主题公共复用" : direction.name;
+    return `
+      <tr>
+        <td><strong>${escapeHtml(name)}</strong></td>
+        <td>${escapeHtml(field)}</td>
+        <td>${statusPill(escapeHtml(type), type === "公共维度" ? "green" : "blue")}</td>
+        <td>${escapeHtml(scope)}</td>
+        <td>${statusPill(escapeHtml(status), statusTone(status))}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function renderDirectionDslRows(theme, direction, metrics, assets) {
+  const node = qs("#directionDslRows");
+  if (!node) return;
+  const derivedCount = metrics.filter(([name, type]) => type === "派生指标" || /率|价|占比/.test(name)).length;
+  const pendingCount = metrics.filter(([, , , status]) => /待|复核|确认|处理/.test(status)).length;
+  const rows = [
+    ["Metric DSL", `${metrics.length} 个指标定义`, "已沉淀编码、业务口径、计算表达式、过滤条件、时间字段和统计粒度。", "green"],
+    ["聚合规则", `${derivedCount} 个派生/比率指标`, "比率、客单价和占比类指标按分子分母重新计算，不跨维度简单平均。", "green"],
+    ["SQL 编译", `${assets.length} 个输出资产可编译`, "当前方向可由 DSL 编译生成 SQL、DAG 和字段血缘。", "green"],
+    ["存量处理", pendingCount ? `${pendingCount} 个待确认项` : "全部已确认", "相似指标、口径差异和复用建议会保留在当前方向下。", pendingCount ? "amber" : "green"],
+  ];
+  node.innerHTML = rows.map(([label, value, desc, tone]) => `
+    <div><span class="status ${tone}">${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><em>${escapeHtml(desc)}</em></div>
+  `).join("");
+  setText("directionDslSummary", `${metrics.length} 个 DSL 定义，${assets.length} 个输出资产可编译`);
+}
+
+function renderDirectionDetail() {
+  const params = new URLSearchParams(window.location.search);
+  const themeKey = currentThemeKey(params);
+  const theme = THEMES[themeKey] || THEMES.trade;
+  const direction = findDirection(theme, params.get("direction"));
+  const assets = outputAssetsForDirection(theme, direction);
+  const metrics = directionMetricRows(theme, direction);
+  const dimensions = directionDimensionRows(theme, direction);
+  const metricSets = directionMetricSets(direction, metrics);
+  const themeBackHref = themeHref(themeKey);
+  state.activeOutputAssetKey = assets[0]?.key || "";
+
+  document.title = `${direction.name} · Data Metrics`;
+  setHref("directionThemeCrumb", themeBackHref);
+  setHref("directionThemeBack", themeBackHref);
+
+  const status = qs("#directionStatus");
+  if (status) {
+    status.className = `status ${statusTone(direction.status)}`;
+    status.textContent = direction.status;
+  }
+
+  setText("directionTitle", direction.name);
+  setText("directionSubtitle", `${theme.name} / ${direction.priority}方向。围绕当前方向查看相关输出资产、计算任务、Metric DSL、指标集、指标和维度。`);
+  setText("directionMetricSetCount", metricSets.length);
+  setText("directionOutputCount", assets.length);
+  setText("directionMetricCount", metrics.length);
+  setText("directionDimensionCount", dimensions.length);
+  setText("directionTaskCount", new Set(assets.map((asset) => asset.task)).size);
+  setText("directionAssetRelation", assets.some((asset) => asset.relation === "共享物理资产") ? "共享" : "独立");
+  setText("directionPriority", `${direction.priority}方向`);
+  setText("directionThemeName", theme.name);
+  setText("directionGoal", directionGoal(theme, direction));
+  setText("directionBoundary", directionBoundary(theme, direction));
+  setText("directionModels", `${theme.mainModel}、${theme.relatedModels}`);
+  setText("directionLogicalAssets", directionLogicalAssetName(direction));
+  const sharedDirections = assets[0]?.directions?.filter((name) => name !== direction.name) || [];
+  setText("directionSharedDesc", assets.some((asset) => asset.relation === "共享物理资产") && sharedDirections.length ? `与 ${sharedDirections.join("、")} 共享物理输出资产。` : "当前方向独立产出物理输出资产。");
+  renderDirectionOutputAssetCards(themeKey, direction, assets);
+}
+
+function renderOutputAssetDetail() {
+  const params = new URLSearchParams(window.location.search);
+  const themeKey = currentThemeKey(params);
+  const theme = THEMES[themeKey] || THEMES.trade;
+  const direction = findDirection(theme, params.get("direction"));
+  const assets = outputAssetsForDirection(theme, direction);
+  const selectedAsset = assets.find((asset) => asset.key === params.get("asset")) || assets[0];
+  const selectedAssets = selectedAsset ? [selectedAsset] : assets.slice(0, 1);
+  const metrics = directionMetricRows(theme, direction);
+  const dimensions = directionDimensionRows(theme, direction);
+  const metricSets = directionMetricSets(direction, metrics);
+  const themeBackHref = themeHref(themeKey);
+  const directionBackHref = directionHref(themeKey, direction.name);
+  state.activeOutputAssetKey = selectedAsset?.key || selectedAssets[0]?.key || "";
+
+  document.title = `${selectedAsset?.name || "输出资产"} · Data Metrics`;
+  setHref("outputThemeCrumb", themeBackHref);
+  setHref("outputDirectionCrumb", directionBackHref);
+  setHref("outputDirectionBack", directionBackHref);
+
+  const relationStatus = qs("#outputAssetRelationStatus");
+  if (relationStatus && selectedAsset) {
+    relationStatus.className = `status ${selectedAsset.relation === "共享物理资产" ? "green" : "blue"}`;
+    relationStatus.textContent = selectedAsset.relation;
+  }
+
+  const logicalForDirection = selectedAsset?.logicalAssets?.includes(directionLogicalAssetName(direction))
+    ? directionLogicalAssetName(direction)
+    : selectedAsset?.logicalAssets?.join("、") || directionLogicalAssetName(direction);
+  const taskCount = new Set(selectedAssets.map((asset) => asset.task)).size;
+
+  setText("outputAssetTitle", selectedAsset?.name || direction.output);
+  setText("outputAssetSubtitle", `${theme.name} / ${direction.name}。查看当前输出资产的计算任务、Metric DSL、计算逻辑、指标集、指标和维度。`);
+  setText("outputLogicalAssetCount", selectedAsset?.logicalAssets?.length || 1);
+  setText("outputDirectionCount", selectedAsset?.directions?.length || 1);
+  setText("outputMetricCount", metrics.length);
+  setText("outputDimensionCount", dimensions.length);
+  setText("outputTaskCount", taskCount);
+  setText("outputComputeMode", selectedAsset?.computeMode || theme.computeMode);
+  setText("outputAssetScope", selectedAsset?.relation || "独立产出");
+  setText("outputThemeName", theme.name);
+  setText("outputDirectionName", direction.name);
+  setText("outputPhysicalAsset", selectedAsset?.name || direction.output);
+  setText("outputLogicalAssets", logicalForDirection);
+  setText("outputComputeTask", selectedAsset?.task || direction.task);
+  setText("outputAllDirections", selectedAsset?.directions?.join("、") || direction.name);
+  setText("directionSetSummary", `${metricSets.length} 个指标集，当前资产关联`);
+  setText("directionMetricSummary", `${metrics.length} 个指标`);
+  setText("directionDimensionSummary", `${dimensions.length} 个维度`);
+
+  renderDirectionAssetRows(direction, selectedAssets);
+  renderDirectionDslRows(theme, direction, metrics, selectedAssets);
+  renderDirectionSelectedOutputAsset(theme, direction, selectedAssets);
+  renderDirectionMetricSetRows(metricSets);
+  renderDirectionMetricRows(metrics);
+  renderDirectionDimensionRows(dimensions, direction);
+}
+
 function renderDetail() {
   const params = new URLSearchParams(window.location.search);
-  const theme = THEMES[params.get("theme")] || THEMES[params.get("system")] || THEMES.trade;
+  const themeKey = currentThemeKey(params);
+  const theme = THEMES[themeKey] || THEMES.trade;
+  state.activeOutputAssetKey = "";
   document.title = `${theme.name} · Data Metrics`;
+  const directions = themeDirections(theme);
+  const outputAssets = themeOutputAssets(theme);
 
   const status = qs("#detailStatus");
   if (status) {
@@ -511,45 +854,36 @@ function renderDetail() {
 
   setText("detailTitle", theme.name);
   setText("detailSubtitle", theme.subtitle);
-  setText("detailSystemCount", theme.systems);
-  setText("detailSetCount", theme.sets);
+  setText("detailDirectionCount", directions.length);
+  setText("detailSetCount", directions.length);
+  setText("detailOutputCount", outputAssets.length);
   setText("detailMetricCount", theme.metrics);
   setText("detailDimensionCount", theme.dimensions);
-  setText("detailQualityScore", theme.qualityScore);
-  setText("detailCallCount", theme.calls);
-  setText("detailVersion", theme.version);
+  setText("detailTaskCount", outputAssets.length);
   setText("detailBoundary", theme.boundary);
+  setText("detailRelatedThemes", theme.name === "交易经营" ? "营销增长、供应链履约" : "交易经营");
   setText("detailMainModel", theme.mainModel);
   setText("detailRelatedModels", theme.relatedModels);
+  setText("detailCreateMode", theme.name === "交易经营" ? "按问题生成" : "按问题生成 / 资产补充");
   setText("detailOwner", theme.owner);
   setText("detailCreatedAt", theme.createdAt);
   setText("detailUpdatedAt", theme.updatedAt);
-  setText("detailRunStatus", theme.runStatus);
-  setText("detailComputeMode", theme.computeMode);
-  setText("detailSchedule", theme.schedule);
-  setText("detailOutputTable", theme.outputTable);
-  setText("detailLastRun", theme.lastRun);
-  setText("detailQualitySummary", theme.qualitySummary);
-  setText("detailDagJoin", theme.dagJoin);
-  setText("detailDagJoinDesc", theme.dagJoinDesc);
-  setText("detailDagCompute", theme.dagCompute);
-  setText("detailDagComputeDesc", theme.dagComputeDesc);
-  setText("detailDagOutput", theme.outputTable);
-  setText("detailDagOutputDesc", "逻辑资产独立治理，物理资产可共享计算");
-  setText("detailSystemSummary", `${theme.systemRows.length} 个场景标签`);
-  setText("detailSetSummary", `${theme.setRows.length} 个主指标集`);
+  setText("detailSetSummary", `${directions.length} 个主指标集，随分析方向自动沉淀`);
   setText("detailMetricSummary", `${theme.metricRows.length} 个核心指标`);
-  setText("detailDimensionSummary", `${theme.dimensionRows.length} 个展示项`);
+  setText("detailDimensionSummary", `${theme.dimensionRows.length} 个展示项，公共维度优先复用`);
 
-  renderQuality(theme.quality);
-  renderDagSources(theme.dagSources);
-  renderRows("detailSystemRows", theme.systemRows);
-  renderRows("detailSetRows", theme.setRows);
+  bindDirectionFilters(theme, themeKey);
+  renderDirectionCards(theme, themeKey);
+  renderMetricSetRows(theme);
   renderMetricRows(theme.metricRows);
-  renderRows("detailDimensionRows", theme.dimensionRows);
+  renderDimensionRows(theme.dimensionRows);
   renderAssetMap(theme);
+  renderOutputAssetTabs(theme);
+  renderSelectedOutputAsset(theme);
   renderDslRows(theme);
 }
 
-renderDetail();
+if (qs("#outputAssetDetailPage")) renderOutputAssetDetail();
+else if (qs("#directionDetailPage")) renderDirectionDetail();
+else renderDetail();
 })();

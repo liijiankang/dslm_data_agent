@@ -7,7 +7,6 @@ const BUSINESS_THEME_PAGE_SIZE = 3;
 const TOPIC_PAGE_SIZE = 4;
 const DIMENSION_PAGE_SIZE = 4;
 const METRIC_PAGE_SIZE = 4;
-const QUALITY_CHECKS = ["重复指标", "口径冲突", "相似指标"];
 const PROBLEM_OFFLINE_COMPUTE_MODE = "离线周期计算";
 const PROBLEM_QUERY_COMPUTE_MODE = "查询时计算";
 const PROBLEM_OFFLINE_OUTPUT_TABLE = "ads_metric_order_daily";
@@ -41,306 +40,15 @@ const state = {
   problemMetricStatus: "all",
   sharedAssetAccepted: true,
   extensionMetricSetAccepted: true,
+  metricConflictResolved: false,
+  activeOutputAssetKey: "orderShared",
 };
 
-const problemModelPool = [
-  {
-    name: "订单交易库",
-    domain: "trade",
-    status: "ready",
-    recommended: true,
-    role: "核心计算",
-    summary: "9 个资产对象，11 个关系，订单、支付、退款和商品语义已确认。",
-    coverage: "96%",
-    confidence: "高",
-    missingFields: "无关键缺失",
-    freshness: "T+0 02:10",
-    qualityRisk: "近 30 天分区完整",
-    tags: ["订单经营", "支付转化", "售后退款"],
-    keywords: "订单 支付 退款 商品 订单经营 支付转化 售后退款 成交金额",
-  },
-  {
-    name: "CRM 业务库",
-    domain: "customer",
-    status: "ready",
-    recommended: true,
-    role: "客户分层",
-    summary: "12 个资产对象，18 个关系，客户、商机、合同和销售活动语义已确认。",
-    coverage: "82%",
-    confidence: "中",
-    missingFields: "客户等级历史快照待补齐",
-    freshness: "T+1 01:30",
-    qualityRisk: "客户分层字段存在 3% 空值",
-    tags: ["客户分析", "销售漏斗", "客户分层"],
-    keywords: "CRM 客户 商机 合同 销售活动 客户分析 客户分层 成交归因",
-  },
-  {
-    name: "营销活动库",
-    domain: "marketing",
-    status: "ready",
-    recommended: true,
-    role: "渠道归因",
-    summary: "10 个资产对象，13 个关系，活动、触达、线索和转化事件语义已确认。",
-    coverage: "88%",
-    confidence: "高",
-    missingFields: "部分投放素材标签待补齐",
-    freshness: "T+0 03:20",
-    qualityRisk: "渠道归因链路完整",
-    tags: ["活动 ROI", "触达转化", "渠道分析"],
-    keywords: "营销 活动 投放 触达 转化 ROI 客户分层 增长分析 渠道",
-  },
-  {
-    name: "客服工单库",
-    domain: "service",
-    status: "attention",
-    recommended: false,
-    role: "售后解释",
-    summary: "7 个资产对象，8 个关系，工单分类、SLA 和售后处理字段待补充。",
-    coverage: "68%",
-    confidence: "中",
-    missingFields: "SLA 口径、工单分类语义待确认",
-    freshness: "T+1 05:00",
-    qualityRisk: "售后处理时长存在异常值",
-    tags: ["服务质量", "售后分析", "满意度"],
-    keywords: "客服 工单 SLA 售后 满意度 服务质量 售后分析",
-  },
-  {
-    name: "财务回款库",
-    domain: "finance",
-    status: "ready",
-    recommended: false,
-    role: "财务校验",
-    summary: "8 个资产对象，10 个关系，应收、发票、回款和合同映射语义已确认。",
-    coverage: "79%",
-    confidence: "中",
-    missingFields: "收入确认口径需财务复核",
-    freshness: "T+1 02:00",
-    qualityRisk: "跨月回款分摊需审核",
-    tags: ["回款分析", "应收账款", "收入确认"],
-    keywords: "财务 回款 应收 发票 合同 收入 毛利 经营分析",
-  },
-  {
-    name: "商品库存库",
-    domain: "supply",
-    status: "attention",
-    recommended: true,
-    role: "商品/履约解释",
-    summary: "11 个资产对象，14 个关系，SKU、仓库和出入库字段已识别，成本口径待确认。",
-    coverage: "74%",
-    confidence: "中",
-    missingFields: "成本口径、履约时效字段待确认",
-    freshness: "T+0 04:10",
-    qualityRisk: "部分仓库库存快照延迟",
-    tags: ["库存周转", "SKU 分析", "补货预警"],
-    keywords: "商品 库存 SKU 仓库 采购 入库 出库 周转 供应链 商品类目",
-  },
-  {
-    name: "会员权益库",
-    domain: "customer",
-    status: "ready",
-    recommended: false,
-    role: "会员分层",
-    summary: "6 个资产对象，9 个关系，会员等级、积分、权益领取和核销语义已确认。",
-    coverage: "71%",
-    confidence: "中",
-    missingFields: "会员等级变更历史待补齐",
-    freshness: "T+1 00:40",
-    qualityRisk: "权益核销渠道存在缺失",
-    tags: ["会员留存", "权益核销", "复购分析"],
-    keywords: "会员 权益 积分 等级 客户 留存 复购 生命周期",
-  },
-  {
-    name: "采购履约库",
-    domain: "supply",
-    status: "ready",
-    recommended: false,
-    role: "采购履约",
-    summary: "9 个资产对象，12 个关系，供应商、采购订单、到货和结算语义已确认。",
-    coverage: "77%",
-    confidence: "中",
-    missingFields: "到货异常原因语义待补充",
-    freshness: "T+1 03:00",
-    qualityRisk: "供应商编码存在历史合并",
-    tags: ["供应商绩效", "到货及时率", "采购结算"],
-    keywords: "采购 供应商 履约 到货 入库 结算 供应链",
-  },
-];
-
-const problemDimensionDetails = {
-  time: {
-    title: "时间维度",
-    items: [
-      ["来源字段", "order.order_time"],
-      ["维度层级", "年 > 月 > 日"],
-      ["必要程度", "高"],
-      ["业务说明", "用于按时间周期观察成交金额、订单数和支付转化趋势。"],
-      ["适用分析方向", "订单经营分析、支付转化分析"],
-      ["推荐原因", "用户问题关注最近 30 天成交变化，时间维度是趋势定位的基础维度。"],
-    ],
-  },
-  channel: {
-    title: "渠道维度",
-    items: [
-      ["来源字段", "order.channel"],
-      ["维度层级", "渠道"],
-      ["必要程度", "高"],
-      ["业务说明", "用于比较小程序、门店等渠道的成交贡献和支付转化差异。"],
-      ["适用分析方向", "渠道贡献分析、支付转化分析"],
-      ["推荐原因", "用户明确要求重点看小程序和门店渠道，需要保留为核心分析维度。"],
-    ],
-  },
-  customerSegment: {
-    title: "客户分层",
-    items: [
-      ["来源字段", "customer.customer_level"],
-      ["维度层级", "等级"],
-      ["必要程度", "中"],
-      ["业务说明", "用于分析不同客户层级的成交贡献、复购和转化表现。"],
-      ["适用分析方向", "客户分层分析、订单经营分析"],
-      ["推荐原因", "客户结构变化可能解释成交下降，但不是用户问题中显式要求的核心维度。"],
-    ],
-  },
-  productCategory: {
-    title: "商品类目",
-    items: [
-      ["来源字段", "product.category"],
-      ["维度层级", "一级类目 > 二级类目"],
-      ["必要程度", "中"],
-      ["业务说明", "用于分析类目结构变化、重点商品下滑和成交金额贡献。"],
-      ["适用分析方向", "商品结构分析、订单经营分析"],
-      ["推荐原因", "类目结构可能影响成交金额，适合作为成交下降的辅助解释维度。"],
-    ],
-  },
-  region: {
-    title: "地区维度",
-    items: [
-      ["来源字段", "customer.province, customer.city"],
-      ["维度层级", "省 > 市"],
-      ["必要程度", "低"],
-      ["业务说明", "用于观察不同区域、城市或门店所在地区的成交变化。"],
-      ["适用分析方向", "地区差异分析"],
-      ["推荐原因", "当前问题未明确强调地区，仅作为扩展分析维度保留。"],
-    ],
-  },
-};
-
-const problemMetricDetails = {
-  orders: {
-    title: "订单数",
-    items: [
-      ["指标编码", "order_count"],
-      ["指标类型", "原子指标"],
-      ["业务定义", "统计周期内产生的有效订单数量。"],
-      ["统计口径", "排除取消订单。"],
-      ["计算公式", "COUNT(order_id)"],
-      ["过滤条件", "order.status != 'cancelled'"],
-      ["时间口径", "按 order.order_time 统计"],
-      ["语义模型", "order_payment"],
-      ["可加性", "完全可加"],
-      ["默认聚合", "count_distinct"],
-      ["时间聚合", "sum_by_day"],
-      ["统计粒度", "date, channel"],
-      ["派生依赖", "无"],
-      ["可用维度", "时间维度、渠道维度、客户分层、商品类目"],
-      ["相似度评分", "91%"],
-      ["处理建议", "推荐复用已有订单数指标，补充本次场景标签。"],
-      ["DSL校验", "通过"],
-      ["质量提示", "可复用"],
-    ],
-  },
-  gmv: {
-    title: "成交金额",
-    items: [
-      ["指标编码", "gmv"],
-      ["指标类型", "原子指标"],
-      ["业务定义", "用户完成支付后产生的订单支付金额总和。"],
-      ["统计口径", "仅统计支付成功订单，不扣除退款。"],
-      ["计算公式", "SUM(pay_amount)"],
-      ["过滤条件", "payment.status = 'success'"],
-      ["时间口径", "按 payment.pay_time 统计"],
-      ["语义模型", "order_payment"],
-      ["可加性", "完全可加"],
-      ["默认聚合", "sum"],
-      ["时间聚合", "sum_by_day"],
-      ["统计粒度", "date, channel, product_category"],
-      ["派生依赖", "无"],
-      ["可用维度", "时间维度、渠道维度、商品类目、地区维度"],
-      ["相似度评分", "86%"],
-      ["处理建议", "与存量 GMV 口径接近，建议基于已有指标新建 v2 并记录不扣退款口径。"],
-      ["DSL校验", "通过"],
-      ["质量提示", "口径需确认"],
-    ],
-  },
-  paySuccessRate: {
-    title: "支付成功率",
-    items: [
-      ["指标编码", "pay_success_rate"],
-      ["指标类型", "派生指标"],
-      ["业务定义", "成功支付订单数占提交订单数的比例。"],
-      ["统计口径", "按支付状态统计，排除取消订单。"],
-      ["计算公式", "支付成功订单数 / 提交订单数"],
-      ["过滤条件", "order.status in ('submitted', 'paid')"],
-      ["时间口径", "按 order.create_time 和 payment.pay_time 统计"],
-      ["语义模型", "order_payment"],
-      ["可加性", "不可加"],
-      ["默认聚合", "ratio"],
-      ["时间聚合", "ratio_recalculate"],
-      ["统计粒度", "date, channel"],
-      ["派生依赖", "pay_success_order_count, pay_submit_order_count"],
-      ["可用维度", "时间维度、渠道维度、地区维度"],
-      ["相似度评分", "62%"],
-      ["处理建议", "提示相似，需人工确认分母口径后再发布。"],
-      ["DSL校验", "通过"],
-      ["质量提示", "建议新建"],
-    ],
-  },
-  channelContributionRate: {
-    title: "渠道成交贡献率",
-    items: [
-      ["指标编码", "channel_gmv_share"],
-      ["指标类型", "派生指标"],
-      ["业务定义", "某渠道成交金额占全部成交金额的比例。"],
-      ["统计口径", "按渠道分组统计支付成功订单成交金额。"],
-      ["计算公式", "渠道成交金额 / 总成交金额"],
-      ["过滤条件", "payment.status = 'success'"],
-      ["时间口径", "按 payment.pay_time 统计"],
-      ["语义模型", "order_payment"],
-      ["可加性", "不可加"],
-      ["默认聚合", "ratio"],
-      ["时间聚合", "ratio_recalculate"],
-      ["统计粒度", "date, channel"],
-      ["派生依赖", "channel_gmv, total_gmv"],
-      ["可用维度", "时间维度、渠道维度"],
-      ["相似度评分", "48%"],
-      ["处理建议", "允许新建，需绑定渠道维度和总成交金额依赖。"],
-      ["DSL校验", "通过"],
-      ["质量提示", "建议新建"],
-    ],
-  },
-  refundImpact: {
-    title: "退款影响金额",
-    items: [
-      ["指标编码", "refund_amount"],
-      ["指标类型", "原子指标"],
-      ["业务定义", "统计周期内退款成功产生的退款金额总和。"],
-      ["统计口径", "仅统计退款成功记录。"],
-      ["计算公式", "SUM(refund_amount)"],
-      ["过滤条件", "refund.status = 'success'"],
-      ["时间口径", "按 refund.refund_time 统计"],
-      ["语义模型", "refund_detail"],
-      ["可加性", "完全可加"],
-      ["默认聚合", "sum"],
-      ["时间聚合", "sum_by_day"],
-      ["统计粒度", "date, channel, product_category"],
-      ["派生依赖", "无"],
-      ["可用维度", "时间维度、渠道维度、商品类目"],
-      ["相似度评分", "78%"],
-      ["处理建议", "与存量退款金额相似，建议合并或基于已有指标新建版本。"],
-      ["DSL校验", "通过"],
-      ["质量提示", "相似指标"],
-    ],
-  },
-};
+const metricMockData = window.DataMetricsApi.getGenerationData();
+const problemModelPool = metricMockData.problemModelPool || [];
+const problemDimensionDetails = metricMockData.problemDimensionDetails || {};
+const problemMetricDetails = metricMockData.problemMetricDetails || {};
+const problemMetricReuseCandidates = metricMockData.problemMetricReuseCandidates || {};
 
 function escapeHtml(value) {
   return String(value)
@@ -358,7 +66,6 @@ function metricTypeLabel(type) {
     composite: "复合指标",
     comparison: "比较指标",
     diagnostic: "诊断指标",
-    quality: "质量指标",
     threshold: "运营阈值指标",
     warning: "运营阈值指标",
   }[type] || "原子指标";
@@ -371,13 +78,12 @@ function metricTypeValue(label) {
     复合指标: "composite",
     比较指标: "comparison",
     诊断指标: "diagnostic",
-    质量指标: "quality",
     运营阈值指标: "threshold",
     预警指标: "threshold",
   }[label] || "atomic";
 }
 
-function qualityTipTone(value) {
+function recommendationTone(value) {
   return {
     可复用: "green",
     建议新建: "blue",
@@ -399,6 +105,85 @@ function additivityTone(value) {
   if (value === "半可加") return "amber";
   if (value === "不可加") return "red";
   return "blue";
+}
+
+function problemReuseActionLabel(action) {
+  return {
+    reuse: "复用已有指标",
+    merge: "合并补充",
+    version: "基于已有新建版本",
+    manual: "人工确认",
+    create: "新建指标",
+  }[action] || "新建指标";
+}
+
+function problemReuseActionDefault(key, candidates) {
+  const saved = itemValue(problemMetricDetails[key] || { items: [] }, "存量处理方式");
+  if (saved) return saved;
+  const first = candidates[0];
+  return first?.action || "create";
+}
+
+function syncProblemMetricReuseHint() {
+  const action = qs("#problemMetricReuseAction")?.value || "create";
+  const select = qs("#problemMetricReuseSelect");
+  const option = select?.selectedOptions?.[0];
+  const hint = qs("#problemMetricReuseHint");
+  if (!hint) return;
+  if (action === "create" || !option?.value) {
+    hint.textContent = "本指标将作为新指标进入 DSL 校验和生成确认，不复用存量指标。";
+    return;
+  }
+  hint.textContent = `${problemReuseActionLabel(action)}：${option.textContent.trim()}。${option.dataset.desc || ""}`;
+}
+
+function renderProblemMetricConflictCheck() {
+  const status = qs("#problemMetricConflictStatus");
+  const desc = qs("#problemMetricConflictDesc");
+  const action = qs("#resolveProblemMetricConflict");
+  const detail = problemMetricDetails.refundImpact;
+  if (!detail) {
+    state.metricConflictResolved = true;
+    if (status) {
+      status.className = "status green";
+      status.textContent = "已处理";
+    }
+    if (desc) desc.textContent = "相似指标已随推荐指标移除，本次生成不再生成退款影响金额。";
+    if (action) action.hidden = true;
+    return;
+  }
+  const reuseAction = itemValue(detail, "存量处理方式");
+  const reuseMetric = itemValue(detail, "选择存量指标");
+  const resolved = Boolean(state.metricConflictResolved || reuseAction);
+  state.metricConflictResolved = resolved;
+  if (action) action.hidden = false;
+  if (status) {
+    status.className = `status ${resolved ? "green" : "amber"}`;
+    status.textContent = resolved ? "已处理" : "待处理";
+  }
+  if (desc) {
+    const metricText = reuseAction && reuseAction !== "create" && reuseMetric ? `：${reuseMetric}` : "";
+    desc.textContent = resolved
+      ? `已选择${problemReuseActionLabel(reuseAction || "create")}${metricText}。相似指标处理结果会写入生成确认。`
+      : "退款影响金额与存量退款金额相似度 78%，请先选择复用、合并补充、基于已有新建版本或新建指标。";
+  }
+  if (action) action.textContent = resolved ? "查看处理结果" : "去处理";
+}
+
+function openProblemMetricConflictResolution() {
+  state.problemMetricKeyword = "";
+  state.problemMetricType = "all";
+  state.problemMetricStatus = "all";
+  state.problemMetricPage = Math.max(1, Math.ceil(qsa("[data-problem-metric-detail]").length / METRIC_PAGE_SIZE));
+  const search = qs("#problemMetricSearch");
+  const type = qs("#problemMetricTypeFilter");
+  const status = qs("#problemMetricStatusFilter");
+  if (search) search.value = "";
+  if (type) type.value = "all";
+  if (status) status.value = "all";
+  setProblemStep(6);
+  renderProblemMetricSelector();
+  setTimeout(() => openProblemMetricDetailModal("refundImpact"), 0);
 }
 
 function metricDslPreview(detail) {
@@ -519,27 +304,290 @@ function isProblemQueryComputeMode(mode = selectedRadioValue("problemComputeMode
   return mode === PROBLEM_QUERY_COMPUTE_MODE;
 }
 
+function problemOutputAssetDefinitions() {
+  const sharedOrderAsset = {
+    key: "orderShared",
+    name: "ads_metric_order_daily",
+    relation: "共享物理资产",
+    tone: "green",
+    task: "task_metric_order_daily",
+    taskLabel: "共享计算任务",
+    directions: ["订单量变化分析", "客单价变化分析", "渠道结构变化分析"],
+    logicalAssets: ["订单量变化结果", "客单价变化结果", "渠道结构变化结果"],
+    metricSets: ["订单量变化指标集", "客单价变化指标集", "渠道结构指标集"],
+    sources: [
+      ["输入表", "dwd_order_detail", "订单、渠道、商品"],
+      ["输入表", "dwd_payment_detail", "支付状态、支付金额"],
+      ["输入表", "dwd_refund_detail", "退款状态、退款金额"],
+    ],
+    processName: "订单交易宽表",
+    processDesc: "订单、支付、渠道和退款关联",
+    metricDesc: "订单量、客单价、渠道结构",
+    outputDesc: "3 个逻辑资产共享，独立血缘和监控",
+    sql: `-- compiled from Metric DSL: order_count, gmv, avg_order_value, channel_gmv_share
+SELECT
+  dt,
+  channel,
+  product_category,
+  COUNT(DISTINCT order_id) AS order_count,
+  COUNT(DISTINCT customer_id) AS order_user_count,
+  SUM(pay_amount) AS gmv,
+  SUM(pay_amount) / NULLIF(COUNT(DISTINCT order_id), 0) AS avg_order_value,
+  SUM(pay_amount) / SUM(SUM(pay_amount)) OVER (PARTITION BY dt) AS channel_gmv_share
+FROM dwd_order_payment_detail
+WHERE pay_status = 'success'
+GROUP BY dt, channel, product_category;`,
+  };
+
+  const independentOrderAssets = [
+    {
+      key: "orderVolume",
+      name: "ads_metric_order_volume_daily",
+      relation: "独立产出",
+      tone: "blue",
+      task: "task_metric_order_volume_daily",
+      taskLabel: "计算任务",
+      directions: ["订单量变化分析"],
+      logicalAssets: ["订单量变化结果"],
+      metricSets: ["订单量变化指标集"],
+      sources: [["输入表", "dwd_order_detail", "订单、渠道、商品"]],
+      processName: "订单明细聚合",
+      processDesc: "按日期、渠道和商品类目统计订单量",
+      metricDesc: "订单数、下单用户数",
+      outputDesc: "订单量变化分析独立产出",
+      sql: `-- compiled from Metric DSL: order_count
+SELECT
+  dt,
+  channel,
+  product_category,
+  COUNT(DISTINCT order_id) AS order_count,
+  COUNT(DISTINCT customer_id) AS order_user_count
+FROM dwd_order_detail
+WHERE order_status != 'cancelled'
+GROUP BY dt, channel, product_category;`,
+    },
+    {
+      key: "aov",
+      name: "ads_metric_aov_daily",
+      relation: "独立产出",
+      tone: "blue",
+      task: "task_metric_aov_daily",
+      taskLabel: "计算任务",
+      directions: ["客单价变化分析"],
+      logicalAssets: ["客单价变化结果"],
+      metricSets: ["客单价变化指标集", "客单价归因指标集"],
+      sources: [
+        ["输入表", "dwd_order_detail", "订单、商品"],
+        ["输入表", "dwd_payment_detail", "支付金额"],
+      ],
+      processName: "订单支付聚合",
+      processDesc: "订单与支付按订单号关联后计算客单价",
+      metricDesc: "成交金额、订单数、客单价",
+      outputDesc: "客单价变化分析独立产出",
+      sql: `-- compiled from Metric DSL: avg_order_value
+SELECT
+  dt,
+  channel,
+  product_category,
+  SUM(pay_amount) AS gmv,
+  COUNT(DISTINCT order_id) AS order_count,
+  SUM(pay_amount) / NULLIF(COUNT(DISTINCT order_id), 0) AS avg_order_value
+FROM dwd_order_payment_detail
+WHERE pay_status = 'success'
+GROUP BY dt, channel, product_category;`,
+    },
+    {
+      key: "channel",
+      name: "ads_metric_channel_mix_daily",
+      relation: "独立产出",
+      tone: "blue",
+      task: "task_metric_channel_mix_daily",
+      taskLabel: "计算任务",
+      directions: ["渠道结构变化分析"],
+      logicalAssets: ["渠道结构变化结果"],
+      metricSets: ["渠道结构指标集"],
+      sources: [
+        ["输入表", "dwd_order_detail", "订单、渠道"],
+        ["输入表", "dim_channel", "渠道层级、渠道类型"],
+      ],
+      processName: "渠道结构聚合",
+      processDesc: "按渠道层级统计成交贡献和订单占比",
+      metricDesc: "渠道成交贡献率、渠道订单占比",
+      outputDesc: "渠道结构变化分析独立产出",
+      sql: `-- compiled from Metric DSL: channel_gmv_share
+SELECT
+  dt,
+  channel,
+  channel_type,
+  SUM(pay_amount) AS channel_gmv,
+  SUM(pay_amount) / SUM(SUM(pay_amount)) OVER (PARTITION BY dt) AS channel_gmv_share
+FROM dwd_order_payment_detail
+WHERE pay_status = 'success'
+GROUP BY dt, channel, channel_type;`,
+    },
+  ];
+
+  const paymentAsset = {
+    key: "payment",
+    name: "ads_metric_payment_daily",
+    relation: "独立产出",
+    tone: "blue",
+    task: "task_metric_payment_daily",
+    taskLabel: "计算任务",
+    directions: ["支付转化分析"],
+    logicalAssets: ["支付转化结果"],
+    metricSets: ["支付转化指标集"],
+    sources: [
+      ["输入表", "dwd_order_detail", "订单提交"],
+      ["输入表", "dwd_payment_detail", "支付状态、失败原因"],
+    ],
+    processName: "支付转化明细",
+    processDesc: "订单提交与支付流水关联，保留失败原因",
+    metricDesc: "支付成功率、支付失败数",
+    outputDesc: "支付转化分析独立产出",
+    sql: `-- compiled from Metric DSL: pay_success_rate
+SELECT
+  dt,
+  channel,
+  COUNT(DISTINCT order_id) AS submitted_orders,
+  COUNT(DISTINCT CASE WHEN pay_status = 'success' THEN order_id END) AS paid_orders,
+  COUNT(DISTINCT CASE WHEN pay_status = 'success' THEN order_id END)
+    / NULLIF(COUNT(DISTINCT order_id), 0) AS pay_success_rate
+FROM dwd_order_payment_detail
+GROUP BY dt, channel;`,
+  };
+
+  const refundAsset = {
+    key: "refund",
+    name: "ads_metric_refund_daily",
+    relation: "独立产出",
+    tone: "blue",
+    task: "task_metric_refund_daily",
+    taskLabel: "计算任务",
+    directions: ["退款影响分析"],
+    logicalAssets: ["退款影响结果"],
+    metricSets: ["退款影响指标集"],
+    sources: [["输入表", "dwd_refund_detail", "退款状态、退款金额"]],
+    processName: "退款明细聚合",
+    processDesc: "按退款成功记录统计退款金额和退款订单数",
+    metricDesc: "退款影响金额、退款订单数",
+    outputDesc: "退款影响分析独立产出",
+    sql: `-- compiled from Metric DSL: refund_amount
+SELECT
+  dt,
+  channel,
+  product_category,
+  COUNT(DISTINCT order_id) AS refund_order_count,
+  SUM(refund_amount) AS refund_amount
+FROM dwd_refund_detail
+WHERE refund_status = 'success'
+GROUP BY dt, channel, product_category;`,
+  };
+
+  return state.sharedAssetAccepted
+    ? [sharedOrderAsset, paymentAsset, refundAsset]
+    : [...independentOrderAssets, paymentAsset, refundAsset];
+}
+
+function currentProblemOutputAsset() {
+  const assets = problemOutputAssetDefinitions();
+  let asset = assets.find((item) => item.key === state.activeOutputAssetKey);
+  if (!asset) {
+    state.activeOutputAssetKey = assets[0]?.key || "";
+    asset = assets[0];
+  }
+  return asset || {};
+}
+
 function problemComputeDisplayState() {
   const computeMode = selectedRadioValue("problemComputeMode") || PROBLEM_OFFLINE_COMPUTE_MODE;
   const isQuery = isProblemQueryComputeMode(computeMode);
   const scheduleConfig = buildProblemScheduleConfig();
+  const activeAsset = currentProblemOutputAsset();
+  const outputAsset = activeAsset.name || PROBLEM_OFFLINE_OUTPUT_TABLE;
   return {
     computeMode,
     isQuery,
     scheduleCycle: isQuery ? "无需任务调度" : scheduleConfig.summary,
     scheduleConfig: isQuery ? null : scheduleConfig,
     retryPolicy: isQuery ? "无需离线任务重试" : qs("#problemRetryPolicy")?.value || "失败后重试 3 次",
-    outputAsset: isQuery ? PROBLEM_QUERY_OUTPUT_ASSET : PROBLEM_OFFLINE_OUTPUT_TABLE,
-    outputLabel: isQuery ? "查询视图/语义服务" : state.sharedAssetAccepted ? "共享结果表" : "主结果表",
+    outputAsset: isQuery ? PROBLEM_QUERY_OUTPUT_ASSET : outputAsset,
+    outputLabel: isQuery ? "查询视图/语义服务" : activeAsset.relation || "物理输出资产",
     outputHint: isQuery
-      ? "查询时计算会发布语义查询视图，不生成离线结果表，适合低频探索和实时口径校验。"
-      : state.sharedAssetAccepted
-        ? "逻辑输出资产按分析方向独立治理，物理输出资产可共享，系统保留独立血缘、权限和消费说明。"
-        : "每个分析方向生成独立物理结果表，治理边界清晰但会增加计算和存储成本。",
-    dagOutputName: isQuery ? "成交下降语义查询视图" : state.sharedAssetAccepted ? "ads_metric_order_daily" : "方向独立结果表",
-    dagOutputDesc: isQuery ? "语义查询、问数、API 服务" : state.sharedAssetAccepted ? "3 个逻辑资产共享，独立血缘和监控" : "每个方向独立物理资产",
-    services: isQuery ? ["指标目录", "智能问数", "API 服务", "查询时计算"] : ["指标目录", "智能问数", "API 服务", "调度计算"],
+    ? "查询时计算会生成语义查询视图，不生成离线结果表，适合低频探索和实时口径校验。"
+      : `${activeAsset.name || "当前输出资产"} 覆盖 ${activeAsset.directions?.join("、") || "当前分析方向"}，系统会保留对应指标集、血缘、权限和业务说明。`,
+    dagOutputName: isQuery ? "成交下降语义查询视图" : outputAsset,
+    dagOutputDesc: isQuery ? "查询视图、指标定义、计算配置" : activeAsset.outputDesc || "当前输出资产",
   };
+}
+
+function renderProblemOutputAssetDetail() {
+  const asset = currentProblemOutputAsset();
+  const display = problemComputeDisplayState();
+  const tabs = qs("#problemOutputAssetTabs");
+  const count = qs("#problemOutputAssetCount");
+  const assetName = display.isQuery ? PROBLEM_QUERY_OUTPUT_ASSET : asset.name;
+  const outputInput = qs("#problemOutputTable");
+  const directions = qs("#problemOutputAssetDirections");
+  const logicalAssets = qs("#problemOutputAssetLogical");
+  const metricSets = qs("#problemOutputAssetMetricSets");
+  const task = qs("#problemOutputAssetTask");
+  const sources = qs("#problemDagSources");
+  const processName = qs("#problemDagProcessName");
+  const processDesc = qs("#problemDagProcessDesc");
+  const computeLabel = qs("#problemDagComputeLabel");
+  const computeTask = qs("#problemDagComputeTask");
+  const computeDesc = qs("#problemDagComputeDesc");
+  const outputName = qs("#problemDagOutputAssetName");
+  const outputDesc = qs("#problemDagOutputAssetDesc");
+  const sql = qs("#problemGeneratedSql");
+  const assets = problemOutputAssetDefinitions();
+
+  if (tabs) {
+    tabs.innerHTML = assets.map((item) => `
+      <button class="output-asset-tab ${item.key === asset.key ? "active" : ""}" data-output-asset-key="${escapeHtml(item.key)}" type="button">
+        <span class="status ${escapeHtml(item.tone)}">${escapeHtml(item.relation)}</span>
+        <strong>${escapeHtml(item.name)}</strong>
+        <em>${escapeHtml(item.directions.join("、"))}</em>
+      </button>
+    `).join("");
+    qsa("[data-output-asset-key]", tabs).forEach((button) => {
+      button.addEventListener("click", () => {
+        state.activeOutputAssetKey = button.dataset.outputAssetKey;
+        renderProblemOutputAssetDetail();
+        renderProblemSummary();
+      });
+    });
+  }
+
+  if (count) count.textContent = `当前 ${assets.length} 个物理输出资产`;
+  if (outputInput) outputInput.value = assetName || "";
+  if (directions) directions.textContent = asset.directions?.join("、") || "-";
+  if (logicalAssets) logicalAssets.textContent = asset.logicalAssets?.join("、") || "-";
+  if (metricSets) metricSets.textContent = asset.metricSets?.join("、") || "-";
+  if (task) task.textContent = display.isQuery ? "query_metric_deal_decline" : asset.task || "-";
+
+  if (sources) {
+    sources.innerHTML = (asset.sources || []).map(([label, name, desc]) => `
+      <div class="dag-node source"><span>${escapeHtml(label)}</span><strong>${escapeHtml(name)}</strong><em>${escapeHtml(desc)}</em></div>
+    `).join("");
+  }
+  if (processName) processName.textContent = display.isQuery ? "语义查询编译" : asset.processName || "-";
+  if (processDesc) processDesc.textContent = display.isQuery ? "按用户查询动态生成 SQL，不落离线结果表" : asset.processDesc || "-";
+  if (computeLabel) computeLabel.textContent = display.isQuery ? "查询编译任务" : asset.taskLabel || "计算任务";
+  if (computeTask) computeTask.textContent = display.isQuery ? "query_metric_deal_decline" : asset.task || "-";
+  if (computeDesc) computeDesc.textContent = display.isQuery ? "查询视图、语义服务、API" : asset.metricDesc || "-";
+  if (outputName) outputName.textContent = assetName || "-";
+  if (outputDesc) outputDesc.textContent = display.dagOutputDesc;
+  if (sql) sql.value = display.isQuery
+    ? `-- query-time compiled from Metric DSL: ${asset.metricDesc || "metrics"}
+SELECT *
+FROM semantic_metric_query(
+  asset => '${asset.name || "metric_asset"}',
+  dimensions => '${asset.directions?.join(", ") || "current_direction"}',
+  filters => '按请求参数动态下推'
+);`
+    : asset.sql || "";
 }
 
 function syncProblemComputeMode() {
@@ -548,26 +596,15 @@ function syncProblemComputeMode() {
   const scheduleHint = qs("#problemQueryScheduleHint");
   const scheduleBlock = qs("#problemScheduleBlock");
   const outputLabel = qs("#problemOutputAssetLabel");
-  const outputInput = qs("#problemOutputTable");
   const outputHint = qs("#problemOutputAssetHint");
-  const dagOutputName = qs("#problemDagOutputAssetName");
-  const dagOutputDesc = qs("#problemDagOutputAssetDesc");
-  const dagComputeTask = qs("#problemDagComputeTask");
 
   if (scheduleFields) scheduleFields.hidden = display.isQuery;
   if (scheduleHint) scheduleHint.hidden = !display.isQuery;
   if (scheduleBlock) scheduleBlock.classList.toggle("is-query-compute", display.isQuery);
   if (outputLabel) outputLabel.textContent = display.outputLabel;
-  if (outputInput) {
-    const currentValue = outputInput.value.trim();
-    const isDefaultAsset = !currentValue || currentValue === PROBLEM_OFFLINE_OUTPUT_TABLE || currentValue === PROBLEM_QUERY_OUTPUT_ASSET;
-    if (isDefaultAsset) outputInput.value = display.outputAsset;
-  }
   if (outputHint) outputHint.textContent = display.outputHint;
-  if (dagOutputName) dagOutputName.textContent = display.dagOutputName;
-  if (dagOutputDesc) dagOutputDesc.textContent = display.dagOutputDesc;
-  if (dagComputeTask) dagComputeTask.textContent = display.isQuery ? "query_metric_deal_decline" : state.sharedAssetAccepted ? "task_metric_order_daily" : "方向独立计算任务";
   updateProblemSchedulePanels();
+  renderProblemOutputAssetDetail();
   renderProblemSummary();
 }
 
@@ -789,10 +826,28 @@ function fillProblemMetricDetailModal(key) {
   qs("#problemMetricModalTimeAggText").textContent = itemValue(detail, "时间聚合") || "待评估";
   qs("#problemMetricModalGrainText").textContent = itemValue(detail, "统计粒度") || "待评估";
   qs("#problemMetricModalSimilarityText").textContent = itemValue(detail, "相似度评分") || "未检测";
-  qs("#problemMetricModalTipText").textContent = itemValue(detail, "质量提示");
+  qs("#problemMetricModalTipText").textContent = itemValue(detail, "处理提示");
+  const candidates = problemMetricReuseCandidates[key] || [];
+  const actionSelect = qs("#problemMetricReuseAction");
+  const reuseSelect = qs("#problemMetricReuseSelect");
+  if (actionSelect) {
+    actionSelect.innerHTML = ["reuse", "merge", "version", "manual", "create"]
+      .map((action) => `<option value="${action}">${problemReuseActionLabel(action)}</option>`)
+      .join("");
+    actionSelect.value = problemReuseActionDefault(key, candidates);
+  }
+  if (reuseSelect) {
+    reuseSelect.innerHTML = candidates.length
+      ? candidates.map((candidate) => `<option value="${escapeHtml(candidate.code)}" data-action="${escapeHtml(candidate.action)}" data-desc="${escapeHtml(candidate.desc)}">${escapeHtml(candidate.name)}（${escapeHtml(candidate.code)}，相似度 ${escapeHtml(candidate.similarity)}，${escapeHtml(candidate.owner)}）</option>`).join("")
+      : `<option value="">无可复用候选指标</option>`;
+    const savedMetric = itemValue(detail, "选择存量指标");
+    if (savedMetric && candidates.some((candidate) => candidate.code === savedMetric)) reuseSelect.value = savedMetric;
+    reuseSelect.disabled = !candidates.length;
+  }
   qs("#problemMetricModalDimensionText").textContent = itemValue(detail, "可用维度");
   qs("#problemMetricModalSuggestionText").textContent = itemValue(detail, "处理建议") || "待确认";
   qs("#problemMetricModalDslPreview").value = metricDslPreview(detail);
+  syncProblemMetricReuseHint();
 }
 
 function openProblemMetricDetailModal(key) {
@@ -859,24 +914,22 @@ function updateProblemMetricRow(row, detail) {
   const title = qs("[data-problem-metric-title]", row);
   const code = qs("[data-problem-metric-code]", row);
   const type = qs("[data-problem-metric-type-label]", row);
-  const additivity = qs("[data-problem-metric-additivity]", row);
   const formula = qs("[data-problem-metric-formula]", row);
   const scope = qs("[data-problem-metric-scope]", row);
   const tip = qs("[data-problem-metric-tip]", row);
   const checkbox = qs('input[name="problemMetric"]', row);
   const typeLabel = itemValue(detail, "指标类型");
   const additivityValue = itemValue(detail, "可加性") || "待评估";
-  const tipValue = itemValue(detail, "质量提示") || "建议新建";
+  const tipValue = itemValue(detail, "处理提示") || "建议新建";
   if (title) title.textContent = detail.title;
   if (code) code.textContent = itemValue(detail, "指标编码") || "待生成";
   if (type) type.textContent = typeLabel;
-  if (additivity) additivity.innerHTML = statusPill(additivityValue, additivityTone(additivityValue));
   if (formula) formula.textContent = itemValue(detail, "计算公式");
   if (scope) scope.textContent = itemValue(detail, "统计口径");
-  if (tip) tip.innerHTML = statusPill(tipValue, qualityTipTone(tipValue));
+  if (tip) tip.innerHTML = statusPill(tipValue, recommendationTone(tipValue));
   if (checkbox) checkbox.value = detail.title;
   row.dataset.problemMetricType = metricTypeValue(typeLabel);
-  row.dataset.problemMetricKeywords = `${detail.title} ${itemValue(detail, "指标编码")} ${typeLabel} ${additivityValue} ${itemValue(detail, "业务定义")} ${itemValue(detail, "统计口径")} ${itemValue(detail, "计算公式")} ${itemValue(detail, "过滤条件")} ${itemValue(detail, "质量提示")}`;
+  row.dataset.problemMetricKeywords = `${detail.title} ${itemValue(detail, "指标编码")} ${typeLabel} ${additivityValue} ${itemValue(detail, "业务定义")} ${itemValue(detail, "统计口径")} ${itemValue(detail, "计算公式")} ${itemValue(detail, "过滤条件")} ${itemValue(detail, "处理提示")}`;
 }
 
 function applyProblemMetricState(row, action) {
@@ -903,6 +956,18 @@ function confirmProblemMetricDetail() {
   setDetailItem(detail, "计算公式", formula);
   setDetailItem(detail, "过滤条件", qs("#problemMetricModalFilterInput")?.value.trim() || "待补充");
   setDetailItem(detail, "时间口径", qs("#problemMetricModalTimeInput")?.value.trim() || "待补充");
+  const reuseAction = qs("#problemMetricReuseAction")?.value || "create";
+  const reuseMetric = reuseAction === "create" ? "" : qs("#problemMetricReuseSelect")?.value || "";
+  const reuseMetricLabel = reuseAction === "create" ? "" : qs("#problemMetricReuseSelect")?.selectedOptions?.[0]?.textContent.trim() || "";
+  setDetailItem(detail, "存量处理方式", reuseAction);
+  setDetailItem(detail, "选择存量指标", reuseMetric);
+  setDetailItem(detail, "处理建议", reuseAction === "create"
+    ? "用户选择新建指标，生成前进入 DSL 校验和相似度检测。"
+    : `用户选择${problemReuseActionLabel(reuseAction)}：${reuseMetricLabel}`);
+  if (key === "refundImpact") {
+    state.metricConflictResolved = true;
+    renderProblemMetricConflictCheck();
+  }
   updateProblemMetricRow(row, detail);
   applyProblemMetricState(row, "confirm");
   closeModalById("problemMetricDetailModal");
@@ -912,6 +977,10 @@ function removeProblemMetricRow(row) {
   if (!row) return;
   const key = row.dataset.problemMetricDetail;
   delete problemMetricDetails[key];
+  if (key === "refundImpact") {
+    state.metricConflictResolved = true;
+    renderProblemMetricConflictCheck();
+  }
   row.remove();
   closeModalById("problemMetricDetailModal");
   renderProblemMetricSelector();
@@ -978,7 +1047,7 @@ function problemModelCardMarkup(model, type) {
         <div><span>覆盖度</span><strong>${escapeHtml(model.coverage || "待评估")}</strong></div>
         <div><span>可信度</span><strong>${escapeHtml(model.confidence || "待评估")}</strong></div>
         <div><span>新鲜度</span><strong>${escapeHtml(model.freshness || "待评估")}</strong></div>
-        <div><span>质量风险</span><strong>${escapeHtml(model.qualityRisk || "待评估")}</strong></div>
+        <div><span>数据状态</span><strong>${escapeHtml(model.qualityRisk || "待评估")}</strong></div>
       </div>
       <div class="problem-model-risk"><span>缺失字段</span><strong>${escapeHtml(model.missingFields || "无关键缺失")}</strong></div>
       <div class="wizard-tag-row">
@@ -1334,12 +1403,17 @@ function bindProblemMetricFilters() {
 function renderSharedAssetSuggestion() {
   const card = qs("#sharedAssetSuggestionCard");
   const stateText = qs("#assetMappingState");
-  const outputInput = qs("#problemOutputTable");
   const physicalAssets = {
     order: "ads_metric_order_volume_daily",
     aov: "ads_metric_aov_daily",
     channel: "ads_metric_channel_mix_daily",
   };
+  if (state.sharedAssetAccepted && ["orderVolume", "aov", "channel"].includes(state.activeOutputAssetKey)) {
+    state.activeOutputAssetKey = "orderShared";
+  }
+  if (!state.sharedAssetAccepted && state.activeOutputAssetKey === "orderShared") {
+    state.activeOutputAssetKey = "orderVolume";
+  }
   qsa("[data-shared-asset-row]").forEach((row) => {
     const key = row.dataset.sharedAssetRow;
     const physical = qs("[data-physical-asset]", row);
@@ -1357,7 +1431,6 @@ function renderSharedAssetSuggestion() {
   });
   if (stateText) stateText.textContent = state.sharedAssetAccepted ? "已接受共享 1 个物理资产" : "已保持方向独立产出";
   if (card) card.classList.toggle("accepted", state.sharedAssetAccepted);
-  if (outputInput) outputInput.value = state.sharedAssetAccepted ? "ads_metric_order_daily" : "ads_metric_order_volume_daily";
   syncProblemComputeMode();
 }
 
@@ -1397,6 +1470,7 @@ function renderProblemSummary() {
   const dimensions = checkedValues("problemDimension");
   const metrics = checkedValues("problemMetric");
   const computeDisplay = problemComputeDisplayState();
+  const outputAssets = problemOutputAssetDefinitions();
   if (customTopic) topics.push(customTopic);
 
   const setText = (selector, value) => {
@@ -1407,13 +1481,13 @@ function renderProblemSummary() {
   setText("#problemPublishSummaryDimensions", `维度 ${dimensions.length} 个`);
   setText("#problemPublishSummaryMetrics", `指标 ${metrics.length} 个`);
   setText("#problemPublishComputePreview", `${computeDisplay.computeMode}，${computeDisplay.scheduleCycle}，${state.sharedAssetAccepted ? "共享物理资产" : "方向独立产出"}`);
-  setText("#problemPublishSummaryPhysicalAssets", state.sharedAssetAccepted ? "物理输出资产 3 个" : "物理输出资产 5 个");
-  setText("#publishSharedAssetPreview", state.sharedAssetAccepted ? "ads_metric_order_daily" : "保持方向独立结果表");
+  setText("#problemPublishSummaryPhysicalAssets", `物理输出资产 ${outputAssets.length} 个`);
+  setText("#publishSharedAssetPreview", state.sharedAssetAccepted ? "ads_metric_order_daily（共享）" : "保持方向独立结果表");
 
   const computeSummary = computeDisplay.isQuery
     ? `并按${computeDisplay.computeMode}生成查询配置`
     : `并按${computeDisplay.computeMode}、${computeDisplay.scheduleCycle}生成调度配置`;
-  setText("#publishModalSummary", `本次将发布「${businessTheme}」主题下的 ${topics.length} 个分析方向，场景标签为「${sceneTags}」，包含维度 ${dimensions.length} 个、指标 ${metrics.length} 个、主指标集 ${topics.length} 个、扩展指标集 ${state.extensionMetricSetAccepted ? 1 : 0} 个，${computeSummary}。`);
+  setText("#publishModalSummary", `本次将生成「${businessTheme}」主题下的 ${topics.length} 个分析方向，场景标签为「${sceneTags}」，包含维度 ${dimensions.length} 个、指标 ${metrics.length} 个、主指标集 ${topics.length} 个、扩展指标集 ${state.extensionMetricSetAccepted ? 1 : 0} 个，${computeSummary}。`);
 }
 
 function renderProblemStep() {
@@ -1440,6 +1514,7 @@ function renderProblemStep() {
   if (prev) prev.disabled = state.problemStep === 1;
   if (next) next.hidden = state.problemStep === PROBLEM_TOTAL_STEPS;
   if (finalActions) finalActions.hidden = state.problemStep !== PROBLEM_TOTAL_STEPS;
+  renderProblemMetricConflictCheck();
   renderProblemSummary();
 }
 
@@ -1493,6 +1568,12 @@ function validateProblemStepBeforeNext(targetStep = state.problemStep + 1) {
       focusProblemPendingCandidates("metric", pending.length);
       return false;
     }
+  }
+  if (targetStep > 7 && !state.metricConflictResolved) {
+    window.alert("相似指标处理还未完成，请先处理“退款影响金额”的存量指标选择。");
+    if (state.problemStep !== 7) setProblemStep(7);
+    qs("#problemMetricConflictCheck")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return false;
   }
   return true;
 }
@@ -1581,7 +1662,7 @@ function bindProblemStepper() {
     const result = qs("#problemPublishResult");
     if (!result) return;
     result.hidden = false;
-    result.textContent = "已模拟暂存草稿：业务主题、分析方向、数据模型、维度指标、逻辑输出资产、共享物理资产建议和计算配置会保留在待发布状态。";
+    result.textContent = "已模拟暂存草稿：业务主题、分析方向、数据模型、维度指标、逻辑输出资产、共享物理资产建议和计算配置会保留在待确认状态。";
   });
 }
 
@@ -1695,9 +1776,9 @@ function addProblemCustomMetric() {
       ["派生依赖", type === "derived" || type === "composite" ? "待确认" : "无"],
       ["可用维度", dimensions || "待确认"],
       ["相似度评分", "未检测"],
-      ["处理建议", "用户补充指标，发布前进入 DSL 校验和相似度检测。"],
+      ["处理建议", "用户补充指标，生成前进入 DSL 校验和相似度检测。"],
       ["DSL校验", "待校验"],
-      ["质量提示", tip],
+      ["处理提示", tip],
     ],
   };
 
@@ -1711,10 +1792,9 @@ function addProblemCustomMetric() {
     <td><input type="checkbox" name="problemMetric" value="${escapeHtml(name)}" checked hidden><strong data-problem-metric-title>${escapeHtml(name)}</strong></td>
     <td data-problem-metric-code>${escapeHtml(code)}</td>
     <td data-problem-metric-type-label>${metricTypeLabel(type)}</td>
-    <td data-problem-metric-additivity>${statusPill(additivity, additivityTone(additivity))}</td>
     <td data-problem-metric-formula>${escapeHtml(formula)}</td>
     <td data-problem-metric-scope>${escapeHtml(scope || "待补充")}</td>
-    <td data-problem-metric-tip>${statusPill(tip, qualityTipTone(tip))}</td>
+    <td data-problem-metric-tip>${statusPill(tip, recommendationTone(tip))}</td>
     <td data-problem-metric-status>${problemMetricStatusMarkup("confirm")}</td>
     <td><span class="row-actions"><button class="button small" data-problem-metric-action="detail" type="button">详情</button><button class="button small" data-problem-metric-action="remove" type="button">移除</button></span></td>
   `;
@@ -1753,6 +1833,9 @@ function bindCustomCandidates() {
   });
   qs("#confirmProblemMetricAdd")?.addEventListener("click", addProblemCustomMetric);
   qs("#confirmProblemMetricDetail")?.addEventListener("click", confirmProblemMetricDetail);
+  qs("#problemMetricReuseAction")?.addEventListener("change", syncProblemMetricReuseHint);
+  qs("#problemMetricReuseSelect")?.addEventListener("change", syncProblemMetricReuseHint);
+  qs("#resolveProblemMetricConflict")?.addEventListener("click", openProblemMetricConflictResolution);
 }
 
 function bindProblemDimensionRows() {
@@ -1803,13 +1886,13 @@ function bindPublishActions() {
     const button = qs("#confirmPublish");
     if (button) {
       button.disabled = true;
-      button.textContent = "发布中";
+      button.textContent = "生成中";
     }
     qs("#publishModal")?.classList.remove("open");
     const result = qs("#problemPublishResult");
     if (result) {
       result.hidden = false;
-      result.textContent = "发布成功，正在打开发布结果。";
+      result.textContent = "生成成功，正在打开生成结果。";
     }
     savePublishPayload(payload);
     window.location.href = `metric-publish-result.html?publishId=${encodeURIComponent(payload.publishId)}`;
@@ -1828,11 +1911,12 @@ function buildProblemPublishPayload() {
   const dimensions = checkedValues("problemDimension").length;
   const metrics = checkedValues("problemMetric").length;
   const computeDisplay = problemComputeDisplayState();
+  const outputAssets = problemOutputAssetDefinitions();
   if (customTopic) topics.push(customTopic);
 
   return {
-    publishId: `METRIC-PUB-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-5)}`,
-    status: "已发布",
+    publishId: `METRIC-GEN-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-5)}`,
+    status: "已生成",
     businessTheme,
     businessThemeBoundary,
     sceneTags: sceneTags.split(/[、,，]/).map((item) => item.trim()).filter(Boolean),
@@ -1843,7 +1927,6 @@ function buildProblemPublishPayload() {
     relatedModels: [],
     topics,
     scope: ["业务主题", "分析方向", "指标", "维度", "Metric DSL", "逻辑输出资产", "计算配置"],
-    qualityChecks: QUALITY_CHECKS,
     computeConfig: {
       mode: computeDisplay.computeMode,
       schedule: computeDisplay.scheduleCycle,
@@ -1853,15 +1936,20 @@ function buildProblemPublishPayload() {
       outputAssetType: computeDisplay.outputLabel,
       outputTable: qs("#problemOutputTable")?.value.trim() || computeDisplay.outputAsset,
       sharedPhysicalAsset: state.sharedAssetAccepted,
-      physicalAssets: state.sharedAssetAccepted
-        ? ["ads_metric_order_daily", "ads_metric_payment_daily", "ads_metric_refund_daily"]
-        : ["ads_metric_order_volume_daily", "ads_metric_aov_daily", "ads_metric_channel_mix_daily", "ads_metric_payment_daily", "ads_metric_refund_daily"],
-      logicalAssets: ["订单量变化结果", "客单价变化结果", "渠道结构变化结果", "支付转化结果", "退款影响结果"],
-      computeTasks: state.sharedAssetAccepted
-        ? ["task_metric_order_daily", "task_metric_payment_daily", "task_metric_refund_daily"]
-        : ["task_metric_order_volume_daily", "task_metric_aov_daily", "task_metric_channel_mix_daily", "task_metric_payment_daily", "task_metric_refund_daily"],
-      publishStrategy: "立即正式发布",
+      outputAssets: outputAssets.map((asset) => ({
+        name: asset.name,
+        relation: asset.relation,
+        directions: asset.directions,
+        logicalAssets: asset.logicalAssets,
+        metricSets: asset.metricSets,
+        computeTask: asset.task,
+      })),
+      physicalAssets: outputAssets.map((asset) => asset.name),
+      logicalAssets: outputAssets.flatMap((asset) => asset.logicalAssets),
+      computeTasks: outputAssets.map((asset) => asset.task),
+      publishStrategy: "确认后生成资产",
       generatedSql: qs("#problemGeneratedSql")?.value || "",
+      generatedSqlByAsset: Object.fromEntries(outputAssets.map((asset) => [asset.name, asset.sql])),
       sqlSource: "Metric DSL 编译生成",
     },
     dimensions,
@@ -1884,10 +1972,9 @@ function buildProblemPublishPayload() {
     primaryMetricSets: topics.length || 5,
     extensionMetricSets: state.extensionMetricSetAccepted ? 1 : 0,
     logicalAssets: 5,
-    physicalAssets: state.sharedAssetAccepted ? 3 : 5,
+    physicalAssets: outputAssets.length,
     sharedPhysicalAssets: state.sharedAssetAccepted ? 1 : 0,
     mergedComputeGroups: state.sharedAssetAccepted ? 1 : 0,
-    services: computeDisplay.services,
     question: "最近 30 天成交金额为什么下降了？",
     publishedAt: new Date().toLocaleString("zh-CN", { hour12: false }),
   };

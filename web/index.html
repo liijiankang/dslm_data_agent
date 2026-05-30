@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>数据源总览 · dslm-data</title>
+    <title>dslm-data</title>
     <link rel="stylesheet" href="css/tokens.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
@@ -13,113 +13,226 @@
     <div class="app-shell">
       <div class="shell-body">
         <main class="page">
-          <div class="page-header dashboard-hero">
-            <div class="dashboard-hero-copy">
-              <span class="console-kicker">dslm-data control plane</span>
-              <h1 class="page-title">数据源总览</h1>
-              <p class="page-subtitle">面向 AI-ready 数据加工的数据源控制台，持续观察资产盘点、语义补充、构建覆盖和源端变更。</p>
+          <header class="home-topline">
+            <div class="home-title-block">
+              <div class="home-brand-line">
+                <span class="home-brand-logo">D</span>
+                <h1 class="page-title">dslm-data</h1>
+              </div>
+              <p class="page-subtitle">统一查看 Data Assets、Data Metrics、Data Analytics 与 Data Tasks 状态，集中处理变更、审核、补全和后续执行任务。</p>
             </div>
-            <div class="dashboard-health-panel" aria-label="系统运行态">
-              <div><span>盘点服务</span><strong>运行中</strong></div>
-              <div><span>语义补全</span><strong>23 条待审</strong></div>
-              <div><span>变更感知</span><strong>5 分钟前</strong></div>
-            </div>
-            <div class="header-actions">
-              <a class="button primary" href="source-create.html">接入数据源</a>
-            </div>
-          </div>
+          </header>
+
           <div class="content-stack">
-            <section class="metric-grid compact" id="dashboardMetrics"></section>
-            <section class="console-flow-grid">
-              <div class="console-flow-card">
-                <div class="console-flow-icon blue"></div>
-                <div><strong>资产盘点</strong><span>18 个数据源持续登记元数据</span></div>
-              </div>
-              <div class="console-flow-card">
-                <div class="console-flow-icon cyan"></div>
-                <div><strong>语义增强</strong><span>资料补充与字段语义审核中</span></div>
-              </div>
-              <div class="console-flow-card">
-                <div class="console-flow-icon green"></div>
-                <div><strong>构建覆盖</strong><span>2,638 个资产已完成加工</span></div>
-              </div>
-              <div class="console-flow-card">
-                <div class="console-flow-icon amber"></div>
-                <div><strong>变更感知</strong><span>119 个资产等待重建确认</span></div>
-              </div>
-            </section>
-            <section class="dashboard-charts">
-              <div class="card">
-                <div class="card-header"><div><h2 class="card-title">数据源类型分布</h2><p class="card-subtitle">按当前阶段支持的三类数据源统计占比。</p></div></div>
-                <div class="card-body"><div class="chart-bars" id="sourceTypeBars"></div></div>
-              </div>
-              <div class="card">
-                <div class="card-header"><div><h2 class="card-title">数据源状态</h2><p class="card-subtitle">包含可用、盘点中和待处理变更。</p></div></div>
-                <div class="card-body">
-                  <div class="donut-wrap">
-                    <div class="donut" data-center="18"></div>
-                    <div class="legend" id="sourceDonutLegend"></div>
+            <section class="home-domain-grid" aria-label="核心功能状态">
+              <article class="home-domain-panel" data-href="sources.html" role="link" tabindex="0">
+                <div class="home-domain-header">
+                  <div class="home-domain-title">
+                    <div>
+                      <h2>Data Assets</h2>
+                      <p>统一接入数据库、文件系统和网页数据源，自动盘点资产并生成 AI-ready 加工产物，持续感知源端变更，支撑后续指标建模与智能应用。</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
-            <section class="card">
-              <div class="card-header">
-                <div><h2 class="card-title">数据源列表</h2><p class="card-subtitle">按数据源展示资产盘点、构建覆盖和变更感知状态。</p></div>
-              </div>
-              <div class="card-body">
-                <div class="filter-bar">
-                  <label class="field">
-                    <span class="label">搜索</span>
-                    <input class="input" id="sourceSearch" placeholder="数据源、负责人、变更状态">
-                  </label>
-                  <label class="field">
-                    <span class="label">分类</span>
-                    <select class="select" id="categoryFilter"><option value="all">全部分类</option></select>
-                  </label>
-                  <label class="field">
-                    <span class="label">类型</span>
-                    <select class="select" id="connectorFilter"><option value="all">全部类型</option></select>
-                  </label>
-                  <label class="field">
-                    <span class="label">状态</span>
-                    <select class="select" id="statusFilter"><option value="all">全部状态</option></select>
-                  </label>
-                  <button class="button" id="resetSourceFilters" type="button">重置</button>
+                <div class="home-card-body">
+                  <div class="home-summary-row">
+                    <div>
+                      <span>构建覆盖率</span>
+                      <strong>59.5%</strong>
+                      <em>2,638 / 4,432 个资产已完成加工</em>
+                    </div>
+                    <div class="home-progress"><span style="width:59.5%"></span></div>
+                  </div>
+                  <div class="home-metric-strip">
+                    <div><span>数据源</span><strong>18</strong></div>
+                    <div><span>资产</span><strong>4,432</strong></div>
+                    <div><span>已构建</span><strong>2,638</strong></div>
+                    <div class="attention"><span>待处理变更</span><strong>119</strong></div>
+                  </div>
+                  <div class="home-chart-grid">
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>资产类型分布</span><strong>4,432</strong></div>
+                      <div class="home-bar-row"><span>文件系统</span><div class="home-bar"><i style="width:72%"></i></div><em>72%</em></div>
+                      <div class="home-bar-row"><span>数据库</span><div class="home-bar violet"><i style="width:17%"></i></div><em>17%</em></div>
+                      <div class="home-bar-row"><span>网页</span><div class="home-bar green"><i style="width:11%"></i></div><em>11%</em></div>
+                    </div>
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>加工状态</span><strong>4 类</strong></div>
+                      <div class="home-stack-bar" aria-label="加工状态占比">
+                        <span class="built" style="width:60%"></span>
+                        <span class="ready" style="width:31%"></span>
+                        <span class="changed" style="width:6%"></span>
+                        <span class="failed" style="width:3%"></span>
+                      </div>
+                      <div class="home-legend-grid">
+                        <span><i class="built"></i>已构建</span>
+                        <span><i class="ready"></i>待构建</span>
+                        <span><i class="changed"></i>待处理变更</span>
+                        <span><i class="failed"></i>异常</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="table-wrap">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>数据源</th>
-                      <th>分类</th>
-                      <th>类型</th>
-                      <th>负责人</th>
-                      <th>状态</th>
-                      <th>维护范围</th>
-                      <th>资产</th>
-                      <th>可构建</th>
-                      <th>已构建</th>
-                      <th>待重建</th>
-                      <th>最近盘点</th>
-                      <th>变更感知</th>
-                    </tr>
-                  </thead>
-                  <tbody id="dataSourceRows"></tbody>
-                </table>
-              </div>
-              <div class="pagination-bar">
-                <div class="hint" id="sourceListSummary"></div>
-                <div class="pagination-controls" id="paginationControls"></div>
-              </div>
+              </article>
+
+              <article class="home-domain-panel" data-href="metrics.html" role="link" tabindex="0">
+                <div class="home-domain-header">
+                  <div class="home-domain-title">
+                    <div>
+                      <h2>Data Metrics</h2>
+                      <p>以业务问题为入口，结合已接入的数据模型和 Metric DSL，沉淀业务主题、分析方向、指标语义定义、逻辑输出资产与共享计算配置，形成可治理、可编译、可复用的 Data Metrics 资产。</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="home-card-body">
+                  <div class="home-summary-row metric-domain">
+                    <div>
+                      <span>指标发布率</span>
+                      <strong>74.5%</strong>
+                      <em>213 / 286 个指标已发布可复用</em>
+                    </div>
+                    <div class="home-progress metric-domain"><span style="width:74.5%"></span></div>
+                  </div>
+                  <div class="home-metric-strip">
+                    <div><span>指标</span><strong>286</strong></div>
+                    <div><span>已发布</span><strong>213</strong></div>
+                    <div class="attention"><span>待审核</span><strong>12</strong></div>
+                    <div><span>口径待补全</span><strong>18</strong></div>
+                  </div>
+                  <div class="home-chart-grid">
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>业务主题分布</span><strong>9 个主题</strong></div>
+                      <div class="home-bar-row"><span>交易经营</span><div class="home-bar violet"><i style="width:34%"></i></div><em>34%</em></div>
+                      <div class="home-bar-row"><span>财务经营</span><div class="home-bar green"><i style="width:26%"></i></div><em>26%</em></div>
+                      <div class="home-bar-row"><span>供应链</span><div class="home-bar amber"><i style="width:18%"></i></div><em>18%</em></div>
+                    </div>
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>治理健康度</span><strong>86%</strong></div>
+                      <div class="home-stack-bar metric-domain" aria-label="指标治理状态占比">
+                        <span class="built" style="width:75%"></span>
+                        <span class="changed" style="width:12%"></span>
+                        <span class="ready" style="width:9%"></span>
+                        <span class="failed" style="width:4%"></span>
+                      </div>
+                      <div class="home-legend-grid">
+                        <span><i class="built"></i>已发布</span>
+                        <span><i class="changed"></i>待审核</span>
+                        <span><i class="ready"></i>待补全</span>
+                        <span><i class="failed"></i>口径冲突</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="home-domain-panel home-domain-placeholder">
+                <div class="home-domain-header">
+                  <div class="home-domain-title">
+                    <div>
+                      <h2>Data Analytics</h2>
+                      <p>预留给数据分析能力，后续可承接自助探索、归因诊断、分析看板、业务洞察和基于指标资产的分析结论沉淀。</p>
+                    </div>
+                  </div>
+                  <button class="button small" type="button" disabled>规划中</button>
+                </div>
+                <div class="home-card-body">
+                  <div class="home-summary-row analysis-domain">
+                    <div>
+                      <span>模块状态</span>
+                      <strong>规划中</strong>
+                      <em>等待明确分析入口、交互形态和洞察沉淀方式</em>
+                    </div>
+                    <div class="home-progress analysis-domain"><span style="width:22%"></span></div>
+                  </div>
+                  <div class="home-metric-strip">
+                    <div><span>分析场景</span><strong>待定</strong></div>
+                    <div><span>分析看板</span><strong>待定</strong></div>
+                    <div><span>洞察结论</span><strong>待定</strong></div>
+                    <div class="attention"><span>待设计</span><strong>4</strong></div>
+                  </div>
+                  <div class="home-chart-grid">
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>可能承接的分析</span><strong>占位</strong></div>
+                      <div class="home-bar-row"><span>自助探索</span><div class="home-bar amber"><i style="width:36%"></i></div><em>待定</em></div>
+                      <div class="home-bar-row"><span>归因诊断</span><div class="home-bar violet"><i style="width:34%"></i></div><em>待定</em></div>
+                      <div class="home-bar-row"><span>看板洞察</span><div class="home-bar green"><i style="width:28%"></i></div><em>待定</em></div>
+                    </div>
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>设计状态</span><strong>预留</strong></div>
+                      <div class="home-stack-bar analysis-domain" aria-label="Data Analytics 设计状态占比">
+                        <span class="built" style="width:22%"></span>
+                        <span class="ready" style="width:38%"></span>
+                        <span class="changed" style="width:40%"></span>
+                      </div>
+                      <div class="home-legend-grid">
+                        <span><i class="built"></i>已占位</span>
+                        <span><i class="ready"></i>待定义</span>
+                        <span><i class="changed"></i>待评审</span>
+                        <span><i class="failed"></i>未启用</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="home-domain-panel home-domain-placeholder">
+                <div class="home-domain-header">
+                  <div class="home-domain-title">
+                    <div>
+                      <h2>Data Tasks</h2>
+                      <p>预留给具体执行类任务，后续可承接数据加工、指标发布、业务触达、自动化流程和人工确认后的执行动作。</p>
+                    </div>
+                  </div>
+                  <button class="button small" type="button" disabled>规划中</button>
+                </div>
+                <div class="home-card-body">
+                  <div class="home-summary-row execution-domain">
+                    <div>
+                      <span>模块状态</span>
+                      <strong>规划中</strong>
+                      <em>等待明确任务边界、执行对象和审批策略</em>
+                    </div>
+                    <div class="home-progress execution-domain"><span style="width:18%"></span></div>
+                  </div>
+                  <div class="home-metric-strip">
+                    <div><span>任务类型</span><strong>待定</strong></div>
+                    <div><span>执行对象</span><strong>待定</strong></div>
+                    <div><span>触发方式</span><strong>待定</strong></div>
+                    <div class="attention"><span>待设计</span><strong>3</strong></div>
+                  </div>
+                  <div class="home-chart-grid">
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>可能承接的任务</span><strong>占位</strong></div>
+                      <div class="home-bar-row"><span>数据加工</span><div class="home-bar green"><i style="width:38%"></i></div><em>待定</em></div>
+                      <div class="home-bar-row"><span>指标发布</span><div class="home-bar violet"><i style="width:32%"></i></div><em>待定</em></div>
+                      <div class="home-bar-row"><span>业务动作</span><div class="home-bar amber"><i style="width:24%"></i></div><em>待定</em></div>
+                    </div>
+                    <div class="home-chart-block">
+                      <div class="home-chart-head"><span>设计状态</span><strong>预留</strong></div>
+                      <div class="home-stack-bar execution-domain" aria-label="Data Tasks 设计状态占比">
+                        <span class="built" style="width:18%"></span>
+                        <span class="ready" style="width:42%"></span>
+                        <span class="changed" style="width:40%"></span>
+                      </div>
+                      <div class="home-legend-grid">
+                        <span><i class="built"></i>已占位</span>
+                        <span><i class="ready"></i>待定义</span>
+                        <span><i class="changed"></i>待评审</span>
+                        <span><i class="failed"></i>未启用</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
             </section>
+
           </div>
         </main>
       </div>
     </div>
-    <script src="js/mock-data.js"></script>
     <script src="js/common.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script>
+      window.UI.bindRowNavigation();
+    </script>
   </body>
 </html>

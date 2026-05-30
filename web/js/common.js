@@ -131,6 +131,12 @@ function bindRowNavigation() {
       if (event.target.closest("a, button, input, select, textarea, label")) return;
       window.location.href = row.dataset.href;
     });
+    row.addEventListener("keydown", (event) => {
+      if (!["Enter", " "].includes(event.key)) return;
+      if (event.target.closest("a, button, input, select, textarea, label")) return;
+      event.preventDefault();
+      window.location.href = row.dataset.href;
+    });
   });
 }
 

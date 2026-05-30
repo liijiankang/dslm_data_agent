@@ -60,9 +60,9 @@ function fillSelect(selector, allLabel, values) {
 }
 
 function renderHeader() {
-  document.title = `${selectedSource.name} · 模型关系图`;
+  document.title = `${selectedSource.name} · 资产关系图`;
   qs("main.page").dataset.sourceId = selectedSource.id;
-  qs("#graphTitle").textContent = `${selectedSource.name} · 模型关系图`;
+  qs("#graphTitle").textContent = `${selectedSource.name} · 资产关系图`;
   qs("#graphMeta").innerHTML = `
     ${statusPill(selectedSource.status, selectedSource.statusTone)}
     <span class="tag">${selectedSource.connector}</span>
@@ -434,7 +434,7 @@ function renderInspector(nodes, relations) {
   panel.innerHTML = `
     <div class="graph-panel-header"><h2 class="card-title">图统计</h2></div>
     <div class="graph-detail-summary">
-      <div class="graph-detail-metric"><strong>${nodes.length}</strong><span>模型对象</span></div>
+      <div class="graph-detail-metric"><strong>${nodes.length}</strong><span>资产对象</span></div>
       <div class="graph-detail-metric"><strong>${relations.length}</strong><span>关系</span></div>
       <div class="graph-detail-metric"><strong>${schemas.size}</strong><span>Schema</span></div>
       <div class="graph-detail-metric"><strong>${stale + unbuilt}</strong><span>待处理</span></div>
@@ -501,7 +501,7 @@ function renderGraph() {
       </svg>
       ${renderNodes(nodes, positions)}
     `
-    : `<div class="graph-empty">没有符合条件的模型关系</div>`;
+    : `<div class="graph-empty">没有符合条件的资产关系</div>`;
   renderInspector(nodes, relations);
   const selectedNode = state.selectedKind === "node" ? nodesForSource().find((node) => node.id === state.selectedId) : null;
   if (!selectedNode) state.fieldWorkbenchOpen = false;

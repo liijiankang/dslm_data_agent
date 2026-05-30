@@ -363,6 +363,10 @@
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.metric-grid.six {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
 .metric {
   position: relative;
   padding: 14px;

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>指标发布结果 · Data Metrics</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page metric-publish-result-page">
+          <nav class="breadcrumb">
+            <a href="index.html">首页</a><span>/</span>
+            <a href="metrics.html">Data Metrics</a><span>/</span>
+            <a href="metric-generate.html">生成指标</a><span>/</span>
+            <span>发布结果</span>
+          </nav>
+
+          <section class="publish-result-hero">
+            <div>
+              <span class="status green" id="publishStatus">已发布</span>
+              <h1 class="page-title">指标资产发布成功</h1>
+              <p class="page-subtitle" id="publishHeroCopy">本次方案已沉淀为可治理、可复用、可共享计算的 Data Metrics 资产。</p>
+            </div>
+            <div class="publish-result-actions">
+              <a class="button" href="metric-generate.html">继续生成</a>
+              <a class="button primary" href="metrics.html">返回 Data Metrics</a>
+            </div>
+          </section>
+
+          <div class="content-stack">
+            <section class="publish-result-kpis" aria-label="发布结果统计">
+              <div class="metric"><div class="metric-label">发布单号</div><div class="metric-value small" id="publishId">-</div></div>
+              <div class="metric"><div class="metric-label">主指标集</div><div class="metric-value" id="publishMetricSets">5</div></div>
+              <div class="metric"><div class="metric-label">Metric DSL</div><div class="metric-value" id="publishMetricDsl">5</div></div>
+              <div class="metric"><div class="metric-label">逻辑输出资产</div><div class="metric-value" id="publishLogicalAssets">5</div></div>
+              <div class="metric"><div class="metric-label">物理输出资产</div><div class="metric-value" id="publishPhysicalAssets">3</div></div>
+            </section>
+
+            <section class="publish-result-grid">
+              <article class="publish-result-panel">
+                <div class="metric-panel-head">
+                  <h2>发布明细</h2>
+                  <span id="publishTime">-</span>
+                </div>
+                <dl class="publish-detail-list">
+                  <div><dt>方案名称</dt><dd id="publishName">成交下降诊断指标资产</dd></div>
+                  <div><dt>主业务主题</dt><dd id="publishBusinessTheme">交易经营</dd></div>
+                  <div><dt>关联主题</dt><dd id="publishRelatedThemes">营销增长、供应链履约</dd></div>
+                  <div><dt>分析方向</dt><dd id="publishTopics">订单量变化分析、支付转化分析</dd></div>
+                  <div><dt>场景标签</dt><dd id="publishSceneTags">经营诊断、交易分析</dd></div>
+                  <div><dt>DSL 校验</dt><dd id="publishDslValidation">字段、聚合、依赖和 SQL 编译通过</dd></div>
+                  <div><dt>冲突处理</dt><dd id="publishConflictResolution">1 个复用，2 个合并/版本，1 个人工确认</dd></div>
+                  <div><dt>质量检查</dt><dd id="publishQualityChecks">重复指标、口径冲突、相似指标</dd></div>
+                </dl>
+              </article>
+
+              <article class="publish-result-panel">
+                <div class="metric-panel-head">
+                  <h2>服务开通</h2>
+                  <span>4 项可用</span>
+                </div>
+                <div class="publish-service-list" id="publishServices"></div>
+              </article>
+            </section>
+
+            <section class="publish-result-panel">
+              <div class="metric-panel-head">
+                <h2>资产映射</h2>
+                <span id="publishSharedSummary">1 个共享物理资产</span>
+              </div>
+              <div class="publish-asset-map" id="publishAssetMap"></div>
+            </section>
+
+            <section class="publish-result-panel">
+              <div class="metric-panel-head">
+                <h2>治理资产状态</h2>
+                <span>正式生效</span>
+              </div>
+              <div class="table-wrap">
+                <table class="table publish-asset-table">
+                  <thead>
+                    <tr>
+                      <th>资产类型</th>
+                      <th>数量</th>
+                      <th>状态</th>
+                      <th>可用范围</th>
+                    </tr>
+                  </thead>
+                  <tbody id="publishAssets"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/metric-publish-result.js"></script>
+  </body>
+</html>

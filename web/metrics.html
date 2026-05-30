@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Data Metrics · dslm-data</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page metric-page">
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><span>Data Metrics</span></nav>
+          <section class="metric-workbench-hero">
+            <div class="metric-hero-copy">
+              <div class="metric-hero-text">
+                <h1 class="page-title">Data Metrics</h1>
+                <p class="page-subtitle">以业务问题为入口，结合已接入的数据模型和 Metric DSL，沉淀业务主题、分析方向、指标语义定义、逻辑输出资产与共享计算配置，让指标从生成、编译、校验到复用形成闭环。</p>
+              </div>
+              <div class="metric-hero-actions">
+                <a class="button primary" href="metric-generate.html">新建指标资产</a>
+              </div>
+            </div>
+          </section>
+
+          <div class="content-stack">
+            <section class="metric-kpi-deck" aria-label="Data Metrics 统计">
+              <div class="metric-kpi-card"><span>业务主题</span><strong>7</strong><em>覆盖核心经营分析场景</em></div>
+              <div class="metric-kpi-card"><span>场景标签</span><strong>12</strong><em>按业务主题组织沉淀</em></div>
+              <div class="metric-kpi-card"><span>主指标集</span><strong>24</strong><em>6 个进入发布流程</em></div>
+              <div class="metric-kpi-card"><span>指标</span><strong>326</strong><em>本周新增 42 个候选指标</em></div>
+              <div class="metric-kpi-card"><span>维度</span><strong>89</strong><em>支持多层级分析拆解</em></div>
+            </section>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>指标使用热度 TOP 15</h2>
+                <span>近 30 天</span>
+              </div>
+              <div class="metric-hot-line-chart" aria-label="指标使用热度 TOP 15，悬停在圆点或数值上查看指标详情">
+                <svg class="metric-hot-line-svg" viewBox="0 0 1180 194" role="img" aria-label="指标使用热度 TOP 15">
+                  <g class="metric-hot-grid-lines" aria-hidden="true">
+                    <line x1="58" y1="28" x2="1148" y2="28"></line>
+                    <line x1="58" y1="66" x2="1148" y2="66"></line>
+                    <line x1="58" y1="103" x2="1148" y2="103"></line>
+                    <line x1="58" y1="141" x2="1148" y2="141"></line>
+                    <line x1="58" y1="178" x2="1148" y2="178"></line>
+                  </g>
+                  <g class="metric-hot-axis" aria-hidden="true">
+                    <line x1="58" y1="28" x2="58" y2="178"></line>
+                    <line x1="58" y1="178" x2="1148" y2="178"></line>
+                    <text x="42" y="32">1200</text>
+                    <text x="42" y="70">900</text>
+                    <text x="42" y="107">600</text>
+                    <text x="42" y="145">300</text>
+                    <text x="42" y="182">0</text>
+                  </g>
+                  <polyline class="metric-hot-line" points="80,31 154,50 228,70 302,88 376,97 450,104 524,112 598,117 672,123 746,129 820,133 894,136 968,141 1042,144 1116,147"></polyline>
+                  <g class="metric-hot-points">
+                    <g data-hot-point tabindex="0" data-hot-name="成交金额" data-hot-value="1180" data-hot-domain="交易经营" data-hot-set="订单经营分析场景标签" data-hot-owner="经营分析组"><circle cx="80" cy="31" r="3"></circle><text x="80" y="18">1180</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="订单数" data-hot-value="1024" data-hot-domain="交易经营" data-hot-set="订单经营分析场景标签" data-hot-owner="经营分析组"><circle cx="154" cy="50" r="3"></circle><text x="154" y="37">1024</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="客单价" data-hot-value="860" data-hot-domain="交易经营" data-hot-set="订单经营分析场景标签" data-hot-owner="经营分析组"><circle cx="228" cy="70" r="3"></circle><text x="228" y="57">860</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="退款率" data-hot-value="720" data-hot-domain="财务经营" data-hot-set="退款与售后分析场景标签" data-hot-owner="财务运营组"><circle cx="302" cy="88" r="3"></circle><text x="302" y="75">720</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="新增客户数" data-hot-value="645" data-hot-domain="客户经营" data-hot-set="客户增长场景标签" data-hot-owner="客户运营组"><circle cx="376" cy="97" r="3"></circle><text x="376" y="84">645</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="支付成功率" data-hot-value="592" data-hot-domain="交易经营" data-hot-set="支付链路场景标签" data-hot-owner="支付运营组"><circle cx="450" cy="104" r="3"></circle><text x="450" y="91">592</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="复购率" data-hot-value="528" data-hot-domain="客户经营" data-hot-set="客户留存场景标签" data-hot-owner="客户运营组"><circle cx="524" cy="112" r="3"></circle><text x="524" y="99">528</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="渠道贡献率" data-hot-value="486" data-hot-domain="营销增长" data-hot-set="渠道投放场景标签" data-hot-owner="营销分析组"><circle cx="598" cy="117" r="3"></circle><text x="598" y="104">486</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="退款金额" data-hot-value="438" data-hot-domain="财务经营" data-hot-set="退款与售后分析场景标签" data-hot-owner="财务运营组"><circle cx="672" cy="123" r="3"></circle><text x="672" y="110">438</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="活跃客户数" data-hot-value="395" data-hot-domain="客户经营" data-hot-set="客户活跃场景标签" data-hot-owner="客户运营组"><circle cx="746" cy="129" r="3"></circle><text x="746" y="116">395</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="毛利率" data-hot-value="360" data-hot-domain="财务经营" data-hot-set="经营利润场景标签" data-hot-owner="财务分析组"><circle cx="820" cy="133" r="3"></circle><text x="820" y="120">360</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="库存周转天数" data-hot-value="334" data-hot-domain="供应链履约" data-hot-set="库存效率场景标签" data-hot-owner="供应链分析组"><circle cx="894" cy="136" r="3"></circle><text x="894" y="123">334</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="SLA 达成率" data-hot-value="298" data-hot-domain="售后服务" data-hot-set="客服履约场景标签" data-hot-owner="服务运营组"><circle cx="968" cy="141" r="3"></circle><text x="968" y="128">298</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="活动转化率" data-hot-value="276" data-hot-domain="营销增长" data-hot-set="营销活动场景标签" data-hot-owner="营销分析组"><circle cx="1042" cy="144" r="3"></circle><text x="1042" y="131">276</text></g>
+                    <g data-hot-point tabindex="0" data-hot-name="逾期应收金额" data-hot-value="248" data-hot-domain="财务经营" data-hot-set="应收账款场景标签" data-hot-owner="财务分析组"><circle cx="1116" cy="147" r="3"></circle><text x="1116" y="134">248</text></g>
+                  </g>
+                </svg>
+                <div class="metric-hot-tooltip" id="metricHotTooltip" role="tooltip" hidden></div>
+              </div>
+            </article>
+
+            <article class="metric-board-panel metric-system-list-panel">
+              <div class="metric-panel-head">
+                <h2>业务主题列表</h2>
+                <span id="metricSystemListSummary">每页 4 个</span>
+              </div>
+
+              <div class="metric-system-filter filter-bar">
+                <label class="field">
+                  <span class="label">搜索</span>
+                  <input class="input" id="metricSystemSearch" placeholder="业务主题、场景标签、指标名称">
+                </label>
+                <label class="field">
+                  <span class="label">业务主题</span>
+                  <select class="select" id="metricSystemDomainFilter">
+                    <option value="all">全部业务主题</option>
+                    <option value="trade">交易经营</option>
+                    <option value="customer">客户经营</option>
+                    <option value="finance">财务经营</option>
+                    <option value="service">售后服务</option>
+                    <option value="marketing">营销增长</option>
+                    <option value="supply">供应链履约</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="label">状态</span>
+                  <select class="select" id="metricSystemStatusFilter">
+                    <option value="all">全部状态</option>
+                    <option value="review">待审核</option>
+                    <option value="published">已发布</option>
+                    <option value="draft">草稿</option>
+                  </select>
+                </label>
+                <button class="button" id="resetMetricSystemFilters" type="button">重置</button>
+              </div>
+
+              <div class="metric-system-list" id="metricSystemList">
+                <article class="metric-system-list-item" data-metric-system-card data-system-id="trade" data-system-domain="trade" data-system-status="review" data-system-keywords="交易经营 订单经营 支付转化 成交下降 订单 成交金额 客单价 支付成功率" role="link" tabindex="0">
+                  <div class="metric-system-item-head">
+                    <h3>交易经营</h3>
+                    <span class="status amber">2 个待审核</span>
+                  </div>
+                  <div class="metric-system-stats">
+                    <div><span>场景标签</span><strong>2</strong></div>
+                    <div><span>主指标集</span><strong>8</strong></div>
+                    <div><span>指标</span><strong>60</strong></div>
+                    <div><span>维度</span><strong>14</strong></div>
+                  </div>
+                  <div class="metric-system-checks">
+                    <span>订单经营分析</span>
+                    <span>支付转化分析</span>
+                    <span>成交下降诊断</span>
+                  </div>
+                </article>
+                <article class="metric-system-list-item" data-metric-system-card data-system-id="customer" data-system-domain="customer" data-system-status="published" data-system-keywords="客户经营 客户生命周期 客户分层 复购 客户等级 会员 留存" role="link" tabindex="0">
+                  <div class="metric-system-item-head">
+                    <h3>客户经营</h3>
+                    <span class="status green">运行正常</span>
+                  </div>
+                  <div class="metric-system-stats">
+                    <div><span>场景标签</span><strong>2</strong></div>
+                    <div><span>主指标集</span><strong>7</strong></div>
+                    <div><span>指标</span><strong>43</strong></div>
+                    <div><span>维度</span><strong>11</strong></div>
+                  </div>
+                  <div class="metric-system-checks">
+                    <span>客户生命周期</span>
+                    <span>客户留存</span>
+                    <span>会员经营</span>
+                  </div>
+                </article>
+                <article class="metric-system-list-item" data-metric-system-card data-system-id="finance" data-system-domain="finance" data-system-status="review" data-system-keywords="财务经营 回款 应收 逾期 合同 发票 毛利 收入" role="link" tabindex="0">
+                  <div class="metric-system-item-head">
+                    <h3>财务经营</h3>
+                    <span class="status amber">1 个待审核</span>
+                  </div>
+                  <div class="metric-system-stats">
+                    <div><span>场景标签</span><strong>2</strong></div>
+                    <div><span>主指标集</span><strong>6</strong></div>
+                    <div><span>指标</span><strong>42</strong></div>
+                    <div><span>维度</span><strong>10</strong></div>
+                  </div>
+                  <div class="metric-system-checks">
+                    <span>回款与应收</span>
+                    <span>经营利润</span>
+                    <span>退款与售后</span>
+                  </div>
+                </article>
+                <article class="metric-system-list-item" data-metric-system-card data-system-id="service" data-system-domain="service" data-system-status="draft" data-system-keywords="售后服务 服务 工单 SLA 满意度 售后 退款 服务质量" role="link" tabindex="0">
+                  <div class="metric-system-item-head">
+                    <h3>售后服务</h3>
+                    <span class="status blue">草稿</span>
+                  </div>
+                  <div class="metric-system-stats">
+                    <div><span>场景标签</span><strong>1</strong></div>
+                    <div><span>主指标集</span><strong>3</strong></div>
+                    <div><span>指标</span><strong>19</strong></div>
+                    <div><span>维度</span><strong>5</strong></div>
+                  </div>
+                  <div class="metric-system-checks">
+                    <span>客服履约</span>
+                    <span>售后效率</span>
+                    <span>满意度分析</span>
+                  </div>
+                </article>
+                <article class="metric-system-list-item" data-metric-system-card data-system-id="marketing" data-system-domain="marketing" data-system-status="published" data-system-keywords="营销增长 营销 活动 ROI 触达 转化 获客成本 渠道归因" role="link" tabindex="0">
+                  <div class="metric-system-item-head">
+                    <h3>营销增长</h3>
+                    <span class="status green">已发布</span>
+                  </div>
+                  <div class="metric-system-stats">
+                    <div><span>场景标签</span><strong>2</strong></div>
+                    <div><span>主指标集</span><strong>5</strong></div>
+                    <div><span>指标</span><strong>38</strong></div>
+                    <div><span>维度</span><strong>12</strong></div>
+                  </div>
+                  <div class="metric-system-checks">
+                    <span>营销活动转化</span>
+                    <span>渠道归因</span>
+                    <span>投放效果</span>
+                  </div>
+                </article>
+                <article class="metric-system-list-item" data-metric-system-card data-system-id="supply" data-system-domain="supply" data-system-status="draft" data-system-keywords="供应链履约 供应链 库存 采购 履约 缺货 补货 周转" role="link" tabindex="0">
+                  <div class="metric-system-item-head">
+                    <h3>供应链履约</h3>
+                    <span class="status blue">建设中</span>
+                  </div>
+                  <div class="metric-system-stats">
+                    <div><span>场景标签</span><strong>1</strong></div>
+                    <div><span>主指标集</span><strong>2</strong></div>
+                    <div><span>指标</span><strong>17</strong></div>
+                    <div><span>维度</span><strong>6</strong></div>
+                  </div>
+                  <div class="metric-system-checks">
+                    <span>库存效率</span>
+                    <span>采购履约</span>
+                    <span>缺货影响</span>
+                  </div>
+                </article>
+                <div class="empty-state metric-system-empty" id="metricSystemEmptyState" hidden>没有符合条件的业务主题</div>
+              </div>
+
+              <div class="pagination-bar metric-system-pagination">
+                <div class="hint" id="metricSystemPaginationSummary"></div>
+                <div class="pagination-controls" id="metricSystemPaginationControls"></div>
+              </div>
+            </article>
+
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/metrics.js"></script>
+  </body>
+</html>

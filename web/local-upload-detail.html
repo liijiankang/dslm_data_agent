@@ -13,7 +13,7 @@
     <div class="app-shell">
       <div class="shell-body">
         <main class="page" data-source-id="source-local-upload-sales">
-          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="index.html">数据源</a><span>/</span><span id="sourceBreadcrumbName">销售资料上传区</span></nav>
+          <nav class="breadcrumb"><a href="index.html">首页</a><span>/</span><a href="sources.html">Data Assets</a><span>/</span><span id="sourceBreadcrumbName">销售资料上传区</span></nav>
           <div class="page-header source-profile-header">
             <div class="source-profile-copy">
               <span class="console-kicker">data source profile</span>
@@ -84,8 +84,8 @@
             <section class="card model-graph-section" id="modelRelationSection" hidden>
               <div class="card-header">
                 <div>
-                  <h2 class="card-title">模型关系图</h2>
-                  <p class="card-subtitle">以库表对象为节点，外键、视图依赖和推断关系为连线，展示结构化数据源的模型全貌。</p>
+                  <h2 class="card-title">资产关系图</h2>
+                  <p class="card-subtitle">以库表对象为节点，外键、视图依赖和推断关系为连线，展示结构化数据源的资产关联和业务语义。</p>
                 </div>
                 <div class="header-actions">
                   <button class="button small" data-open-modal="semanticSupplementModal" type="button">补充语义资料</button>
@@ -127,7 +127,7 @@
                   </div>
                 </aside>
                 <div class="model-graph-canvas" id="modelGraphCanvas">
-                  <div class="graph-empty" id="modelGraphEmpty" hidden>没有符合条件的模型关系</div>
+                  <div class="graph-empty" id="modelGraphEmpty" hidden>没有符合条件的资产关系</div>
                 </div>
                 <aside class="graph-detail-panel" id="modelGraphDetail"></aside>
               </div>
@@ -309,7 +309,7 @@
           <section class="semantic-review-panel">
             <div class="semantic-stats">
               <div><strong>4</strong><span>已上传资料</span></div>
-              <div><strong>12</strong><span>覆盖模型对象</span></div>
+              <div><strong>12</strong><span>覆盖资产对象</span></div>
               <div><strong>86</strong><span>覆盖字段</span></div>
               <div><strong>23</strong><span>待审核建议</span></div>
             </div>

@@ -32,19 +32,20 @@ a {
 .shell-body {
   display: block;
   min-height: 100vh;
+  min-width: 0;
 }
 
 .page {
-  width: 1280px;
-  max-width: calc(100vw - 48px);
+  width: min(1320px, calc(100% - 40px));
+  max-width: none;
   margin: 0 auto;
   padding: 22px 0 18px;
   overflow-x: hidden;
 }
 
 .page-narrow {
-  width: 1040px;
-  max-width: calc(100vw - 48px);
+  width: min(1040px, calc(100% - 40px));
+  max-width: none;
 }
 
 .breadcrumb {
@@ -122,7 +123,7 @@ a {
 @media (max-width: 960px) {
   .page,
   .page-narrow {
-    width: calc(100vw - 24px);
+    width: calc(100% - 24px);
     padding-top: 14px;
     padding-bottom: 10px;
   }

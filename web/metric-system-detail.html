@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>业务主题详情 · Data Metrics</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="shell-body">
+        <main class="page metric-system-detail-page">
+          <nav class="breadcrumb">
+            <a href="index.html">首页</a><span>/</span>
+            <a href="metrics.html">Data Metrics</a><span>/</span>
+            <span>业务主题详情</span>
+          </nav>
+
+          <section class="publish-result-hero metric-system-detail-hero">
+            <div>
+              <span class="status amber" id="detailStatus">待审核</span>
+              <h1 class="page-title" id="detailTitle">交易经营</h1>
+              <p class="page-subtitle" id="detailSubtitle">围绕订单成交、支付转化、退款影响和渠道贡献沉淀交易经营指标资产。</p>
+            </div>
+            <div class="publish-result-actions">
+              <a class="button" href="metrics.html">返回 Data Metrics</a>
+              <a class="button primary" href="metric-generate.html">继续生成</a>
+            </div>
+          </section>
+
+          <div class="content-stack">
+            <section class="metric-grid six metric-system-detail-kpis" aria-label="业务主题概览">
+              <div class="metric"><div class="metric-label">场景标签</div><div class="metric-value" id="detailSystemCount">2</div></div>
+              <div class="metric"><div class="metric-label">主指标集</div><div class="metric-value" id="detailSetCount">8</div></div>
+              <div class="metric"><div class="metric-label">指标</div><div class="metric-value" id="detailMetricCount">60</div></div>
+              <div class="metric"><div class="metric-label">维度</div><div class="metric-value" id="detailDimensionCount">14</div></div>
+              <div class="metric"><div class="metric-label">质量健康度</div><div class="metric-value" id="detailQualityScore">86%</div></div>
+              <div class="metric"><div class="metric-label">近 30 天调用</div><div class="metric-value" id="detailCallCount">3,821</div></div>
+            </section>
+
+            <section class="metric-system-detail-grid">
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>基础信息</h2>
+                  <span id="detailVersion">v1.0.3</span>
+                </div>
+                <dl class="publish-detail-list metric-system-detail-list">
+                  <div><dt>主题边界</dt><dd id="detailBoundary">订单、支付、退款、渠道、商品和成交趋势</dd></div>
+                  <div><dt>主数据模型</dt><dd id="detailMainModel">订单交易库</dd></div>
+                  <div><dt>关联数据模型</dt><dd id="detailRelatedModels">支付明细库、退款明细库、商品库存库</dd></div>
+                  <div><dt>负责人</dt><dd id="detailOwner">经营分析组</dd></div>
+                  <div><dt>创建时间</dt><dd id="detailCreatedAt">2026-05-29 09:42</dd></div>
+                  <div><dt>最近更新</dt><dd id="detailUpdatedAt">2026-05-29 13:18</dd></div>
+                </dl>
+              </article>
+
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>发布与运行</h2>
+                  <span id="detailRunStatus">待审核</span>
+                </div>
+                <div class="metric-system-runtime">
+                  <div><span>计算方式</span><strong id="detailComputeMode">离线周期计算</strong></div>
+                  <div><span>调度周期</span><strong id="detailSchedule">每日 02:00</strong></div>
+                  <div><span>主物理资产</span><strong id="detailOutputTable">ads_metric_order_operation_daily</strong></div>
+                  <div><span>最近运行</span><strong id="detailLastRun">尚未发布运行</strong></div>
+                </div>
+              </article>
+            </section>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>逻辑与物理资产映射</h2>
+                <span id="detailAssetMapSummary">共享物理资产</span>
+              </div>
+              <div class="table-wrap">
+                <table class="table metric-system-detail-table">
+                  <thead>
+                    <tr>
+                      <th>分析方向</th>
+                      <th>逻辑输出资产</th>
+                      <th>物理输出资产</th>
+                      <th>关系</th>
+                    </tr>
+                  </thead>
+                  <tbody id="detailAssetMapRows"></tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>指标语义层</h2>
+                <span id="detailDslSummary">Metric DSL 已生成</span>
+              </div>
+              <div class="metric-dsl-check-grid metric-system-dsl-grid" id="detailDslRows"></div>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>质量检查</h2>
+                <span id="detailQualitySummary">3 项待处理</span>
+              </div>
+              <div class="metric-system-quality-list" id="detailQualityList"></div>
+            </article>
+
+            <article class="metric-board-panel">
+              <div class="metric-panel-head">
+                <h2>计算逻辑</h2>
+                <span id="detailDagSummary">4 层节点</span>
+              </div>
+              <div class="calculation-dag-block metric-system-dag-block">
+                <div class="calculation-dag metric-system-dag">
+                  <div class="dag-column" id="detailDagSources"></div>
+                  <div class="dag-arrow">→</div>
+                  <div class="dag-node process">
+                    <span>加工节点</span>
+                    <strong id="detailDagJoin">订单支付宽表</strong>
+                    <em id="detailDagJoinDesc">按订单、支付、退款关联</em>
+                  </div>
+                  <div class="dag-arrow">→</div>
+                  <div class="dag-node compute">
+                    <span>指标计算</span>
+                    <strong id="detailDagCompute">经营指标计算</strong>
+                    <em id="detailDagComputeDesc">订单数、成交金额、支付成功率</em>
+                  </div>
+                  <div class="dag-arrow">→</div>
+                  <div class="dag-node output">
+                    <span>物理输出资产</span>
+                    <strong id="detailDagOutput">成交下降分析主指标集</strong>
+                    <em id="detailDagOutputDesc">指标目录、问数、API</em>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <section class="metric-system-assets-grid">
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>场景标签</h2>
+                  <span id="detailSystemSummary">主题下沉淀</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="table metric-system-detail-table">
+                    <thead>
+                      <tr>
+                        <th>场景标签</th>
+                        <th>包含主指标集</th>
+                        <th>建设重点</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody id="detailSystemRows"></tbody>
+                  </table>
+                </div>
+              </article>
+
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>主指标集</h2>
+                  <span id="detailSetSummary">可发布资产</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="table metric-system-detail-table">
+                    <thead>
+                      <tr>
+                        <th>主指标集</th>
+                        <th>包含指标</th>
+                        <th>使用场景</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody id="detailSetRows"></tbody>
+                  </table>
+                </div>
+              </article>
+            </section>
+
+            <section class="metric-system-assets-grid">
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>指标资产</h2>
+                  <span id="detailMetricSummary">核心指标</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="table metric-system-detail-table">
+                    <thead>
+                      <tr>
+                        <th>指标</th>
+                        <th>编码</th>
+                        <th>类型</th>
+                        <th>可加性</th>
+                        <th>口径</th>
+                        <th>DSL 状态</th>
+                      </tr>
+                    </thead>
+                    <tbody id="detailMetricRows"></tbody>
+                  </table>
+                </div>
+              </article>
+
+              <article class="metric-board-panel">
+                <div class="metric-panel-head">
+                  <h2>维度资产</h2>
+                  <span id="detailDimensionSummary">可分析维度</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="table metric-system-detail-table">
+                    <thead>
+                      <tr>
+                        <th>维度</th>
+                        <th>来源字段</th>
+                        <th>层级</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody id="detailDimensionRows"></tbody>
+                  </table>
+                </div>
+              </article>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/metric-system-detail.js"></script>
+  </body>
+</html>

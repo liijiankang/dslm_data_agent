@@ -72,7 +72,7 @@ function renderSourceHeader() {
   if (title) title.textContent = selectedSource.name;
   if (subtitle) {
     subtitle.textContent = isDatabaseSource()
-      ? "结构化数据源画像，聚合模型关系、语义补充、构建覆盖和变更维护状态。"
+      ? "结构化数据源画像，聚合资产关系、语义补充、构建覆盖和变更维护状态。"
       : "文件系统数据源画像，聚合资产盘点、构建覆盖、变更维护和产物登记状态。";
   }
   if (meta) {
@@ -87,7 +87,7 @@ function renderSourceHeader() {
   if (profileFacts) {
     profileFacts.innerHTML = `
       <div><span>接入方式</span><strong>${selectedSource.connector}</strong></div>
-      <div><span>${isDatabaseSource() ? "模型对象" : "资产规模"}</span><strong>${selectedSource.assets}</strong></div>
+      <div><span>${isDatabaseSource() ? "资产对象" : "资产规模"}</span><strong>${selectedSource.assets}</strong></div>
       <div><span>最近盘点</span><strong>${selectedSource.lastInventory}</strong></div>
     `;
   }
@@ -101,7 +101,7 @@ function renderSourceHeader() {
   if (coverageScopeValue) coverageScopeValue.textContent = selectedSource.maintenanceScope || "未构建";
   if (coverageAssetsValue) {
     coverageAssetsValue.textContent = isDatabaseSource()
-      ? `${selectedSource.buildable} 个可构建模型对象中，${selectedSource.built} 个已有构建结果`
+      ? `${selectedSource.buildable} 个可构建资产对象中，${selectedSource.built} 个已有构建结果`
       : `${selectedSource.buildable} 个可构建资产中，${selectedSource.built} 个已有构建结果`;
   }
   if (disableSourceCopy) {
@@ -127,7 +127,7 @@ function renderMetrics() {
     }
     : sourceStats;
   const labels = isDatabaseSource()
-    ? ["模型对象", "可构建模型", "已构建模型", "待重建对象"]
+    ? ["资产对象", "可构建资产", "已构建资产", "待重建对象"]
     : ["资产总数", "可构建", "已构建", "待重建资产"];
   node.innerHTML = `
     <div class="metric"><div class="metric-label">${labels[0]}</div><div class="metric-value">${stats.totalAssets}</div><div class="metric-trend">源端元数据已登记</div></div>
@@ -540,7 +540,7 @@ function renderModelGraphDetail(nodes, relations) {
   panel.innerHTML = `
     <h3 class="graph-detail-title">图统计</h3>
     <div class="graph-detail-summary">
-      <div class="graph-detail-metric"><strong>${nodes.length}</strong><span>模型对象</span></div>
+      <div class="graph-detail-metric"><strong>${nodes.length}</strong><span>资产对象</span></div>
       <div class="graph-detail-metric"><strong>${relations.length}</strong><span>关系</span></div>
       <div class="graph-detail-metric"><strong>${schemas.size}</strong><span>Schema</span></div>
       <div class="graph-detail-metric"><strong>${stale + unbuilt}</strong><span>待处理</span></div>
@@ -590,7 +590,7 @@ function renderModelRelationGraph() {
   }
   canvas.innerHTML = nodes.length
     ? `${renderGraphSvg(nodes, relations, positionMap)}${renderGraphNodes(nodes, positionMap)}`
-    : `<div class="graph-empty">没有符合条件的模型关系</div>`;
+    : `<div class="graph-empty">没有符合条件的资产关系</div>`;
   renderModelGraphDetail(nodes, relations);
   const selectedNode = modelGraphState.selectedKind === "node" ? nodes.find((node) => node.id === modelGraphState.selectedId) : null;
   if (!selectedNode) modelGraphState.fieldWorkbenchOpen = false;
